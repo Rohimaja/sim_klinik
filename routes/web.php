@@ -18,3 +18,9 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+require __DIR__.'/admin.php';
+require __DIR__.'/dokter.php';
+require __DIR__.'/pasien.php';
+require __DIR__.'/perawat.php';
+require __DIR__.'/petugas.php';
+require __DIR__.'/superadmin.php';
