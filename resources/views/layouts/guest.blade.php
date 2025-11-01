@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <link rel="icon" type="image/png" href="{{asset('images/logo1.png')}}">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
@@ -19,7 +20,7 @@
     <body class="font-sans text-gray-900 antialiased bg-gray-100 dark:bg-gray-900">
     <div class="flex justify-center items-center min-h-screen px-4 sm:px-6">
         <div class="flex flex-col md:flex-row w-full max-w-3xl bg-white dark:bg-gray-800 shadow-lg overflow-hidden rounded-2xl">
-            
+
             <div class="w-full md:w-1/2 p-8 sm:p-10 flex flex-col justify-center">
                 {{ $slot }}
             </div>
