@@ -7,9 +7,31 @@ Route::get('/', function () {
     return view('auth/login');
 });
 
-Route::get('/dashboard', function () {
-    return view('admin.dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('admin.dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware(['auth'])->get('/dashboard', function () {
+    $user = auth()->user();
+    $role = auth()->user()->role;
+
+    // 🔹 Cek dulu super admin
+    if ($role === 'admin' && $user->admin->is_super_admin == 1) {
+        return redirect()->route('superadmin.dashboard');
+    }
+
+    // 🔹 Cek admin biasa
+    if ($role === 'admin' && $user->admin->is_super_admin == 0) {
+        return redirect()->route('admin.dashboard');
+    }
+
+    // 🔹 Cek role lain
+    if (in_array($role, ['dokter','petugas','perawat','pasien'])) {
+        return redirect()->route("$role.dashboard");
+    }
+
+    abort(403);
+})->name('dashboard');
 
 Route::prefix('admin/masterData')->group(function () {
     Route::get('/dokter', fn() => view('admin.masterData.dokter.view_dokter'))->name('dokter.index');
@@ -68,3 +90,6 @@ require __DIR__.'/pasien.php';
 require __DIR__.'/perawat.php';
 require __DIR__.'/petugas.php';
 require __DIR__.'/superadmin.php';
+
+
+$user = App\Models\Admin::where('email', 'admin@example.com')->first();

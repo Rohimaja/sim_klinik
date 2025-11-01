@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tindakan', function (Blueprint $table) {
             $table->id();
-            $table->char('nama','100');
+            $table->string('nama','100');
             $table->decimal('tarif');
             $table->string('keterangan');
             $table->timestamps();
