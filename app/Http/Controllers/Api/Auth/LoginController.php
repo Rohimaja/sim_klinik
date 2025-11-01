@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Pasien;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -18,18 +19,45 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
 
+        $username = $request->username;
+        $password = $request->password;
+
         try {
             $user = User::where('username', $request->username)->first();
+            $pasien = Pasien::where('user_id', $user->id)->first();
 
-            if (!$user || !Hash::check($request->password, $user->password)) {
-                throw ValidationException::withMessages([
-                    'username' => ['The provided credentials are incorrect.'],
-                ]);
+            if (!$user || !Hash::check($password, $user->password)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Login gagal. Password salah atau akun tidak ditemukan.',
+                ], 401);
+            } else if ($user->email_verified_at == null) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Akun anda belum aktif. Silahkan aktivasi terlebih dahulu pada menu registrasi.',
+                ], 403);
             }
+
+            $token = $user->createToken('mobile-token');
+            $accessToken = $token->accessToken;
+
+            $accessToken->expires_at = now()->addMinutes(15);
+            $accessToken->save();
+
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Data berhasil terverifikasi'
+                'message' => 'Data berhasil terverifikasi',
+                'token' => $token->plainTextToken,
+                'expired_at' => $token->accessToken->expires_at,
+                'token_type' => 'Bearer',
+                'data' => [
+                    'user_id' => $user->id,
+                    'email' => $user->email,
+                    'username' => $user->username,
+                    'pasien_id' => $pasien->id,
+                    'nama' => $pasien->nama,
+                ]
             ]);
         } catch (\Exception $e) {
             return response()->json([
