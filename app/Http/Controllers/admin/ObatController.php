@@ -3,16 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Obat;
 use Illuminate\Http\Request;
 
-class AdminController extends Controller
+class ObatController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $title = 'Master Obat';
+        $obat = Obat::all();
+
+        return view('admin.master.obat.index',compact('title','obat'));
     }
 
     /**
@@ -20,7 +24,9 @@ class AdminController extends Controller
      */
     public function create()
     {
-        //
+        $title = 'Tambah Obat';
+
+        return view('admin.master.obat.create',compact('title'));
     }
 
     /**
@@ -34,7 +40,7 @@ class AdminController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Obat $obat)
     {
         //
     }
@@ -44,13 +50,16 @@ class AdminController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $title = 'Perbarui Obat';
+        $obat = Obat::findOrFail($id);
+
+        return view('admin.master.obat.edit',compact('title','obat'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Obat $obat)
     {
         //
     }
@@ -58,7 +67,7 @@ class AdminController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Obat $obat)
     {
         //
     }

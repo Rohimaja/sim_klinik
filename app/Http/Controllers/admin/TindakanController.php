@@ -3,16 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tindakan;
 use Illuminate\Http\Request;
 
-class AdminController extends Controller
+class TindakanController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $title = 'Master Tindakan';
+        $tindakan = Tindakan::all();
+
+        return view('admin.master.tindakan.index',compact('title','tindakan'));
     }
 
     /**
@@ -20,7 +24,9 @@ class AdminController extends Controller
      */
     public function create()
     {
-        //
+        $title = 'Tambah Tindakan';
+
+        return view('admin.master.tindakan.create',compact('title'));
     }
 
     /**
@@ -34,7 +40,7 @@ class AdminController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Tindakan $tindakan)
     {
         //
     }
@@ -44,13 +50,16 @@ class AdminController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $title = 'Perbarui Tindakan';
+        $tindakan = Tindakan::findOrFail($id);
+
+        return view('admin.master.tindakan.edit',compact('title','tindakan'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Tindakan $tindakan)
     {
         //
     }
@@ -58,7 +67,7 @@ class AdminController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Tindakan $tindakan)
     {
         //
     }

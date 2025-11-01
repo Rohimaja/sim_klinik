@@ -19,7 +19,7 @@
 
 
                     <div class="w-full sm:w-auto">
-                        <a href="{{ route('obat.form') }}"
+                        <a href="{{ route('admin.master-obat.create') }}"
                             class="w-full sm:w-auto bg-[#7134FC] text-white px-4 py-2 text-sm rounded-lg font-medium flex items-center justify-center gap-2 shadow-md">
                             <i class="fa-solid fa-plus"></i> Tambah Obat
                         </a>
@@ -42,8 +42,8 @@
                             </tr>
                         </thead>
                         <tbody class="text-gray-700">
-                            @php
-                                $obats = [
+                            {{-- @php
+                                $obat = [
                                     ['nama' => 'Paracetamol 500mg', 'kategori' => 'Analgesik / Antipiretik', 'stok' => 120, 'satuan' => 'Tablet', 'harga' => 1500, 'status' => 'tersedia'],
                                     ['nama' => 'Amoxicillin 500mg', 'kategori' => 'Antibiotik', 'stok' => 85, 'satuan' => 'Kapsul', 'harga' => 2000, 'status' => 'tersedia'],
                                     ['nama' => 'Cetirizine 10mg', 'kategori' => 'Antihistamin', 'stok' => 60, 'satuan' => 'Tablet', 'harga' => 1800, 'status' => 'tersedia'],
@@ -55,18 +55,18 @@
                                     ['nama' => 'Simvastatin 20mg', 'kategori' => 'Penurun Kolesterol', 'stok' => 55, 'satuan' => 'Tablet', 'harga' => 3000, 'status' => 'tersedia'],
                                     ['nama' => 'Ranitidine 150mg', 'kategori' => 'Antasida / Pencernaan', 'stok' => 0, 'satuan' => 'Tablet', 'harga' => 1900, 'status' => 'habis'],
                                 ];
-                            @endphp
+                            @endphp --}}
 
-                            @foreach ($obats as $i => $d)
+                            @foreach ($obat as $i => $o)
                                 <tr class="border-b hover:bg-gray-50 transition">
                                     <td class="px-3 sm:px-4 py-2">{{ $i + 1 }}</td>
-                                    <td class="px-3 sm:px-4 py-2">{{ $d['nama'] }}</td>
-                                    <td class="px-3 sm:px-4 py-2">{{ $d['kategori'] }}</td>
-                                    <td class="px-3 sm:px-4 py-2">{{ $d['stok'] }}</td>
-                                    <td class="px-3 sm:px-4 py-2">{{ $d['satuan'] }}</td>
-                                    <td class="px-3 sm:px-4 py-2">{{ $d['harga'] }}</td>
+                                    <td class="px-3 sm:px-4 py-2">{{ $o['nama'] }}</td>
+                                    <td class="px-3 sm:px-4 py-2">{{ $o['kategori'] }}</td>
+                                    <td class="px-3 sm:px-4 py-2">{{ $o['stok'] }}</td>
+                                    <td class="px-3 sm:px-4 py-2">{{ $o['satuan'] }}</td>
+                                    <td class="px-3 sm:px-4 py-2">{{ $o['harga'] }}</td>
                                     <td class="px-3 sm:px-4 py-2">
-                                        @if ($d['status'] === 'tersedia')
+                                        @if ($o['status'] === 'tersedia')
                                             <span
                                                 class="inline-flex items-center justify-center min-w-[90px] h-6 bg-green-100 text-green-700 rounded-full text-[11px] font-medium">
                                                 Tersedia
@@ -82,13 +82,13 @@
                                     <td class="px-3 sm:px-4 py-2 text-center" x-data="{ viewModal: false, deleteModal: false }">
                                         <div class="flex justify-center gap-1 sm:gap-2">
                                             <!-- Edit Button -->
-                                            <a href="/admin/masterData/obat/edit" 
+                                            <a href="{{ route('admin.master-obat.edit', $o->id) }}"
                                             class="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105 inline-block">
                                                 <i class="fa-solid fa-pen"></i>
                                             </a>
 
                                             <!-- Delete Button -->
-                                            <button @click="deleteModal = true" 
+                                            <button @click="deleteModal = true"
                                                     class="bg-red-500 hover:bg-red-600 text-white p-2 px-2.5 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
@@ -112,7 +112,7 @@
                                                 x-transition:leave-start="opacity-100 scale-100"
                                                 x-transition:leave-end="opacity-0 scale-95"
                                                 class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md">
-                                                
+
                                                 <!-- Icon Warning -->
                                                 <div class="flex justify-center mb-4">
                                                     <div class="bg-red-100 rounded-full p-4 animate-pulse">
@@ -122,7 +122,7 @@
 
                                                 <!-- Header -->
                                                 <h2 class="text-2xl font-bold mb-3 text-red-600 text-center">Konfirmasi Hapus</h2>
-                                                
+
                                                 <!-- Content -->
                                                 <p class="text-gray-600 text-center mb-6">
                                                     Apakah Anda yakin ingin menghapus obat<br>
@@ -134,14 +134,14 @@
 
                                                 <!-- Footer -->
                                                 <div class="flex gap-3">
-                                                    <button @click="deleteModal = false" 
+                                                    <button @click="deleteModal = false"
                                                             class="flex-1 px-4 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-300 font-medium">
                                                         <i class="fa-solid fa-arrow-left mr-1"></i>Batal
                                                     </button>
                                                     <form action="#" method="POST" class="flex-1">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" 
+                                                        <button type="submit"
                                                                 class="w-full px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-md hover:shadow-lg font-medium">
                                                             <i class="fa-solid fa-trash mr-1"></i> Hapus
                                                         </button>
@@ -161,7 +161,7 @@
         </div>
     </div>
 
-    
+
 
 
 </x-app-layout>

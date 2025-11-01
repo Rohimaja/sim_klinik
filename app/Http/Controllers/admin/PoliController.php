@@ -1,18 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\JadwalPerawat;
+use App\Http\Controllers\Controller;
+use App\Models\Poli;
 use Illuminate\Http\Request;
 
-class JadwalPerawatController extends Controller
+class PoliController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $title = 'Master Poli';
+        $poli = Poli::all();
+
+
+        return view('admin.master.poli.index',compact('title','poli'));
     }
 
     /**
@@ -20,7 +25,9 @@ class JadwalPerawatController extends Controller
      */
     public function create()
     {
-        //
+        $title = 'Tambah Poli';
+
+        return view('admin.master.poli.create',compact('title'));
     }
 
     /**
@@ -34,7 +41,7 @@ class JadwalPerawatController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(JadwalPerawat $jadwalPerawat)
+    public function show(Poli $poli)
     {
         //
     }
@@ -42,15 +49,18 @@ class JadwalPerawatController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(JadwalPerawat $jadwalPerawat)
+    public function edit(string $id)
     {
-        //
+        $title = 'Perbarui Poli';
+        $poli = Poli::findOrFail($id);
+
+        return view('admin.master.poli.edit',compact('title','poli'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, JadwalPerawat $jadwalPerawat)
+    public function update(Request $request, Poli $poli)
     {
         //
     }
@@ -58,7 +68,7 @@ class JadwalPerawatController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(JadwalPerawat $jadwalPerawat)
+    public function destroy(Poli $poli)
     {
         //
     }

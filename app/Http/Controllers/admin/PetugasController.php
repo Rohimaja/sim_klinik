@@ -3,16 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Petugas;
 use Illuminate\Http\Request;
 
-class AdminController extends Controller
+class PetugasController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $title = 'Master Petugas';
+        $petugas = Petugas::all();
+
+        return view('admin.master.petugas.index',compact('title','petugas'));
     }
 
     /**
@@ -20,7 +24,9 @@ class AdminController extends Controller
      */
     public function create()
     {
-        //
+        $title = 'Tambah Petugas';
+
+        return view('admin.master.petugas.create',compact('title'));
     }
 
     /**
@@ -44,7 +50,10 @@ class AdminController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $title = 'Perbarui Petugas';
+        $petugas = Petugas::findOrFail($id);
+
+        return view('admin.master.petugas.edit',compact('title','petugas'));
     }
 
     /**

@@ -18,41 +18,44 @@
 
 
         <!-- Navigation Links -->
-<nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto" x-data="{ openMaster: false, openLaporan: false }">
+    <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto" x-data="{ openMaster: false, openLaporan: false }">
 
     <!-- Dashboard -->
     <a href="{{ route('dashboard') }}"
-        class="flex items-center px-4 py-3 text-white hover:bg-white/10 rounded-lg transition 
+        class="flex items-center px-4 py-3 text-white hover:bg-white/10 rounded-lg transition
         {{ request()->routeIs('dashboard') ? 'bg-white/20' : '' }}">
         <i class="fa-solid fa-house text-base w-5 text-center mr-3"></i>
         <span class="font-medium leading-none">Dashboard</span>
     </a>
 
-    <!-- Master Data Dropdown -->
-    <div x-data="{ open: false }">
-        <button @click="open = !open"
-            class="flex items-center w-full px-4 py-3 text-white hover:bg-white/10 rounded-lg transition">
-            <i class="fa-solid fa-database text-base w-5 text-center mr-3"></i>
-            <span class="flex-1 text-left font-medium leading-none">Master Data</span>
-            <i :class="open ? 
-                'fa-solid fa-chevron-down text-sm transform rotate-180 transition-transform duration-300' : 
-                'fa-solid fa-chevron-down text-sm transform transition-transform duration-300'">
-            </i>
-        </button>
+    @if (Auth::user()->role === 'admin')
 
-        <!-- Isi Dropdown -->
-        <div x-show="open" x-transition
-            class="ml-8 mt-2 pl-4 border-l border-white/20 space-y-2">
-            <a href="{{ route('dokter.index') }}" class="block text-white hover:text-gray-200">Dokter</a>
-            <a href="{{ route('perawat.index') }}" class="block text-white hover:text-gray-200">Perawat</a>
-            <a href="{{ route('petugas.index') }}" class="block text-white hover:text-gray-200">Petugas</a>
-            <a href="{{ route('pasien.index') }}" class="block text-white hover:text-gray-200">Pasien</a>
-            <a href="{{ route('poli.index') }}" class="block text-white hover:text-gray-200">Poli</a>
-            <a href="{{ route('obat.index') }}" class="block text-white hover:text-gray-200">Obat</a>
-            <a href="{{ route('tindakan.index') }}" class="block text-white hover:text-gray-200">Tindakan</a>
-            <a href="{{ route('jadwal.index') }}" class="block text-white hover:text-gray-200">Jadwal Tenaga Klinik</a>
+        <!-- Master Data Dropdown -->
+        <div x-data="{ open: false }">
+            <button @click="open = !open"
+                class="flex items-center w-full px-4 py-3 text-white hover:bg-white/10 rounded-lg transition">
+                <i class="fa-solid fa-database text-base w-5 text-center mr-3"></i>
+                <span class="flex-1 text-left font-medium leading-none">Master Data</span>
+                <i :class="open ?
+                    'fa-solid fa-chevron-down text-sm transform rotate-180 transition-transform duration-300' :
+                    'fa-solid fa-chevron-down text-sm transform transition-transform duration-300'">
+                </i>
+            </button>
+
+            <!-- Isi Dropdown -->
+            <div x-show="open" x-transition
+                class="ml-8 mt-2 pl-4 border-l border-white/20 space-y-2">
+                <a href="{{ route('admin.master-dokter.index') }}" class="block text-white hover:text-gray-200">Dokter</a>
+                <a href="{{ route('admin.master-perawat.index') }}" class="block text-white hover:text-gray-200">Perawat</a>
+                <a href="{{ route('admin.master-petugas.index') }}" class="block text-white hover:text-gray-200">Petugas</a>
+                <a href="{{ route('admin.master-pasien.index') }}" class="block text-white hover:text-gray-200">Pasien</a>
+                <a href="{{ route('admin.master-poli.index') }}" class="block text-white hover:text-gray-200">Poli</a>
+                <a href="{{ route('admin.master-obat.index') }}" class="block text-white hover:text-gray-200">Obat</a>
+                <a href="{{ route('admin.master-tindakan.index') }}" class="block text-white hover:text-gray-200">Tindakan</a>
+                <a href="{{ route('admin.master-jadwal.index') }}" class="block text-white hover:text-gray-200">Jadwal Tenaga Klinik</a>
+            </div>
         </div>
-    </div>
+    @endif
 
     <!-- Laporan Dropdown -->
     <div x-data="{ open: false }" class="mt-2">
@@ -60,8 +63,8 @@
             class="flex items-center w-full px-4 py-3 text-white hover:bg-white/10 rounded-lg transition">
             <i class="fa-solid fa-file-lines text-base w-5 text-center mr-3"></i>
             <span class="flex-1 text-left font-medium leading-none">Laporan</span>
-            <i :class="open ? 
-                'fa-solid fa-chevron-down text-sm transform rotate-180 transition-transform duration-300' : 
+            <i :class="open ?
+                'fa-solid fa-chevron-down text-sm transform rotate-180 transition-transform duration-300' :
                 'fa-solid fa-chevron-down text-sm transform transition-transform duration-300'">
             </i>
         </button>
@@ -88,7 +91,7 @@
                     </svg>
                     <span class="text-sm font-medium">{{ __('Profile') }}</span>
                 </a>
-                
+
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="w-full flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 transition border-t border-gray-200 dark:border-gray-600">

@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Master Data > Petugas Rekamedis') }}
+            {{ __('Master Data > Dokter') }}
         </h2>
     </x-slot>
 
@@ -9,60 +9,63 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-md rounded-xl p-4 sm:p-6 border border-gray-100">
 
-                <!-- Search dan Tambah Petugas -->
+                <!-- Search dan Tambah Dokter -->
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                     <div class="w-full sm:w-1/2 relative">
                         <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" id="tableSearch" placeholder="Cari nama petugas, Jabatan, atau KTA..."
+                        <input type="text" id="tableSearch" placeholder="Cari nama dokter, spesialis, atau STR..."
                             class="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
                     </div>
 
 
                     <div class="w-full sm:w-auto">
-                        <a href="{{ route('petugas.form') }}"
+                        <a href="{{ route('admin.master-dokter.create') }}"
                             class="w-full sm:w-auto bg-[#7134FC] text-white px-4 py-2 text-sm rounded-lg font-medium flex items-center justify-center gap-2 shadow-md">
-                            <i class="fa-solid fa-plus"></i> Tambah Petugas
+                            <i class="fa-solid fa-plus"></i> Tambah Dokter
                         </a>
                     </div>
                 </div>
 
-                <!-- Tabel Petugas -->
+                <!-- Tabel Dokter -->
                 <div class="overflow-x-auto">
                     <table id="dataTable" class="min-w-full border border-gray-200 text-xs sm:text-sm rounded-lg overflow-hidden">
                         <thead class="bg-[#7134FC] text-white text-left">
                             <tr>
                                 <th class="px-3 sm:px-4 py-3">No</th>
                                 <th class="px-3 sm:px-4 py-3">Nama Lengkap</th>
-                                <th class="px-3 sm:px-4 py-3">No. KTA</th>
-                                <th class="px-3 sm:px-4 py-3">Area Kerja</th>
-                                <th class="px-3 sm:px-4 py-3">Jabatan</th>
-                                <th class="px-3 sm:px-4 py-3">Telp</th>
+                                <th class="px-3 sm:px-4 py-3">Unit</th>
+                                <th class="px-3 sm:px-4 py-3">Spesialis</th>
+                                <th class="px-3 sm:px-4 py-3">No. Telepon</th>
                                 <th class="px-3 sm:px-4 py-3">Status</th>
                                 <th class="px-3 sm:px-4 py-3 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="text-gray-700">
-                            @php
-                                $pmiks = [
-                                    ['nama' => 'Aisyah Putri, A.Md.RMIK', 'kta' => 'KTA-10110', 'area_kerja' => 'Pendaftaran/TPPRJ', 'jabatan' => 'Staf Pendaftaran', 'telp' => '081234567001', 'status' => 'aktif'],
-                                    ['nama' => 'Bambang Sudiro, S.Tr.RMIK', 'kta' => 'KTA-10220', 'area_kerja' => 'Koding dan Indeksing', 'jabatan' => 'Staf Koding ICD', 'telp' => '082233445566', 'status' => 'aktif'],
-                                    ['nama' => 'Citra Devi', 'kta' => 'KTA-10330', 'area_kerja' => 'Filing dan Retensi', 'jabatan' => 'Staf Filing', 'telp' => '081345678912', 'status' => 'non-aktif'],
-                                    ['nama' => 'Dedy Haryanto', 'kta' => 'KTA-10440', 'area_kerja' => 'Pelaporan Internal', 'jabatan' => 'Staf Pelaporan', 'telp' => '083899977766', 'status' => 'aktif'],
-                                    ['nama' => 'Elisa Fatmawati, S.Tr.RMIK', 'kta' => 'KTA-10550', 'area_kerja' => 'Manajemen Unit RMIK', 'jabatan' => 'Kepala Unit Rekam Medis', 'telp' => '082111223344', 'status' => 'aktif'],
+                            {{-- @php
+                                $dokter = [
+                                    ['nama' => 'dr. Andi Putra Bai', 'poli' => 'Poli Umum', 'spesialis' => 'Umum', 'telp' => '081818176567', 'status' => 'aktif'],
+                                    ['nama' => 'dr. Sutomo', 'poli' => 'Poli Gigi', 'spesialis' => 'Gigi', 'telp' => '081234567890', 'status' => 'aktif'],
+                                    ['nama' => 'dr. Desi Amalia', 'poli' => 'Poli Anak', 'spesialis' => 'Anak', 'telp' => '082223334444', 'status' => 'non-aktif'],
+                                    ['nama' => 'dr. Bima Achmad', 'poli' => 'Poli Penyakit Dalam', 'spesialis' => 'Penyakit Dalam', 'telp' => '081212341234', 'status' => 'aktif'],
+                                    ['nama' => 'dr. Edwin Kurniawan', 'poli' => 'Poli Bedah', 'spesialis' => 'Bedah', 'telp' => '081234561111', 'status' => 'aktif'],
+                                    ['nama' => 'dr. Putri Lestari', 'poli' => 'Poli Kulit', 'spesialis' => 'Kulit', 'telp' => '082212345678', 'status' => 'aktif'],
+                                    ['nama' => 'dr. Slammed', 'poli' => 'Poli Umum', 'spesialis' => 'Umum', 'telp' => '083812312312', 'status' => 'aktif'],
+                                    ['nama' => 'dr. Hadi Santoso', 'poli' => 'Poli Gigi', 'spesialis' => 'Gigi', 'telp' => '081888999000', 'status' => 'non-aktif'],
+                                    ['nama' => 'dr. Bambang', 'poli' => 'Poli Umum', 'spesialis' => 'Umum', 'telp' => '081212199998', 'status' => 'aktif'],
+                                    ['nama' => 'dr. Sugiono', 'poli' => 'Poli Anak', 'spesialis' => 'Anak', 'telp' => '081818188888', 'status' => 'aktif'],
                                 ];
-                            @endphp
+                            @endphp --}}
 
-                            @foreach ($pmiks as $i => $d)
+                            @foreach ($dokter as $i => $d)
                                 <tr class="border-b hover:bg-gray-50 transition">
                                     <td class="px-3 sm:px-4 py-2">{{ $i + 1 }}</td>
                                     <td class="px-3 sm:px-4 py-2 flex items-center gap-3">
-                                        <img src="{{ asset('storage/dokter/' . ($d['foto'] ?? 'default.jpg')) }}"  
+                                        <img src="{{ asset('storage/dokter/' . ($d['foto'] ?? 'default.jpg')) }}"
                                             class="w-10 h-10 rounded-full object-cover border border-gray-300 shadow-sm">
                                         <span class="font-medium">{{ $d['nama'] }}</span>
                                     </td>
-                                    <td class="px-3 sm:px-4 py-2 text-gray-600">{{ $d['kta'] }}</td>
-                                    <td class="px-3 sm:px-4 py-2">{{ $d['area_kerja'] }}</td>
-                                    <td class="px-3 sm:px-4 py-2">{{ $d['jabatan'] }}</td>
+                                    <td class="px-3 sm:px-4 py-2 text-gray-600">{{ $d['poli'] }}</td>
+                                    <td class="px-3 sm:px-4 py-2">{{ $d['spesialis'] }}</td>
                                     <td class="px-3 sm:px-4 py-2">{{ $d['telp'] }}</td>
                                     <td class="px-3 sm:px-4 py-2">
                                         @if ($d['status'] === 'aktif')
@@ -81,26 +84,26 @@
                                     <td class="px-3 sm:px-4 py-2 text-center" x-data="{ viewModal: false, deleteModal: false }">
                                         <div class="flex justify-center gap-1 sm:gap-2">
                                             <!-- View Button -->
-                                            <button @click="viewModal = true" 
+                                            <button @click="viewModal = true"
                                                     class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105">
                                                 <i class="fa-solid fa-eye"></i>
                                             </button>
 
                                             <!-- Edit Button -->
-                                            <a href="/admin/masterData/petugas/edit" 
+                                            <a href="{{ route('admin.master-dokter.edit', $d->id) }}"
                                             class="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105 inline-block">
                                                 <i class="fa-solid fa-pen"></i>
                                             </a>
 
                                             <!-- Delete Button -->
-                                            <button @click="deleteModal = true" 
+                                            <button @click="deleteModal = true"
                                                     class="bg-red-500 hover:bg-red-600 text-white p-2 px-2.5 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </div>
 
                                         <!-- View Modal -->
-                                        <div x-show="viewModal" 
+                                        <div x-show="viewModal"
                                             x-transition:enter="transition ease-out duration-300"
                                             x-transition:enter-start="opacity-0"
                                             x-transition:enter-end="opacity-100"
@@ -117,17 +120,17 @@
                                                 x-transition:leave-start="opacity-100 scale-100 translate-y-0"
                                                 x-transition:leave-end="opacity-0 scale-95 -translate-y-4"
                                                 class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
-                                                
+
                                                 <!-- Header Fixed -->
                                                 <div class="flex items-center justify-between p-6 pb-4 border-b-2 border-blue-500 bg-gradient-to-r from-blue-50 to-blue-100">
                                                     <div>
                                                         <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
                                                             <i class="fa-solid fa-user-doctor text-blue-500"></i>
-                                                            Detail Petugas Rekamedis
+                                                            Detail Dokter
                                                         </h2>
-                                                        <p class="text-sm text-gray-600 mt-1">Informasi lengkap data Petugas Rekamedis</p>
+                                                        <p class="text-sm text-gray-600 mt-1">Informasi lengkap data dokter</p>
                                                     </div>
-                                                    <button @click="viewModal = false" 
+                                                    <button @click="viewModal = false"
                                                             class="text-gray-400 hover:text-gray-600 transition-colors hover:rotate-90 duration-300">
                                                         <i class="fa-solid fa-times text-2xl"></i>
                                                     </button>
@@ -135,7 +138,7 @@
 
                                                 <!-- Content Scrollable -->
                                                 <div class="overflow-y-auto p-6 space-y-5">
-                                                    
+
                                                     <!-- Identitas Pribadi -->
                                                     <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-xl border-l-4 border-blue-500">
                                                         <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
@@ -145,13 +148,13 @@
                                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                             <div>
                                                                 <p class="text-xs text-gray-500 mb-1 font-medium">Nama Lengkap</p>
-                                                                <p class="text-base font-semibold text-gray-800">Suster Rina Lestari</p>
+                                                                <p class="text-base font-semibold text-gray-800">Dr. Ahmad Fauzi, Sp.PD</p>
                                                             </div>
                                                             <div>
                                                                 <p class="text-xs text-gray-500 mb-1 font-medium">Jenis Kelamin</p>
                                                                 <p class="text-base font-semibold text-gray-800">
-                                                                    {{-- <i class="fa-solid fa-mars text-blue-500 mr-1"></i>Laki-laki --}}
-                                                                    <i class="fa-solid fa-venus text-pink-500 mr-1"></i>Perempuan
+                                                                    <i class="fa-solid fa-mars text-blue-500 mr-1"></i>Laki-laki
+                                                                    {{-- <i class="fa-solid fa-venus text-pink-500 mr-1"></i>Perempuan --}}
                                                                 </p>
                                                             </div>
                                                             <div>
@@ -176,7 +179,7 @@
                                                                 <p class="text-xs text-gray-500 mb-1 font-medium">
                                                                     <i class="fa-solid fa-envelope mr-1"></i>Email
                                                                 </p>
-                                                                <p class="text-base font-semibold text-gray-800">SusterRinas@hospital.com</p>
+                                                                <p class="text-base font-semibold text-gray-800">ahmad.fauzi@hospital.com</p>
                                                             </div>
                                                             <div>
                                                                 <p class="text-xs text-gray-500 mb-1 font-medium">
@@ -196,23 +199,23 @@
                                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                             <div>
                                                                 <p class="text-xs text-gray-500 mb-1 font-medium">No. STR</p>
-                                                                <p class="text-base font-semibold text-gray-800">STR-00123</p>
+                                                                <p class="text-base font-semibold text-gray-800">STR-123456789-2024</p>
                                                             </div>
                                                             <div>
-                                                                <p class="text-xs text-gray-500 mb-1 font-medium">No. SIK</p>
-                                                                <p class="text-base font-semibold text-gray-800">SIK-00123</p>
+                                                                <p class="text-xs text-gray-500 mb-1 font-medium">No. SIP</p>
+                                                                <p class="text-base font-semibold text-gray-800">SIP-987654321-2024</p>
                                                             </div>
                                                             <div>
-                                                                <p class="text-xs text-gray-500 mb-1 font-medium">No. KTA</p>
-                                                                <p class="text-base font-semibold text-gray-800">KTA-00123</p>
+                                                                <p class="text-xs text-gray-500 mb-1 font-medium">Spesialisasi</p>
+                                                                <p class="text-base font-semibold text-gray-800">
+                                                                    <span class="px-3 py-1 bg-purple-500 text-white text-sm rounded-full">
+                                                                        Penyakit Dalam
+                                                                    </span>
+                                                                </p>
                                                             </div>
                                                             <div>
-                                                                <p class="text-xs text-gray-500 mb-1 font-medium">Jabatan</p>
-                                                                <p class="text-base font-semibold text-gray-800">Staf Pendaftaran</p>
-                                                            </div>
-                                                            <div>
-                                                                <p class="text-xs text-gray-500 mb-1 font-medium">Area Kerja</p>
-                                                                <p class="text-base font-semibold text-gray-800">Pendaftaran/TPPRJ</p>
+                                                                <p class="text-xs text-gray-500 mb-1 font-medium">Unit / Poli Bertugas</p>
+                                                                <p class="text-base font-semibold text-gray-800">Poli Penyakit Dalam</p>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -269,7 +272,7 @@
                                                         {{-- tidak aktif --}}
                                                         <div class="flex items-center justify-between bg-white p-4 rounded-lg">
                                                             <div>
-                                                                <p class="text-xs text-gray-500 mb-1 font-medium">Status Petugas</p>
+                                                                <p class="text-xs text-gray-500 mb-1 font-medium">Status Dokter</p>
                                                                 <p class="text-base font-semibold text-gray-800">Sedang Tidak Aktif Bertugas</p>
                                                             </div>
                                                             <span class="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-bold rounded-full shadow-lg flex items-center gap-2">
@@ -289,11 +292,11 @@
 
                                                 <!-- Footer Fixed -->
                                                 <div class="p-6 pt-4 border-t bg-gray-50 flex justify-end gap-3">
-                                                    <button @click="viewModal = false" 
+                                                    <button @click="viewModal = false"
                                                             class="px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-300 font-medium">
                                                         <i class="fa-solid fa-times mr-2"></i>Tutup
                                                     </button>
-                                                    <a href="#" 
+                                                    <a href="#"
                                                     class="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg font-medium">
                                                         <i class="fa-solid fa-print mr-2"></i>Cetak Detail
                                                     </a>
@@ -319,7 +322,7 @@
                                                 x-transition:leave-start="opacity-100 scale-100"
                                                 x-transition:leave-end="opacity-0 scale-95"
                                                 class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md">
-                                                
+
                                                 <!-- Icon Warning -->
                                                 <div class="flex justify-center mb-4">
                                                     <div class="bg-red-100 rounded-full p-4 animate-pulse">
@@ -329,11 +332,11 @@
 
                                                 <!-- Header -->
                                                 <h2 class="text-2xl font-bold mb-3 text-red-600 text-center">Konfirmasi Hapus</h2>
-                                                
+
                                                 <!-- Content -->
                                                 <p class="text-gray-600 text-center mb-6">
-                                                    Apakah Anda yakin ingin menghapus petugas<br>
-                                                    <strong class="text-gray-800 text-lg">Suster Rina Lestari</strong>?
+                                                    Apakah Anda yakin ingin menghapus dokter<br>
+                                                    <strong class="text-gray-800 text-lg">Dr. Ahmad Fauzi, Sp.PD</strong>?
                                                 </p>
                                                 <p class="text-sm text-gray-500 text-center mb-6 bg-yellow-50 p-3 rounded-lg border border-yellow-200">
                                                     <i class="fa-solid fa-info-circle mr-1"></i>
@@ -342,14 +345,14 @@
 
                                                 <!-- Footer -->
                                                 <div class="flex gap-3">
-                                                    <button @click="deleteModal = false" 
+                                                    <button @click="deleteModal = false"
                                                             class="flex-1 px-4 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-300 font-medium">
                                                         <i class="fa-solid fa-arrow-left mr-1"></i>Batal
                                                     </button>
                                                     <form action="#" method="POST" class="flex-1">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" 
+                                                        <button type="submit"
                                                                 class="w-full px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-md hover:shadow-lg font-medium">
                                                             <i class="fa-solid fa-trash mr-1"></i> Hapus
                                                         </button>
@@ -369,7 +372,7 @@
         </div>
     </div>
 
-    
+
 
 
 </x-app-layout>

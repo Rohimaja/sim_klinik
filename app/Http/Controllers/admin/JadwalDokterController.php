@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\Tindakan;
+use App\Http\Controllers\Controller;
+use App\Models\JadwalDokter;
 use Illuminate\Http\Request;
 
-class TindakanController extends Controller
+class JadwalDokterController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +35,7 @@ class TindakanController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Tindakan $tindakan)
+    public function show(JadwalDokter $jadwalDokter)
     {
         //
     }
@@ -42,7 +43,7 @@ class TindakanController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Tindakan $tindakan)
+    public function edit(JadwalDokter $jadwalDokter)
     {
         //
     }
@@ -50,7 +51,7 @@ class TindakanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Tindakan $tindakan)
+    public function update(Request $request, JadwalDokter $jadwalDokter)
     {
         //
     }
@@ -58,7 +59,7 @@ class TindakanController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Tindakan $tindakan)
+    public function destroy(JadwalDokter $jadwalDokter)
     {
         //
     }

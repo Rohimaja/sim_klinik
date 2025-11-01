@@ -16,7 +16,7 @@
                         <!-- Filter Role -->
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Filter Role</label>
-                            <select id="filterRole" 
+                            <select id="filterRole"
                                 class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
                                 <option value="">Semua Role</option>
                                 <option value="Dokter">Dokter</option>
@@ -28,7 +28,7 @@
                         <!-- Filter Poli -->
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Filter Poli/Area</label>
-                            <select id="filterPoli" 
+                            <select id="filterPoli"
                                 class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
                                 <option value="">Semua Poli/Area</option>
                                 <option value="Poli Umum">Poli Umum</option>
@@ -44,7 +44,7 @@
                         <!-- Filter Hari -->
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Filter Hari</label>
-                            <select id="filterHari" 
+                            <select id="filterHari"
                                 class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
                                 <option value="">Semua Hari</option>
                                 <option value="Senin">Senin</option>
@@ -68,7 +68,7 @@
                         </div>
 
                         <div class="w-full sm:w-auto">
-                            <a href="{{ route('jadwal.form') }}"
+                            <a href="{{ route('admin.master-jadwal.create') }}"
                                 class="w-full sm:w-auto bg-[#7134FC] text-white px-4 py-2 text-sm rounded-lg font-medium flex items-center justify-center gap-2 shadow-md hover:bg-[#5a28d4] transition-all">
                                 <i class="fa-solid fa-plus"></i> Tambah Jadwal
                             </a>
@@ -92,8 +92,8 @@
                             </tr>
                         </thead>
                         <tbody class="text-gray-700">
-                            @php
-                                $jadwals = [
+                            {{-- @php
+                                $jadwal = [
                                     ['nama' => 'dr. Aditya Pratama', 'role' => 'Dokter', 'poli' => 'Poli Umum', 'jam_mulai' => '08:00', 'jam_selesai' => '12:00', 'hari' => 'Senin'],
                                     ['nama' => 'dr. Aditya Pratama', 'role' => 'Dokter', 'poli' => 'Poli Umum', 'jam_mulai' => '13:00', 'jam_selesai' => '16:00', 'hari' => 'Selasa'],
                                     ['nama' => 'dr. Siti Nurhaliza', 'role' => 'Dokter', 'poli' => 'Poli Gigi', 'jam_mulai' => '08:00', 'jam_selesai' => '14:00', 'hari' => 'Rabu'],
@@ -105,41 +105,41 @@
                                     ['nama' => 'Rudi Hermawan', 'role' => 'Petugas', 'poli' => 'Pendaftaran', 'jam_mulai' => '07:00', 'jam_selesai' => '14:00', 'hari' => 'Selasa'],
                                     ['nama' => 'Lisa Permata', 'role' => 'Petugas', 'poli' => 'Farmasi', 'jam_mulai' => '08:00', 'jam_selesai' => '16:00', 'hari' => 'Kamis'],
                                 ];
-                            @endphp
+                            @endphp --}}
 
-                            @foreach ($jadwals as $i => $d)
-                                <tr class="border-b hover:bg-gray-50 transition" 
-                                    data-nama="{{ strtolower($d['nama']) }}" 
-                                    data-role="{{ $d['role'] }}" 
-                                    data-poli="{{ $d['poli'] }}" 
-                                    data-hari="{{ $d['hari'] }}">
+                            @foreach ($jadwal as $i => $j)
+                                <tr class="border-b hover:bg-gray-50 transition"
+                                    data-nama="{{ strtolower($j['nama']) }}"
+                                    data-role="{{ $j['role'] }}"
+                                    data-poli="{{ $j['poli'] }}"
+                                    data-hari="{{ $j['hari'] }}">
                                     <td class="px-3 sm:px-4 py-2">{{ $i + 1 }}</td>
-                                    <td class="px-3 sm:px-4 py-2 font-medium">{{ $d['nama'] }}</td>
+                                    <td class="px-3 sm:px-4 py-2 font-medium">{{ $j['nama'] }}</td>
                                     <td class="px-3 sm:px-4 py-2">
                                         <span class="px-2 py-1 rounded-full text-xs font-medium
-                                            {{ $d['role'] == 'Dokter' ? 'bg-blue-100 text-blue-700' : '' }}
-                                            {{ $d['role'] == 'Perawat' ? 'bg-green-100 text-green-700' : '' }}
-                                            {{ $d['role'] == 'Petugas' ? 'bg-purple-100 text-purple-700' : '' }}">
-                                            {{ $d['role'] }}
+                                            {{ $j['role'] == 'Dokter' ? 'bg-blue-100 text-blue-700' : '' }}
+                                            {{ $j['role'] == 'Perawat' ? 'bg-green-100 text-green-700' : '' }}
+                                            {{ $j['role'] == 'Petugas' ? 'bg-purple-100 text-purple-700' : '' }}">
+                                            {{ $j['role'] }}
                                         </span>
                                     </td>
-                                    <td class="px-3 sm:px-4 py-2">{{ $d['poli'] }}</td>
-                                    <td class="px-3 sm:px-4 py-2">{{ $d['jam_mulai'] }}</td>
-                                    <td class="px-3 sm:px-4 py-2">{{ $d['jam_selesai'] }}</td>
+                                    <td class="px-3 sm:px-4 py-2">{{ $j['poli'] }}</td>
+                                    <td class="px-3 sm:px-4 py-2">{{ $j['jam_mulai'] }}</td>
+                                    <td class="px-3 sm:px-4 py-2">{{ $j['jam_selesai'] }}</td>
                                     <td class="px-3 sm:px-4 py-2">
-                                        <span class="px-2 py-1 bg-gray-100 rounded text-xs">{{ $d['hari'] }}</span>
+                                        <span class="px-2 py-1 bg-gray-100 rounded text-xs">{{ $j['hari'] }}</span>
                                     </td>
 
                                     <td class="px-3 sm:px-4 py-2 text-center" x-data="{ deleteModal: false }">
                                         <div class="flex justify-center gap-1 sm:gap-2">
                                             <!-- Edit Button -->
-                                            <a href="/admin/masterData/jadwal/edit" 
+                                            <a href="{{ route('admin.master-jadwal.edit', $j->id) }}"
                                             class="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105 inline-block">
                                                 <i class="fa-solid fa-pen"></i>
                                             </a>
 
                                             <!-- Delete Button -->
-                                            <button @click="deleteModal = true" 
+                                            <button @click="deleteModal = true"
                                                     class="bg-red-500 hover:bg-red-600 text-white p-2 px-2.5 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
@@ -163,7 +163,7 @@
                                                 x-transition:leave-start="opacity-100 scale-100"
                                                 x-transition:leave-end="opacity-0 scale-95"
                                                 class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md">
-                                                
+
                                                 <!-- Icon Warning -->
                                                 <div class="flex justify-center mb-4">
                                                     <div class="bg-red-100 rounded-full p-4 animate-pulse">
@@ -173,11 +173,11 @@
 
                                                 <!-- Header -->
                                                 <h2 class="text-2xl font-bold mb-3 text-red-600 text-center">Konfirmasi Hapus</h2>
-                                                
+
                                                 <!-- Content -->
                                                 <p class="text-gray-600 text-center mb-6">
                                                     Apakah Anda yakin ingin menghapus jadwal ini?<br>
-                                                    <strong class="text-gray-800">{{ $d['nama'] }} - {{ $d['hari'] }}</strong>
+                                                    <strong class="text-gray-800">{{ $j['nama'] }} - {{ $j['hari'] }}</strong>
                                                 </p>
                                                 <p class="text-sm text-gray-500 text-center mb-6 bg-yellow-50 p-3 rounded-lg border border-yellow-200">
                                                     <i class="fa-solid fa-info-circle mr-1"></i>
@@ -186,14 +186,14 @@
 
                                                 <!-- Footer -->
                                                 <div class="flex gap-3">
-                                                    <button @click="deleteModal = false" 
+                                                    <button @click="deleteModal = false"
                                                             class="flex-1 px-4 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-300 font-medium">
                                                         <i class="fa-solid fa-arrow-left mr-1"></i>Batal
                                                     </button>
                                                     <form action="#" method="POST" class="flex-1">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" 
+                                                        <button type="submit"
                                                                 class="w-full px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-md hover:shadow-lg font-medium">
                                                             <i class="fa-solid fa-trash mr-1"></i> Hapus
                                                         </button>

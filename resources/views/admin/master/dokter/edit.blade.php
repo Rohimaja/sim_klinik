@@ -8,7 +8,7 @@
     <div class="py-10">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-2xl">
-                
+
                 <!-- Header Form -->
                 <div class="bg-[linear-gradient(to_bottom,#7134FC_0%,#2088FF_100%)] p-6">
                     <div class="flex items-center gap-3">
@@ -33,7 +33,7 @@
                                 <i class="fa-solid fa-id-card text-blue-500"></i>
                                 Identitas Pribadi
                             </h4>
-                            
+
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <!-- Nama Lengkap -->
                                 <div class="md:col-span-2">
@@ -105,7 +105,7 @@
                                 <i class="fa-solid fa-address-book text-green-500"></i>
                                 Informasi Kontak
                             </h4>
-                            
+
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <!-- Email -->
                                 <div>
@@ -145,7 +145,7 @@
                                 <i class="fa-solid fa-stethoscope text-purple-500"></i>
                                 Informasi Profesional
                             </h4>
-                            
+
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <!-- No. STR -->
                                 <div>
@@ -233,7 +233,7 @@
                                 <i class="fa-solid fa-location-dot text-red-500"></i>
                                 Alamat Lengkap
                             </h4>
-                            
+
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <!-- Provinsi -->
                                 <div>
@@ -310,7 +310,7 @@
                                 <i class="fa-solid fa-circle-info text-teal-500"></i>
                                 Status Dokter
                             </h4>
-                            
+
                             <div class="bg-teal-50 dark:bg-teal-900/20 p-4 rounded-lg">
                                 <label class="flex items-center gap-3 cursor-pointer">
                                     <input type="checkbox" name="status_aktif" value="1" checked
