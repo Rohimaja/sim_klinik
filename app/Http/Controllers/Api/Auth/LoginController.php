@@ -24,7 +24,6 @@ class LoginController extends Controller
 
         try {
             $user = User::where('username', $request->username)->first();
-            $pasien = Pasien::where('user_id', $user->id)->first();
 
             if (!$user || !Hash::check($password, $user->password)) {
                 return response()->json([
@@ -55,8 +54,6 @@ class LoginController extends Controller
                     'user_id' => $user->id,
                     'email' => $user->email,
                     'username' => $user->username,
-                    'pasien_id' => $pasien->id,
-                    'nama' => $pasien->nama,
                 ]
             ]);
         } catch (\Exception $e) {
