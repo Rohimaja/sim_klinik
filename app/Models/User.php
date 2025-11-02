@@ -49,4 +49,53 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+
+
+    public function admin()
+    {
+        return $this->hasOne(Admin::class);
+    }
+
+    public function dokter()
+    {
+        return $this->hasOne(Dokter::class);
+    }
+
+    public function petugas()
+    {
+        return $this->hasOne(Petugas::class);
+    }
+
+    public function perawat()
+    {
+        return $this->hasOne(Perawat::class);
+    }
+
+    public function pasien()
+    {
+        return $this->hasOne(Pasien::class);
+    }
+
+
+    public function getDisplayNameAttribute()
+    {
+        switch ($this->role) {
+            case 'admin':
+                return $this->admin?->nama ?? 'Admin';
+            case 'dokter':
+                return $this->dokter?->nama ?? 'Dokter';
+            case 'perawat':
+                return $this->perawat?->nama ?? 'Perawat';
+            case 'petugas':
+                return $this->petugas?->nama ?? 'Petugas';
+            case 'pasien':
+                return $this->pasien?->nama ?? 'Pasien';
+            default:
+                return $this->nama ?? 'User';
+        }
+    }
+
+
+
 }

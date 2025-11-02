@@ -1,18 +1,22 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\JadwalDokter;
+use App\Http\Controllers\Controller;
+use App\Models\Dokter;
 use Illuminate\Http\Request;
 
-class JadwalDokterController extends Controller
+class DokterController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $title = 'Master Dokter';
+        $dokter = Dokter::all();
+
+        return view('admin.master.dokter.index',compact('title','dokter'));
     }
 
     /**
@@ -20,7 +24,9 @@ class JadwalDokterController extends Controller
      */
     public function create()
     {
-        //
+        $title = 'Tambah Dokter';
+
+        return view('admin.master.dokter.create',compact('title'));
     }
 
     /**
@@ -34,7 +40,7 @@ class JadwalDokterController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(JadwalDokter $jadwalDokter)
+    public function show(string $id)
     {
         //
     }
@@ -42,15 +48,18 @@ class JadwalDokterController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(JadwalDokter $jadwalDokter)
+    public function edit(string $id)
     {
-        //
+        $title = 'Perbarui Dokter';
+        $dokter = Dokter::findOrFail($id);
+
+        return view('admin.master.dokter.edit',compact('title','dokter'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, JadwalDokter $jadwalDokter)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -58,7 +67,7 @@ class JadwalDokterController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(JadwalDokter $jadwalDokter)
+    public function destroy(string $id)
     {
         //
     }

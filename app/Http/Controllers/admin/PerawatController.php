@@ -1,18 +1,22 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\Obat;
+use App\Http\Controllers\Controller;
+use App\Models\Perawat;
 use Illuminate\Http\Request;
 
-class ObatController extends Controller
+class PerawatController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $title = 'Master Perawat';
+        $perawat = Perawat::all();
+
+        return view('admin.master.perawat.index',compact('title','perawat'));
     }
 
     /**
@@ -20,7 +24,9 @@ class ObatController extends Controller
      */
     public function create()
     {
-        //
+        $title = 'Tambah Perawat';
+
+        return view('admin.master.pasien.create',compact('title'));
     }
 
     /**
@@ -34,7 +40,7 @@ class ObatController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Obat $obat)
+    public function show(string $id)
     {
         //
     }
@@ -42,15 +48,18 @@ class ObatController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Obat $obat)
+    public function edit(string $id)
     {
-        //
+        $title = 'Perbarui Perawat';
+        $perawat = Perawat::findOrFail($id);
+
+        return view('admin.master.pasien.edit',compact('title','perawat'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Obat $obat)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -58,7 +67,7 @@ class ObatController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Obat $obat)
+    public function destroy(string $id)
     {
         //
     }

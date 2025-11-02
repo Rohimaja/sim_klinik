@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Tindakan;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,10 @@ class TindakanController extends Controller
      */
     public function index()
     {
-        //
+        $title = 'Master Tindakan';
+        $tindakan = Tindakan::all();
+
+        return view('admin.master.tindakan.index',compact('title','tindakan'));
     }
 
     /**
@@ -20,7 +24,9 @@ class TindakanController extends Controller
      */
     public function create()
     {
-        //
+        $title = 'Tambah Tindakan';
+
+        return view('admin.master.tindakan.create',compact('title'));
     }
 
     /**
@@ -42,9 +48,12 @@ class TindakanController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Tindakan $tindakan)
+    public function edit(string $id)
     {
-        //
+        $title = 'Perbarui Tindakan';
+        $tindakan = Tindakan::findOrFail($id);
+
+        return view('admin.master.tindakan.edit',compact('title','tindakan'));
     }
 
     /**

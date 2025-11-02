@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
+use App\Models\JadwalDokter;
 use Illuminate\Http\Request;
 
-class AdminController extends Controller
+class JadwalDokterController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -33,7 +35,7 @@ class AdminController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(JadwalDokter $jadwalDokter)
     {
         //
     }
@@ -41,7 +43,7 @@ class AdminController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(JadwalDokter $jadwalDokter)
     {
         //
     }
@@ -49,7 +51,7 @@ class AdminController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, JadwalDokter $jadwalDokter)
     {
         //
     }
@@ -57,7 +59,7 @@ class AdminController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(JadwalDokter $jadwalDokter)
     {
         //
     }
