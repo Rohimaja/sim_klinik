@@ -13,7 +13,7 @@ use Hash;
 use Illuminate\Http\Request;
 use Mail;
 
-class RegisterVerification extends Controller
+class RegisterVerificationController extends Controller
 {
     public function sendOTP(Request $request)
     {
