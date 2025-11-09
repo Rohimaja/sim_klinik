@@ -8,7 +8,7 @@
     <div class="py-10">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-2xl">
-                
+
                 <!-- Header Form -->
                 <div class="bg-[linear-gradient(to_bottom,#7134FC_0%,#2088FF_100%)] p-6">
                     <div class="flex items-center gap-3">
@@ -33,7 +33,7 @@
                                 <i class="fa-solid fa-stethoscope text-purple-500"></i>
                                 Informasi Poli
                             </h4>
-                            
+
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <!-- No. STR -->
                                 <div>
@@ -42,7 +42,7 @@
                                     </label>
                                     <input type="text" name="no_str" required
                                         class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                                        placeholder="Poli Umum" value="Poli Umum"> 
+                                        placeholder="Poli Umum" value="Poli Umum">
                                 </div>
 
                                 <!-- No. SIPP -->
@@ -63,14 +63,14 @@
                                 <i class="fa-solid fa-circle-info text-teal-500"></i>
                                 Status Poli
                             </h4>
-                            
+
                             <div class="bg-teal-50 p-4 rounded-lg">
                                 <label class="flex items-center gap-3 cursor-pointer">
                                     <input type="checkbox" name="status_aktif" value="1" checked
                                         class="w-5 h-5 text-teal-500 rounded focus:ring-teal-500">
                                     <span class="text-gray-700 font-semibold">
                                         <i class="fa-solid fa-circle-check text-teal-500 mr-1"></i>
-                                        Aktifkan Poli 
+                                        Aktifkan Poli
                                     </span>
                                 </label>
                             </div>
@@ -79,7 +79,7 @@
                         <!-- Form Actions -->
                         <div class="flex flex-col sm:flex-row items-center sm:justify-between pt-6 border-t border-gray-200 dark:border-gray-700 gap-3 sm:gap-0">
                             <!-- Tombol Kembali -->
-                            <a href="/admin/masterData/poli"
+                            <a href="{{route('admin.master-poli.index')}}"
                             class="w-full sm:w-auto px-6 py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-all duration-300 font-medium text-center">
                                 <i class="fa-solid fa-arrow-left mr-2"></i>Kembali
                             </a>

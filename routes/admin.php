@@ -16,10 +16,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard',[DashboardController::class,'indexAdmin'])->name('dashboard');
 
-    Route::resource('master-admin', AdminController::class);
     Route::resource('master-dokter', DokterController::class);
     Route::resource('master-perawat', PerawatController::class);
-    Route::resource('master-petugas', PetugasController::class);
+    Route::resource('master-petugas', PetugasController::class)->parameters(['master-petugas' => 'master_petugas']);
     Route::resource('master-pasien', PasienController::class);
     Route::resource('master-poli', PoliController::class);
     Route::resource('master-obat', ObatController::class);

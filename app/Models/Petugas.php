@@ -14,14 +14,17 @@ class Petugas extends Model
 
     protected $fillable = [
         'user_id',
-        'nama',
+        'jabatan',
+        'no_str',
+        'no_sip',
+        'no_kta',
         'jenis_kelamin',
         'tempat_lahir',
         'tgl_lahir',
-        'email',
         'no_telp',
         'alamat',
         'foto',
+        'status',
     ];
 
     public function user()

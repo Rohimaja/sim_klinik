@@ -15,5 +15,6 @@ class Poli extends Model
     protected $fillable = [
         'nama',
         'keterangan',
+        'status',
     ];
 }

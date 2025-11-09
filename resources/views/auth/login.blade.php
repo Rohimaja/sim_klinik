@@ -43,9 +43,6 @@
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-
-
-
         <!-- Remember Me -->
         <div class="block mt-4 mb-9">
             <div class="flex justify-between">
@@ -69,7 +66,7 @@
 
         <div class="flex items-center justify-center mt-4">
             <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md"
-                href="{{ route('verification.form') }}">
+                href="{{ route('verify') }}">
                 {{ __('Verifikasi Email?') }}
             </a>
         </div>

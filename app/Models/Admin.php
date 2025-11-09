@@ -14,15 +14,14 @@ class Admin extends Model
 
     protected $fillable = [
         'user_id',
-        'nama',
         'jenis_kelamin',
         'tempat_lahir',
         'tgl_lahir',
-        'email',
         'no_telp',
         'alamat',
-        'is_super_admin'.
+        'is_super_admin',
         'foto',
+        'status',
     ];
 
     public function user()

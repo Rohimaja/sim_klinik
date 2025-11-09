@@ -26,7 +26,7 @@ class ObatController extends Controller
     {
         $title = 'Tambah Obat';
 
-        return view('admin.master.obat.create',compact('title'));
+        return view('admin.master.obat.form',compact('title'));
     }
 
     /**

@@ -8,7 +8,7 @@
     <div class="py-10">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-2xl">
-                
+
                 <!-- Header Form -->
                 <div class="bg-[linear-gradient(to_bottom,#7134FC_0%,#2088FF_100%)] p-6">
                     <div class="flex items-center gap-3">
@@ -32,7 +32,7 @@
                             <i class="fa-solid fa-capsules text-purple-500"></i>
                             Informasi Obat
                         </h4>
-                        
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <!-- Nama Obat -->
                             <div>
@@ -110,7 +110,7 @@
                             <i class="fa-solid fa-circle-info text-teal-500"></i>
                             Status Obat
                         </h4>
-                        
+
                         <div class="bg-teal-50 p-4 rounded-lg">
                             <label class="flex items-center gap-3 cursor-pointer">
                                 <input type="checkbox" name="status" value="tersedia" checked
@@ -125,9 +125,9 @@
 
                     <!-- Form Actions -->
                     <div class="flex flex-col sm:flex-row items-center sm:justify-between pt-6 border-t border-gray-200 gap-3 sm:gap-0">
-                        
+
                         <!-- Tombol Kembali -->
-                        <a href="/admin/masterData/obat"
+                        <a href="{{ route('admin.master-obat.index') }}"
                         class="w-full sm:w-auto px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-300 font-medium text-center">
                             <i class="fa-solid fa-arrow-left mr-2"></i>Kembali
                         </a>
