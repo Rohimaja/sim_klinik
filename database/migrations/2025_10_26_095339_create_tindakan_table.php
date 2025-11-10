@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama','100');
             $table->decimal('tarif');
-            $table->string('keterangan');
+            $table->string('keterangan')->nullable();
             $table->timestamps();
         });
     }

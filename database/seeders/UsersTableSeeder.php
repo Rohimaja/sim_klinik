@@ -48,7 +48,8 @@ class UsersTableSeeder extends Seeder
 
         foreach ($users as $user) {
             $userId = DB::table('users')->insertGetId([
-                'username' => $user['name'],
+                'nama' => $user['name'],
+                'username' => $user['username'],
                 'email' => $user['email'],
                 'role' => $user['role'],
                 'password' => Hash::make('password123'),
@@ -63,11 +64,9 @@ class UsersTableSeeder extends Seeder
 
                 'admin' => DB::table('admin')->insert([
                     'user_id' => $userId,
-                    'nama' => $user['name'],
                     'jenis_kelamin' => 'L',
                     'tempat_lahir' => 'Jember',
                     'tgl_lahir' => '2005-01-28',
-                    'email' => 'admin@example.com',
                     'no_telp' => '087997765362',
                     'alamat' => 'Jember',
                     'is_super_admin' => '1',

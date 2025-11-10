@@ -14,18 +14,27 @@ class Dokter extends Model
 
     protected $fillable = [
         'user_id',
-        'nama',
+        'poli_id',
+        'no_str',
+        'no_sip',
         'jenis_kelamin',
         'tempat_lahir',
         'tgl_lahir',
         'email',
         'no_telp',
         'alamat',
+        'spesialisasi',
+        'status',
         'foto',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function poli()
+    {
+        return $this->belongsTo(Poli::class, 'poli_id', 'id');
     }
 }

@@ -8,7 +8,7 @@
     <div class="py-10">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-2xl">
-                
+
                 <!-- Header Form -->
                 <div class="bg-[linear-gradient(to_bottom,#7134FC_0%,#2088FF_100%)] p-6">
                     <div class="flex items-center gap-3">
@@ -22,9 +22,22 @@
                     </div>
                 </div>
 
+                                        @if ($errors->any())
+                <div class="alert alert-danger text-red-600 dark:text-red-400">
+                    <ul>
+                        @foreach ($errors->all() as $err)
+                            <li>{{ $err }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
                 <!-- Form Content -->
-                <form action="#" method="POST" class="p-6 space-y-6">
+                <form action="{{ isset($petugas) ? route('admin.master-petugas.update', $petugas->id) : route('admin.master-petugas.store') }}" method="POST" class="p-6 space-y-6">
                     @csrf
+                    @if (isset($petugas))
+                        @method('PUT')
+                    @endif
 
                     <!-- Section 1: Identitas Pribadi -->
                     <div class="border-l-4 border-blue-500 pl-4">
@@ -32,39 +45,57 @@
                             <i class="fa-solid fa-id-card text-blue-500"></i>
                             Identitas Pribadi
                         </h4>
-                        
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <!-- Nama Lengkap -->
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                            <div>
+                                <label for="nama" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                                     Nama Lengkap <span class="text-red-500">*</span>
                                 </label>
                                 <div class="relative">
                                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                                         <i class="fa-solid fa-user"></i>
                                     </span>
-                                    <input type="text" name="nama_lengkap" required
+                                    <input type="text" name="nama" id="nama" value="{{ old('nama', $petugas->user->nama ?? '') }}" required
                                            class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                                           placeholder="Contoh: Suster Rina Lestari">
+                                           placeholder="Contoh: Dr. Ahmad Fauzi, Sp.PD">
                                 </div>
+                                <span class="text-red-600 text-sm" id="nama_error">
+                                    @error('nama'){{ $message }}@enderror
+                                </span>
+                            </div>
+
+                            <div>
+                                <label for="username" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    Username <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="username" name="username" required
+                                    value="{{ old('username', $petugas->user->username ?? '') }}"
+                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                    placeholder="Contoh: Syafiq">
+                                <span class="text-red-600 text-sm" id="username_error">
+                                    @error('username'){{ $message }}@enderror
+                                </span>
                             </div>
 
                             <!-- Jenis Kelamin -->
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                <label for="jenis_kelamin" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                                     Jenis Kelamin <span class="text-red-500">*</span>
                                 </label>
                                 <div class="flex gap-4">
                                     <label class="flex items-center gap-2 cursor-pointer">
-                                        <input type="radio" name="jenis_kelamin" value="L" required
-                                               class="w-4 h-4 text-blue-500 focus:ring-blue-500">
+                                        <input type="radio" name="jenis_kelamin" id="jenis_kelamin" value="L" required checked
+                                            {{ old('jenis_kelamin', $petugas->jenis_kelamin ?? '') == 'L' ? 'checked' : '' }}
+                                            class="w-4 h-4 text-blue-500 focus:ring-blue-500">
                                         <span class="text-gray-700 dark:text-gray-300">
                                             <i class="fa-solid fa-mars text-blue-500"></i> Laki-laki
                                         </span>
                                     </label>
                                     <label class="flex items-center gap-2 cursor-pointer">
-                                        <input type="radio" name="jenis_kelamin" value="P" required
-                                               class="w-4 h-4 text-pink-500 focus:ring-pink-500">
+                                        <input type="radio" name="jenis_kelamin" id="jenis_kelamin" value="P" required
+                                            {{ old('jenis_kelamin', $petugas->jenis_kelamin ?? '') == 'P' ? 'checked' : '' }}
+                                            class="w-4 h-4 text-pink-500 focus:ring-pink-500">
                                         <span class="text-gray-700 dark:text-gray-300">
                                             <i class="fa-solid fa-venus text-pink-500"></i> Perempuan
                                         </span>
@@ -74,27 +105,50 @@
 
                             <!-- Tempat Lahir -->
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                <label for="tempat_lahir" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                                     Tempat Lahir <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" name="tempat_lahir" required
-                                       class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                                       placeholder="Contoh: Surabaya">
+                                <input type="text" id="tempat_lahir" name="tempat_lahir" required
+                                    value="{{ old('tempat_lahir', $petugas->tempat_lahir ?? '') }}"
+                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                    placeholder="Contoh: Surabaya">
+                                <span class="text-red-600 text-sm" id="tempat_lahir_error">
+                                    @error('tempat_lahir'){{ $message }}@enderror
+                                </span>
                             </div>
 
                             <!-- Tanggal Lahir -->
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                <label for="tgl_lahir" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                                     Tanggal Lahir <span class="text-red-500">*</span>
                                 </label>
                                 <div class="relative">
                                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                                         <i class="fa-solid fa-calendar"></i>
                                     </span>
-                                    <input type="date" name="tanggal_lahir" required
-                                           class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+                                    <input type="date" name="tgl_lahir" id="tgl_lahir" required
+                                        value="{{ old('tgl_lahir', $petugas->tgl_lahir ?? '') }}"
+                                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
                                 </div>
+                                <span class="text-red-600 text-sm" id="tgl_lahir_error">
+                                    @error('tgl_lahir'){{ $message }}@enderror
+                                </span>
                             </div>
+
+                        @if (isset($petugas))
+                            <div>
+                                <label for="new_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    <input type="hidden" name="old_password" id="old_password" value="{{$petugas->user->password ?? ''}}">
+                                    Password Baru <span class="text-red-500">*</span>
+                                </label>
+                                <input type="password" id="new_password" name="new_password"
+                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                    placeholder="Contoh: Surabaya">
+                                <span class="text-red-600 text-sm" id="new_password_error">
+                                    @error('new_password'){{ $message }}@enderror
+                                </span>
+                            </div>
+                        @endif
                         </div>
                     </div>
 
@@ -104,39 +158,48 @@
                             <i class="fa-solid fa-address-book text-green-500"></i>
                             Informasi Kontak
                         </h4>
-                        
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <!-- Email -->
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                <label for="email" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                                     Email <span class="text-red-500">*</span>
                                 </label>
                                 <div class="relative">
                                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                                         <i class="fa-solid fa-envelope"></i>
                                     </span>
-                                    <input type="email" name="email" required
-                                           class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
-                                           placeholder="contoh@hospital.com">
+                                    <input type="email" id="email" name="email" required
+                                        value="{{ old('email', $petugas->user->email ?? '') }}"
+                                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                                        placeholder="contoh@hospital.com">
                                 </div>
+                                <span class="text-red-600 text-sm" id="email_error">
+                                    @error('email'){{ $message }}@enderror
+                                </span>
                             </div>
 
                             <!-- No. Telepon -->
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                <label for="no_telp" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                                     No. Telepon <span class="text-red-500">*</span>
                                 </label>
                                 <div class="relative">
                                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                                         <i class="fa-solid fa-phone"></i>
                                     </span>
-                                    <input type="tel" name="telepon" required
-                                           class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
-                                           placeholder="+62 812-3456-7890">
+                                    <input type="tel" name="no_telp" id="no_telp" required
+                                        value="{{ old('no_telp', $petugas->no_telp ?? '') }}"
+                                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                                        placeholder="+62 812-3456-7890">
                                 </div>
+                                <span class="text-red-600 text-sm" id="no_telp_error">
+                                    @error('no_telp'){{ $message }}@enderror
+                                </span>
                             </div>
                         </div>
                     </div>
+
 
                     <!-- Section 3: Informasi Profesional -->
                     <div class="border-l-4 border-purple-500 pl-4">
@@ -144,72 +207,60 @@
                             <i class="fa-solid fa-stethoscope text-purple-500"></i>
                             Informasi Profesional
                         </h4>
-                        
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <!-- No. STR -->
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    No. STR (Surat Tanda Registrasi Perekam Medis) <span class="text-red-500">*</span>
+                                <label for="no_str" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    No. STR (Surat Tanda Registrasi) <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" name="no_str" required
+                                <input type="text" name="no_str" id="no_str" value="{{ old('no_str', $petugas->no_str ?? '') }}"
                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                                        placeholder="STR-123456789-2024">
+                                <span class="text-red-600 text-sm">
+                                    @error('no_str'){{ $message }}@enderror
+                                </span>
                             </div>
 
                             <!-- No. SIPP -->
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    No. SIK (Surat Izin Kerja Perekam Medis) <span class="text-red-500">*</span>
+                                <label for="no_sip" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    No. SIP (Surat Izin Praktik ) <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" name="no_sip" required
+                                <input type="text" name="no_sip" id="no_sip" value="{{ old('no_sip', $petugas->no_sip ?? '') }}"
                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                                       placeholder="SIP-987654321-2024">
-                            </div>
-                            
-                            <!-- No. NIRA -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    No. KTA (Kartu Tanda Anggota PORMIKI) <span class="text-red-500">*</span>
-                                </label>
-                                <input type="text" name="no_str" required
-                                       class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                                       placeholder="NIRA-12345">
+                                       placeholder="SIPP-987654321-2024">
+                                <span class="text-red-600 text-sm">
+                                    @error('no_sip'){{ $message }}@enderror
+                                </span>
                             </div>
 
-                           <!-- Area Kerja -->
+                            <!-- No. NIRA -->
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Area Kerja <span class="text-red-500">*</span>
+                                <label for="no_kta" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    No. KTA (Nomor Kartu Tanda Anggota) <span class="text-red-500">*</span>
                                 </label>
-                                <select name="area_kerja" required
-                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200">
-                                    <option value="">Pilih Area Kerja</option>
-                                    <option value="Pendaftaran / TPPRJ">Pendaftaran / TPPRJ (Tempat Pendaftaran Pasien Rawat Jalan)</option>
-                                    <option value="Filing dan Retensi">Filing dan Retensi (Penyimpanan Dokumen Rekam Medis)</option>
-                                    <option value="Koding dan Indeksing">Koding dan Indeksing (Klasifikasi Diagnosis dan Prosedur)</option>
-                                    <option value="Pelaporan dan Statistik">Pelaporan dan Statistik Rekam Medis</option>
-                                    <option value="Manajemen Unit RMIK">Manajemen Unit RMIK (Kepala Unit / Koordinator)</option>
-                                    <option value="Verifikasi Klaim">Verifikasi Klaim (BPJS / Asuransi)</option>
-                                    <option value="Assembling dan Analisis">Assembling dan Analisis Dokumen Rekam Medis</option>
-                                </select>
+                                <input type="text" name="no_kta" id="no_kta" value="{{ old('no_kta', $petugas->no_kta ?? '') }}"
+                                       class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                                       placeholder="NIRA-12345">
+                                <span class="text-red-600 text-sm">
+                                    @error('no_kta'){{ $message }}@enderror
+                                </span>
                             </div>
 
                             <!-- Jabatan -->
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                <label for="jabatan" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                                     Jabatan <span class="text-red-500">*</span>
                                 </label>
-                                <select name="jabatan" required
+                                <select name="jabatan" id="jabatan" required
                                         class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200">
-                                    <option value="">Pilih Jabatan</option>
-                                    <option value="Kepala Unit Rekam Medis">Kepala Unit Rekam Medis</option>
-                                    <option value="Koordinator Koding dan Pelaporan">Koordinator Koding dan Pelaporan</option>
-                                    <option value="Staf Pendaftaran">Staf Pendaftaran</option>
-                                    <option value="Staf Filing">Staf Filing</option>
-                                    <option value="Staf Koding ICD">Staf Koding ICD</option>
-                                    <option value="Staf Pelaporan">Staf Pelaporan</option>
-                                    <option value="Staf Verifikasi Klaim">Staf Verifikasi Klaim</option>
-                                    <option value="Staf Analisis Dokumen">Staf Analisis Dokumen</option>
+                                    <option value="" hidden selected>Pilih Jabatan</option>
+                                    @foreach (config('jabatan') as $j)
+                                        <option value="{{ $j }}" {{ old('jabatan', $petugas->jabatan ?? '') == $j ? 'selected' : '' }}>
+                                            {{ $j }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
 
@@ -222,70 +273,19 @@
                             <i class="fa-solid fa-location-dot text-red-500"></i>
                             Alamat Lengkap
                         </h4>
-                        
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Provinsi -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Provinsi <span class="text-red-500">*</span>
-                                </label>
-                                <select name="provinsi" required id="provinsi"
-                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200">
-                                    <option value="">Pilih Provinsi</option>
-                                    <option value="11">Aceh</option>
-                                    <option value="12">Sumatera Utara</option>
-                                    <option value="13">Sumatera Barat</option>
-                                    <option value="31">DKI Jakarta</option>
-                                    <option value="32">Jawa Barat</option>
-                                    <option value="33">Jawa Tengah</option>
-                                    <option value="35">Jawa Timur</option>
-                                    <option value="51">Bali</option>
-                                    <option value="61">Kalimantan Barat</option>
-                                    <option value="73">Sulawesi Selatan</option>
-                                </select>
-                            </div>
-
-                            <!-- Kota/Kabupaten -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Kota/Kabupaten <span class="text-red-500">*</span>
-                                </label>
-                                <select name="kota" required id="kota"
-                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200">
-                                    <option value="">Pilih Kota/Kabupaten</option>
-                                </select>
-                            </div>
-
-                            <!-- Kecamatan -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Kecamatan <span class="text-red-500">*</span>
-                                </label>
-                                <select name="kecamatan" required id="kecamatan"
-                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200">
-                                    <option value="">Pilih Kecamatan</option>
-                                </select>
-                            </div>
-
-                            <!-- Kelurahan -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Kelurahan/Desa <span class="text-red-500">*</span>
-                                </label>
-                                <select name="kelurahan" required id="kelurahan"
-                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200">
-                                    <option value="">Pilih Kelurahan/Desa</option>
-                                </select>
-                            </div>
-
                             <!-- Alamat Detail -->
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                <label for="alamat" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                                     Alamat Detail (Jalan, RT/RW, Kode Pos) <span class="text-red-500">*</span>
                                 </label>
-                                <textarea name="alamat_detail" required rows="3"
-                                          class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
-                                          placeholder="Contoh: Jl. Airlangga No. 45, RT 003 RW 005, Kode Pos 60286"></textarea>
+                                <textarea name="alamat" id="alamat" required rows="3"
+                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                                    placeholder="Contoh: Jl. Airlangga No. 45, RT 003 RW 005, Kode Pos 60286">{{ old('alamat', $petugas->alamat ?? '') }}</textarea>
+                                <span class="text-red-600 text-sm" id="alamat_error">
+                                    @error('alamat'){{ $message }}@enderror
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -296,10 +296,12 @@
                             <i class="fa-solid fa-circle-info text-teal-500"></i>
                             Status Petugas Rekamedis
                         </h4>
-                        
+
                         <div class="bg-teal-50 p-4 rounded-lg">
                             <label class="flex items-center gap-3 cursor-pointer">
-                                <input type="checkbox" name="status_aktif" value="1" checked
+                                <input type="hidden" name="status" value="0">
+                                <input type="checkbox" name="status" value="1"
+                                    {{ old('status', $petugas->status ?? 0) == 1 ? 'checked' : '' }}
                                       class="w-5 h-5 text-teal-500 rounded focus:ring-teal-500">
                                 <span class="text-gray-700 font-semibold">
                                     <i class="fa-solid fa-circle-check text-teal-500 mr-1"></i>
@@ -311,9 +313,9 @@
 
                     <!-- Form Actions -->
                     <div class="flex flex-col sm:flex-row items-center sm:justify-between pt-6 border-t border-gray-200 gap-3 sm:gap-0">
-                        
+
                         <!-- Tombol Kembali -->
-                        <a href="/admin/masterData/petugas"
+                        <a href="{{ route('admin.master-petugas.index') }}"
                         class="w-full sm:w-auto px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-300 font-medium text-center">
                             <i class="fa-solid fa-arrow-left mr-2"></i>Kembali
                         </a>

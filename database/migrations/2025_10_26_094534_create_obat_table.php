@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('jenis_obat','100');
             $table->integer('stok');
             $table->decimal('harga');
-            $table->string('keterangan');
+            $table->string('keterangan')->nullable();
             $table->timestamps();
         });
     }

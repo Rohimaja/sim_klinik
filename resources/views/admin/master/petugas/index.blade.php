@@ -34,7 +34,6 @@
                                 <th class="px-3 sm:px-4 py-3">No</th>
                                 <th class="px-3 sm:px-4 py-3">Nama Lengkap</th>
                                 <th class="px-3 sm:px-4 py-3">No. KTA</th>
-                                <th class="px-3 sm:px-4 py-3">Area Kerja</th>
                                 <th class="px-3 sm:px-4 py-3">Jabatan</th>
                                 <th class="px-3 sm:px-4 py-3">Telp</th>
                                 <th class="px-3 sm:px-4 py-3">Status</th>
@@ -42,30 +41,16 @@
                             </tr>
                         </thead>
                         <tbody class="text-gray-700">
-                            @php
-                                $pmiks = [
-                                    ['nama' => 'Aisyah Putri, A.Md.RMIK', 'kta' => 'KTA-10110', 'area_kerja' => 'Pendaftaran/TPPRJ', 'jabatan' => 'Staf Pendaftaran', 'telp' => '081234567001', 'status' => 'aktif'],
-                                    ['nama' => 'Bambang Sudiro, S.Tr.RMIK', 'kta' => 'KTA-10220', 'area_kerja' => 'Koding dan Indeksing', 'jabatan' => 'Staf Koding ICD', 'telp' => '082233445566', 'status' => 'aktif'],
-                                    ['nama' => 'Citra Devi', 'kta' => 'KTA-10330', 'area_kerja' => 'Filing dan Retensi', 'jabatan' => 'Staf Filing', 'telp' => '081345678912', 'status' => 'non-aktif'],
-                                    ['nama' => 'Dedy Haryanto', 'kta' => 'KTA-10440', 'area_kerja' => 'Pelaporan Internal', 'jabatan' => 'Staf Pelaporan', 'telp' => '083899977766', 'status' => 'aktif'],
-                                    ['nama' => 'Elisa Fatmawati, S.Tr.RMIK', 'kta' => 'KTA-10550', 'area_kerja' => 'Manajemen Unit RMIK', 'jabatan' => 'Kepala Unit Rekam Medis', 'telp' => '082111223344', 'status' => 'aktif'],
-                                ];
-                            @endphp
 
                             @foreach ($petugas as $i => $p)
                                 <tr class="border-b hover:bg-gray-50 transition">
-                                    <td class="px-3 sm:px-4 py-2">{{ $i + 1 }}</td>
-                                    <td class="px-3 sm:px-4 py-2 flex items-center gap-3">
-                                        <img src="{{ asset('storage/dokter/' . ($p['foto'] ?? 'default.jpg')) }}"
-                                            class="w-10 h-10 rounded-full object-cover border border-gray-300 shadow-sm">
-                                        <span class="font-medium">{{ $p['nama'] }}</span>
-                                    </td>
-                                    <td class="px-3 sm:px-4 py-2 text-gray-600">{{ $p['kta'] }}</td>
-                                    <td class="px-3 sm:px-4 py-2">{{ $p['area_kerja'] }}</td>
-                                    <td class="px-3 sm:px-4 py-2">{{ $p['jabatan'] }}</td>
-                                    <td class="px-3 sm:px-4 py-2">{{ $p['telp'] }}</td>
+                                    <td class="px-3 sm:px-4 py-2">{{ $loop->iteration }}</td>
+                                    <td class="px-3 sm:px-4 py-2 text-gray-600">{{ $p->user->nama ?? '' }}</td>
+                                    <td class="px-3 sm:px-4 py-2">{{ $p->no_kta ?? '' }}</td>
+                                    <td class="px-3 sm:px-4 py-2">{{ $p->jabatan ?? '' }}</td>
+                                    <td class="px-3 sm:px-4 py-2">{{ $p->no_telp ?? '' }}</td>
                                     <td class="px-3 sm:px-4 py-2">
-                                        @if ($p['status'] === 'aktif')
+                                        @if ($p->status === 1)
                                             <span
                                                 class="inline-flex items-center justify-center min-w-[70px] h-6 bg-green-100 text-green-700 rounded-full text-[11px] font-medium">
                                                 Aktif
@@ -297,63 +282,6 @@
                                                     class="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg font-medium">
                                                         <i class="fa-solid fa-print mr-2"></i>Cetak Detail
                                                     </a>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Delete Modal -->
-                                        <div x-show="deleteModal"
-                                            x-transition:enter="transition ease-out duration-300"
-                                            x-transition:enter-start="opacity-0"
-                                            x-transition:enter-end="opacity-100"
-                                            x-transition:leave="transition ease-in duration-200"
-                                            x-transition:leave-start="opacity-100"
-                                            x-transition:leave-end="opacity-0"
-                                            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-                                            style="display: none;">
-                                            <div @click.away="deleteModal = false"
-                                                x-transition:enter="transition ease-out duration-300 transform"
-                                                x-transition:enter-start="opacity-0 scale-95"
-                                                x-transition:enter-end="opacity-100 scale-100"
-                                                x-transition:leave="transition ease-in duration-200 transform"
-                                                x-transition:leave-start="opacity-100 scale-100"
-                                                x-transition:leave-end="opacity-0 scale-95"
-                                                class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md">
-
-                                                <!-- Icon Warning -->
-                                                <div class="flex justify-center mb-4">
-                                                    <div class="bg-red-100 rounded-full p-4 animate-pulse">
-                                                        <i class="fa-solid fa-triangle-exclamation text-red-500 text-4xl"></i>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Header -->
-                                                <h2 class="text-2xl font-bold mb-3 text-red-600 text-center">Konfirmasi Hapus</h2>
-
-                                                <!-- Content -->
-                                                <p class="text-gray-600 text-center mb-6">
-                                                    Apakah Anda yakin ingin menghapus petugas<br>
-                                                    <strong class="text-gray-800 text-lg">Suster Rina Lestari</strong>?
-                                                </p>
-                                                <p class="text-sm text-gray-500 text-center mb-6 bg-yellow-50 p-3 rounded-lg border border-yellow-200">
-                                                    <i class="fa-solid fa-info-circle mr-1"></i>
-                                                    Data yang dihapus tidak dapat dikembalikan!
-                                                </p>
-
-                                                <!-- Footer -->
-                                                <div class="flex gap-3">
-                                                    <button @click="deleteModal = false"
-                                                            class="flex-1 px-4 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-300 font-medium">
-                                                        <i class="fa-solid fa-arrow-left mr-1"></i>Batal
-                                                    </button>
-                                                    <form action="#" method="POST" class="flex-1">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit"
-                                                                class="w-full px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-md hover:shadow-lg font-medium">
-                                                            <i class="fa-solid fa-trash mr-1"></i> Hapus
-                                                        </button>
-                                                    </form>
                                                 </div>
                                             </div>
                                         </div>

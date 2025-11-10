@@ -28,33 +28,57 @@
         <span class="font-medium leading-none">Dashboard</span>
     </a>
 
+
     @if (Auth::user()->role === 'admin')
+        @if (Auth::user()->admin->is_super_admin == 1)
 
-        <!-- Master Data Dropdown -->
-        <div x-data="{ open: false }">
-            <button @click="open = !open"
-                class="flex items-center w-full px-4 py-3 text-white hover:bg-white/10 rounded-lg transition">
-                <i class="fa-solid fa-database text-base w-5 text-center mr-3"></i>
-                <span class="flex-1 text-left font-medium leading-none">Master Data</span>
-                <i :class="open ?
-                    'fa-solid fa-chevron-down text-sm transform rotate-180 transition-transform duration-300' :
-                    'fa-solid fa-chevron-down text-sm transform transition-transform duration-300'">
-                </i>
-            </button>
+                <!-- Master Data Dropdown -->
+            <div x-data="{ open: false }">
+                <button @click="open = !open"
+                    class="flex items-center w-full px-4 py-3 text-white hover:bg-white/10 rounded-lg transition">
+                    <i class="fa-solid fa-database text-base w-5 text-center mr-3"></i>
+                    <span class="flex-1 text-left font-medium leading-none">Master Data</span>
+                    <i :class="open ?
+                        'fa-solid fa-chevron-down text-sm transform rotate-180 transition-transform duration-300' :
+                        'fa-solid fa-chevron-down text-sm transform transition-transform duration-300'">
+                    </i>
+                </button>
 
-            <!-- Isi Dropdown -->
-            <div x-show="open" x-transition
-                class="ml-8 mt-2 pl-4 border-l border-white/20 space-y-2">
-                <a href="{{ route('admin.master-dokter.index') }}" class="block text-white hover:text-gray-200">Dokter</a>
-                <a href="{{ route('admin.master-perawat.index') }}" class="block text-white hover:text-gray-200">Perawat</a>
-                <a href="{{ route('admin.master-petugas.index') }}" class="block text-white hover:text-gray-200">Petugas</a>
-                <a href="{{ route('admin.master-pasien.index') }}" class="block text-white hover:text-gray-200">Pasien</a>
-                <a href="{{ route('admin.master-poli.index') }}" class="block text-white hover:text-gray-200">Poli</a>
-                <a href="{{ route('admin.master-obat.index') }}" class="block text-white hover:text-gray-200">Obat</a>
-                <a href="{{ route('admin.master-tindakan.index') }}" class="block text-white hover:text-gray-200">Tindakan</a>
-                <a href="{{ route('admin.master-jadwal.index') }}" class="block text-white hover:text-gray-200">Jadwal Tenaga Klinik</a>
+                <!-- Isi Dropdown -->
+                <div x-show="open" x-transition
+                    class="ml-8 mt-2 pl-4 border-l border-white/20 space-y-2">
+                    <a href="{{ route('superadmin.master-admin.index') }}" class="block text-white hover:text-gray-200">Admin</a>
+                </div>
             </div>
-        </div>
+
+
+        @else
+            <!-- Master Data Dropdown -->
+            <div x-data="{ open: false }">
+                <button @click="open = !open"
+                    class="flex items-center w-full px-4 py-3 text-white hover:bg-white/10 rounded-lg transition">
+                    <i class="fa-solid fa-database text-base w-5 text-center mr-3"></i>
+                    <span class="flex-1 text-left font-medium leading-none">Master Data</span>
+                    <i :class="open ?
+                        'fa-solid fa-chevron-down text-sm transform rotate-180 transition-transform duration-300' :
+                        'fa-solid fa-chevron-down text-sm transform transition-transform duration-300'">
+                    </i>
+                </button>
+
+                <!-- Isi Dropdown -->
+                <div x-show="open" x-transition
+                    class="ml-8 mt-2 pl-4 border-l border-white/20 space-y-2">
+                    <a href="{{ route('admin.master-dokter.index') }}" class="block text-white hover:text-gray-200">Dokter</a>
+                    <a href="{{ route('admin.master-perawat.index') }}" class="block text-white hover:text-gray-200">Perawat</a>
+                    <a href="{{ route('admin.master-petugas.index') }}" class="block text-white hover:text-gray-200">Petugas</a>
+                    <a href="{{ route('admin.master-pasien.index') }}" class="block text-white hover:text-gray-200">Pasien</a>
+                    <a href="{{ route('admin.master-poli.index') }}" class="block text-white hover:text-gray-200">Poli</a>
+                    <a href="{{ route('admin.master-obat.index') }}" class="block text-white hover:text-gray-200">Obat</a>
+                    <a href="{{ route('admin.master-tindakan.index') }}" class="block text-white hover:text-gray-200">Tindakan</a>
+                    <a href="{{ route('admin.master-jadwal.index') }}" class="block text-white hover:text-gray-200">Jadwal Tenaga Klinik</a>
+                </div>
+            </div>
+        @endif
     @endif
 
     <!-- Laporan Dropdown -->
@@ -109,7 +133,7 @@
                     {{ substr(Auth::user()->name, 0, 1) }}
                 </div>
                 <div class="flex-1 min-w-0 text-left">
-                    <div class="text-sm font-medium text-white truncate">{{ Auth::user()->name }}</div>
+                    <div class="text-sm font-medium text-white truncate">{{ Auth::user()->nama }}</div>
                     <div class="text-xs text-white/70 truncate">{{ Auth::user()->email }}</div>
                 </div>
                 <svg class="w-5 h-5 text-white transition-transform" :class="{ 'rotate-180': profileOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -40,6 +41,20 @@ class LoginRequest extends FormRequest
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
+
+        $user = User::where( 'username',$this->username)->first();
+
+        if (! $user) {
+            throw ValidationException::withMessages([
+                'username' => trans('auth.failed'),
+            ]);
+        }
+
+        if (is_null($user->email_verified_at)) {
+            throw ValidationException::withMessages([
+                'username' => 'Akun Anda belum diverifikasi. Silakan cek email Anda untuk verifikasi terlebih dahulu.',
+            ]);
+        }
 
         if (! Auth::attempt($this->only('username', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());

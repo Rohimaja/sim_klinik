@@ -14,14 +14,16 @@ class Pasien extends Model
 
     protected $fillable = [
         'user_id',
-        'nama',
+        'no_rm',
+        'no_bpjs',
+        'jenis_pasien',
         'jenis_kelamin',
         'tempat_lahir',
         'tgl_lahir',
-        'email',
         'no_telp',
         'alamat',
         'foto',
+        'status',
     ];
 
     public function user()
