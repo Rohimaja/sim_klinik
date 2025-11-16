@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\Update\UpdateMasterPerawat;
 use App\Models\Perawat;
 use App\Models\Poli;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -107,7 +108,41 @@ class PerawatController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $perawat = Perawat::with('user', 'poli')->findOrFail($id);
+
+            // Hitung umur
+            $tgl_lahir = Carbon::parse($perawat->tgl_lahir);
+            $umur = $tgl_lahir->age;
+
+            // Format tanggal lahir & updated_at agar lebih ramah tampil
+            $tgl_lahir_formatted = $tgl_lahir->translatedFormat('d F Y'); // Contoh: 15 Maret 1985
+            $updated_at_formatted = Carbon::parse($perawat->updated_at)->locale('id')->translatedFormat('d F Y, H:i'). ' WIB'; // Contoh: 2 jam lalu
+
+            // Kirim data JSON lengkap
+            return response()->json([
+                'id' => $perawat->id,
+                'user' => $perawat->user,
+                'poli' => $perawat->poli,
+                'jenis_kelamin' => $perawat->jenis_kelamin,
+                'tempat_lahir' => $perawat->tempat_lahir,
+                'tgl_lahir' => $tgl_lahir_formatted,
+                'umur' => $umur,
+                'email' => $perawat->user->email,
+                'no_telp' => $perawat->no_telp,
+                'alamat' => $perawat->alamat,
+                'no_str' => $perawat->no_str,
+                'no_sip' => $perawat->no_sip,
+                'no_nira' => $perawat->no_nira,
+                'status' => $perawat->status,
+                'updated_at' => $updated_at_formatted,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan'
+            ], 404);
+        }
     }
 
     /**

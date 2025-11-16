@@ -17,7 +17,6 @@
                             class="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
                     </div>
 
-
                     <div class="w-full sm:w-auto">
                         <a href="{{ route('admin.master-poli.create') }}"
                             class="w-full sm:w-auto bg-[#7134FC] text-white px-4 py-2 text-sm rounded-lg font-medium flex items-center justify-center gap-2 shadow-md">
@@ -28,7 +27,8 @@
 
                 <!-- Tabel Poli -->
                 <div class="overflow-x-auto">
-                    <table id="dataTable" class="min-w-full border border-gray-200 text-xs sm:text-sm rounded-lg overflow-hidden">
+                    <table id="dataTable"
+                        class="min-w-full border border-gray-200 text-xs sm:text-sm rounded-lg overflow-hidden">
                         <thead class="bg-[#7134FC] text-white text-left">
                             <tr>
                                 <th class="px-3 sm:px-4 py-3">No</th>
@@ -45,7 +45,7 @@
                                     <td class="px-3 sm:px-4 py-2">{{ $p['nama'] }}</td>
                                     <td class="px-3 sm:px-4 py-2">{{ $p['keterangan'] }}</td>
                                     <td class="px-3 sm:px-4 py-2">
-                                        @if ($p['status'] === 1)
+                                        @if ($p->status === 1)
                                             <span
                                                 class="inline-flex items-center justify-center min-w-[70px] h-6 bg-green-100 text-green-700 rounded-full text-[11px] font-medium">
                                                 Aktif
@@ -63,32 +63,29 @@
 
                                             <!-- Edit Button -->
                                             <a href="{{ route('admin.master-poli.edit', $p->id) }}"
-                                            class="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105 inline-block">
+                                                class="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105 inline-block">
                                                 <i class="fa-solid fa-pen"></i>
                                             </a>
 
                                             <!-- Delete Button -->
-                                            <form action="{{ route('admin.master-poli.destroy', $p->id) }}" method="POST" class="form-hapus inline-block">
+                                            <form action="{{ route('admin.master-poli.destroy', $p->id) }}"
+                                                method="POST" class="form-hapus inline-block">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white p-2 px-2.5 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105">
+                                                <button type="submit"
+                                                    class="bg-red-500 hover:bg-red-600 text-white p-2 px-2.5 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
                                         </div>
                                     </td>
-
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
-
             </div>
         </div>
     </div>
-
-
-
 
 </x-app-layout>

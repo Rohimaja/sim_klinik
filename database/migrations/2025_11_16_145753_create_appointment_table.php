@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('antrian_poli', function (Blueprint $table) {
+        Schema::create('appointment', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('kunjungan_id')->constrained('kunjungan');
+            $table->foreignId('pasien_id')->constrained('pasien');
+            $table->foreignId('poli_id')->constrained('poli');
+            $table->date('tgl');
+            $table->time('waktu');
             $table->enum('status',['menunggu','dipanggil','selesai','dibatalkan']);
             $table->timestamps();
         });
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('antrian_poli');
+        Schema::dropIfExists('appointment');
     }
 };

@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\Store\StoreMasterPasien;
 use App\Http\Requests\Admin\Update\UpdateMasterPasien;
 use App\Models\Pasien;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -107,7 +108,39 @@ class PasienController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $pasien = Pasien::with('user')->findOrFail($id);
+
+            // Hitung umur
+            $tgl_lahir = Carbon::parse($pasien->tgl_lahir);
+            $umur = $tgl_lahir->age;
+
+            // Format tanggal lahir & updated_at agar lebih ramah tampil
+            $tgl_lahir_formatted = $tgl_lahir->translatedFormat('d F Y'); // Contoh: 15 Maret 1985
+            $updated_at_formatted = Carbon::parse($pasien->updated_at)->locale('id')->translatedFormat('d F Y, H:i'). ' WIB'; // Contoh: 2 jam lalu
+
+            // Kirim data JSON lengkap
+            return response()->json([
+                'id' => $pasien->id,
+                'user' => $pasien->user,
+                'poli' => $pasien->poli,
+                'jenis_kelamin' => $pasien->jenis_kelamin,
+                'tempat_lahir' => $pasien->tempat_lahir,
+                'tgl_lahir' => $tgl_lahir_formatted,
+                'umur' => $umur,
+                'email' => $pasien->user->email,
+                'no_telp' => $pasien->no_telp,
+                'alamat' => $pasien->alamat,
+                'no_bpjs' => $pasien->no_bpjs,
+                'jenis_pasien' => $pasien->jenis_pasien,
+                'updated_at' => $updated_at_formatted,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan'
+            ], 404);
+        }
     }
 
     /**
@@ -200,7 +233,26 @@ class PasienController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $pasien = Pasien::findOrFail($id);
+            $pasien->delete();
+
+            return redirect()->route('admin.master-pasien.index')->with([
+                'status' => 'success',
+                'message' => 'Data Berhasil Dihapus'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Gagal Menghapus Pasien', [
+                'error' => $e->getMessage(),
+                'stack' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->back()->withInput()->with([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat menghapus data: '
+            ]);
+        }
     }
 
     private function generateNoRm()
@@ -213,7 +265,7 @@ class PasienController extends Controller
             $lastNumber = (int) $last->no_rm;
 
             // Tambah 1, lalu padding jadi 8 digit
-            $newNumber = str_pad($lastNumber + 1, 8, '0', STR_PAD_LEFT);
+            $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
         } else {
             // Jika belum ada data sama sekali
             $newNumber = '0001';

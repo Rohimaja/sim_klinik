@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('tindakan', function (Blueprint $table) {
             $table->id();
-            $table->string('nama','100');
+            $table->string('nama','100')->unique();
             $table->decimal('tarif');
             $table->string('keterangan')->nullable();
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

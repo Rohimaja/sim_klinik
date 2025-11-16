@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Master Data > Form Tambah Obat') }}
+            {{ __('Master Data > Form Tambah Tindakan') }}
         </h2>
     </x-slot>
 
@@ -13,42 +13,42 @@
                 <div class="bg-[linear-gradient(to_bottom,#7134FC_0%,#2088FF_100%)] p-6">
                     <div class="flex items-center gap-3">
                         <div class="bg-white bg-opacity-20 p-3 rounded-lg">
-                            <i class="fa-solid fa-pills text-white text-2xl"></i>
+                            <i class="fa-solid fa-hand-holding-medical text-white text-2xl"></i>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-white">Tambah Data Obat Baru</h3>
-                            <p class="text-blue-100 text-sm">Lengkapi semua informasi obat dengan benar</p>
+                            <h3 class="text-xl font-bold text-white">Tambah Data Tindakan Baru</h3>
+                            <p class="text-blue-100 text-sm">Lengkapi semua informasi Tindakan dengan benar</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Form Content -->
                 <form
-                    action="{{ isset($obat) ? route('admin.master-obat.update', $obat->id) : route('admin.master-obat.store') }}"
+                    action="{{ isset($tindakan) ? route('admin.master-tindakan.update', $tindakan->id) : route('admin.master-tindakan.store') }}"
                     method="POST" class="p-6 space-y-6">
                     @csrf
-                    @if (isset($obat))
+                    @if (isset($tindakan))
                         @method('PUT')
                     @endif
 
-                    <!-- Informasi Obat -->
+                    <!-- Informasi Tindakan -->
                     <div class="border-l-4 border-purple-500 pl-4">
                         <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-capsules text-purple-500"></i>
-                            Informasi Obat
+                            <i class="fa-solid fa-stethoscope text-purple-500"></i>
+                            Informasi Tindakan
                         </h4>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Nama Obat -->
+                            <!-- Nama Tindakan -->
                             <div>
                                 <label for="nama"
                                     class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Nama Obat <span class="text-red-500">*</span>
+                                    Nama Tindakan <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" name="nama" id="nama"
-                                    value="{{ old('nama', $obat->nama ?? '') }}" required
+                                    value="{{ old('nama', $tindakan->nama ?? '') }}" required
                                     class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                                    placeholder="Paracetamol 500mg">
+                                    placeholder="Contoh: Pemeriksaan Umum">
                                 <span class="text-red-600 text-sm" id="nama_error">
                                     @error('nama')
                                         {{ $message }}
@@ -56,108 +56,54 @@
                                 </span>
                             </div>
 
-                            <!-- Satuan -->
+                            <!-- Tarif -->
                             <div>
-                                <label for="jenis_obat"
+                                <label for="tarif"
                                     class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Jenis Obat <span class="text-red-500">*</span>
+                                    Tarif Tindakan (Rp) <span class="text-red-500">*</span>
                                 </label>
-                                <select name="jenis_obat" id="jenis_obat" required
-                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200">
-                                    <option value="" hidden-selected>Pilih Jenis Obat</option>
-                                    <option value="Tablet"
-                                        {{ old('jenis_obat', $obat->jenis_obat ?? '') == 'Tablet' ? 'selected' : '' }}>
-                                        Tablet</option>
-                                    <option value="Kapsul"
-                                        {{ old('jenis_obat', $obat->jenis_obat ?? '') == 'Kapsul' ? 'selected' : '' }}>
-                                        Kapsul</option>
-                                    <option value="Botol"
-                                        {{ old('jenis_obat', $obat->jenis_obat ?? '') == 'Botol' ? 'selected' : '' }}>
-                                        Botol</option>
-                                    <option value="Sirup"
-                                        {{ old('jenis_obat', $obat->jenis_obat ?? '') == 'Sirup' ? 'selected' : '' }}>
-                                        Sirup</option>
-                                    <option value="Salep"
-                                        {{ old('jenis_obat', $obat->jenis_obat ?? '') == 'Salep' ? 'selected' : '' }}>
-                                        Salep</option>
-                                </select>
-                                <span class="text-red-600 text-sm" id="nama_error">
-                                    @error('jenis_obat')
-                                        {{ $message }}
-                                    @enderror
-                                </span>
-                            </div>
-
-                            <!-- Stok -->
-                            <div>
-                                <label for="stok"
-                                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Stok <span class="text-red-500">*</span>
-                                </label>
-                                <input type="number" name="stok" id="stok"
-                                    value="{{ old('stok', $obat->stok ?? '') }}" min="0" required
+                                <input type="number" name="tarif" id="tarif" min="0"
+                                    value="{{ old('tarif', $tindakan->tarif ?? '') }}" required
                                     class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                                    placeholder="Contoh: 100">
+                                    placeholder="Contoh: 50000">
                                 <span class="text-red-600 text-sm" id="nama_error">
-                                    @error('stok')
+                                    @error('tarif')
                                         {{ $message }}
                                     @enderror
                                 </span>
                             </div>
 
-                            <!-- Harga -->
-                            <div>
-                                <label for="harga"
-                                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Harga per Satuan (Rp) <span class="text-red-500">*</span>
-                                </label>
-                                <input type="number" name="harga" id="harga"
-                                    value="{{ old('harga', $obat->harga ?? '') }}" min="0" required
-                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                                    placeholder="Contoh: 2000">
-                                <span class="text-red-600 text-sm" id="nama_error">
-                                    @error('harga')
-                                        {{ $message }}
-                                    @enderror
-                                </span>
-                            </div>
-
-                            <!-- Keterangan -->
+                            <!-- Deskripsi -->
                             <div class="md:col-span-2">
                                 <label for="keterangan"
                                     class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Keterangan <span class="text-red-500">*</span>
+                                    Deskripsi <span class="text-red-500">*</span>
                                 </label>
-                                <textarea name="keterangan" id="keterangan" rows="3"
+                                <textarea name="keterangan" rows="3" id="keterangan"
                                     class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                                    placeholder="Melayani pemeriksaan umum dan keluhan ringan">{{ $obat->keterangan ?? '' }}</textarea>
-                                <span class="text-red-600 text-sm" id="keterangan_error">
-                                    @error('keterangan')
-                                        {{ $message }}
-                                    @enderror
-                                </span>
+                                    placeholder="Contoh: Pemeriksaan dasar oleh dokter umum untuk keluhan umum pasien.">{{ old('keterangan', $tindakan->keterangan ?? '') }}</textarea>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Status Obat -->
+                    <!-- Section 6: Status Tindakan -->
                     <div class="border-l-4 border-teal-500 pl-4">
                         <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
                             <i class="fa-solid fa-circle-info text-teal-500"></i>
-                            Status Obat
+                            Status Tindakan
                         </h4>
 
                         <div class="bg-teal-50 p-4 rounded-lg">
                             <label for="status" class="flex items-center gap-3 cursor-pointer">
                                 <input type="hidden" name="status" value="0">
                                 <input type="checkbox" name="status" id="status" value="1"
-                                    {{ old('status', $obat->status ?? 0) == 1 ? 'checked' : '' }}
+                                    {{ old('status', $tindakan->status ?? 0) == 1 ? 'checked' : '' }}
                                     class="w-5 h-5 text-teal-500 rounded focus:ring-teal-500">
                                 <span class="text-gray-700 font-semibold">
-                                    Tandai sebagai "Tersedia" (Obat dapat diresepkan)
+                                    Aktifkan Poli
                                 </span>
                             </label>
-                            <span class="text-red-600 text-sm" id="nama_error">
+                            <span class="text-red-600 text-sm" id="status_error">
                                 @error('status')
                                     {{ $message }}
                                 @enderror
@@ -170,7 +116,7 @@
                         class="flex flex-col sm:flex-row items-center sm:justify-between pt-6 border-t border-gray-200 gap-3 sm:gap-0">
 
                         <!-- Tombol Kembali -->
-                        <a href="{{ route('admin.master-obat.index') }}"
+                        <a href="{{ route('admin.master-tindakan.index') }}"
                             class="w-full sm:w-auto px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-300 font-medium text-center">
                             <i class="fa-solid fa-arrow-left mr-2"></i>Kembali
                         </a>
@@ -187,7 +133,6 @@
                             </button>
                         </div>
                     </div>
-
                 </form>
             </div>
         </div>

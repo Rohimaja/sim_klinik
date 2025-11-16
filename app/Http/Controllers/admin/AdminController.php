@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\Store\StoreMasterAdmin;
 use App\Http\Requests\Admin\Update\UpdateMasterAdmin;
 use App\Models\Admin;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -103,7 +104,37 @@ class AdminController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $admin = Admin::with('user')->findOrFail($id);
+
+            // Hitung umur
+            $tgl_lahir = Carbon::parse($admin->tgl_lahir);
+            $umur = $tgl_lahir->age;
+
+            // Format tanggal lahir & updated_at agar lebih ramah tampil
+            $tgl_lahir_formatted = $tgl_lahir->translatedFormat('d F Y'); // Contoh: 15 Maret 1985
+            $updated_at_formatted = Carbon::parse($admin->updated_at)->locale('id')->translatedFormat('d F Y, H:i'). ' WIB'; // Contoh: 2 jam lalu
+
+            // Kirim data JSON lengkap
+            return response()->json([
+                'id' => $admin->id,
+                'user' => $admin->user,
+                'jenis_kelamin' => $admin->jenis_kelamin,
+                'tempat_lahir' => $admin->tempat_lahir,
+                'tgl_lahir' => $tgl_lahir_formatted,
+                'umur' => $umur,
+                'email' => $admin->user->email,
+                'no_telp' => $admin->no_telp,
+                'alamat' => $admin->alamat,
+                'status' => $admin->status,
+                'updated_at' => $updated_at_formatted,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan'
+            ], 404);
+        }
     }
 
     /**
@@ -193,6 +224,25 @@ class AdminController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $admin = Admin::findOrFail($id);
+            $admin->delete();
+
+            return redirect()->route('admin.master-admin.index')->with([
+                'status' => 'success',
+                'message' => 'Data Berhasil Dihapus'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Gagal Menghapus Admin', [
+                'error' => $e->getMessage(),
+                'stack' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->back()->withInput()->with([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat menghapus data: '
+            ]);
+        }
     }
 }

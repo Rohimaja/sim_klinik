@@ -16,5 +16,6 @@ class Tindakan extends Model
         'nama',
         'tarif',
         'keterangan',
+        'status',
     ];
 }

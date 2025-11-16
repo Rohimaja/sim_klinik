@@ -28,124 +28,66 @@
 
                 <!-- Tabel Tindakan -->
                 <div class="overflow-x-auto">
-                    <table id="dataTable" class="min-w-full border border-gray-200 text-xs sm:text-sm rounded-lg overflow-hidden">
+                    <table id="dataTable"
+                        class="min-w-full border border-gray-200 text-xs sm:text-sm rounded-lg overflow-hidden">
                         <thead class="bg-[#7134FC] text-white text-left">
                             <tr>
                                 <th class="px-3 sm:px-4 py-3">No</th>
                                 <th class="px-3 sm:px-4 py-3">Nama Tindakan</th>
-                                <th class="px-3 sm:px-4 py-3">Kategori</th>
-                                <th class="px-3 sm:px-4 py-3">Deskripsi</th>
                                 <th class="px-3 sm:px-4 py-3">Tarif</th>
+                                <th class="px-3 sm:px-4 py-3">Deskripsi</th>
+                                <th class="px-3 sm:px-4 py-3">Status</th>
                                 <th class="px-3 sm:px-4 py-3 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="text-gray-700">
-                            @php
-                                $tindakans = [
-                                    ['nama' => 'Pemeriksaan Umum', 'kategori' => 'Konsultasi', 'deskripsi' => 'Pemeriksaan dasar oleh dokter umum untuk keluhan umum pasien.', 'tarif' => 50000],
-                                    ['nama' => 'Pembersihan Gigi (Scaling)', 'kategori' => 'Gigi dan Mulut', 'deskripsi' => 'Prosedur pembersihan karang gigi untuk menjaga kesehatan gusi dan gigi.', 'tarif' => 150000],
-                                    ['nama' => 'Suntik Antibiotik', 'kategori' => 'Tindakan Medis', 'deskripsi' => 'Pemberian antibiotik melalui suntikan sesuai resep dokter.', 'tarif' => 25000],
-                                    ['nama' => 'Pemeriksaan Kehamilan', 'kategori' => 'Kebidanan', 'deskripsi' => 'Pemeriksaan kondisi ibu hamil dan janin oleh tenaga medis.', 'tarif' => 60000],
-                                    ['nama' => 'Nebulisasi Anak', 'kategori' => 'Anak', 'deskripsi' => 'Terapi pernapasan menggunakan alat nebulizer untuk anak.', 'tarif' => 40000],
-                                    ['nama' => 'Pemasangan Infus', 'kategori' => 'Tindakan Umum', 'deskripsi' => 'Pemasangan cairan infus untuk pasien dengan indikasi tertentu.', 'tarif' => 30000],
-                                    ['nama' => 'Penjahitan Luka Ringan', 'kategori' => 'Bedah Minor', 'deskripsi' => 'Penutupan luka kecil dengan jahitan sederhana.', 'tarif' => 100000],
-                                    ['nama' => 'Pemeriksaan Tekanan Darah', 'kategori' => 'Umum', 'deskripsi' => 'Pengukuran tekanan darah untuk deteksi hipertensi atau hipotensi.', 'tarif' => 10000],
-                                    ['nama' => 'Konsultasi Spesialis Anak', 'kategori' => 'Spesialis', 'deskripsi' => 'Konsultasi dengan dokter spesialis anak terkait masalah kesehatan anak.', 'tarif' => 80000],
-                                    ['nama' => 'Konsultasi Kulit & Kelamin', 'kategori' => 'Spesialis', 'deskripsi' => 'Pemeriksaan dan konsultasi untuk masalah kulit dan kelamin.', 'tarif' => 90000],
-                                ];
-                            @endphp
 
                             @foreach ($tindakan as $i => $t)
                                 <tr class="border-b hover:bg-gray-50 transition">
-                                    <td class="px-3 sm:px-4 py-2">{{ $i + 1 }}</td>
-                                    <td class="px-3 sm:px-4 py-2">{{ $t['nama'] }}</td>
-                                    <td class="px-3 sm:px-4 py-2">{{ $t['kategori'] }}</td>
-                                    <td class="px-3 sm:px-4 py-2">{{ $t['deskripsi'] }}</td>
-                                    <td class="px-3 sm:px-4 py-2">{{ $t['tarif'] }}</td>
+                                    <td class="px-3 sm:px-4 py-2">{{ $loop->iteration }}</td>
+                                    <td class="px-3 sm:px-4 py-2">{{ $t->nama ?? '' }}</td>
+                                    <td class="px-3 sm:px-4 py-2">{{ $t->tarif ?? '' }}</td>
+                                    <td class="px-3 sm:px-4 py-2">{{ $t->keterangan ?? '' }}</td>
+                                    <td class="px-3 sm:px-4 py-2">
+                                        @if ($t->status === 1)
+                                            <span
+                                                class="inline-flex items-center justify-center min-w-[70px] h-6 bg-green-100 text-green-700 rounded-full text-[11px] font-medium">
+                                                Aktif
+                                            </span>
+                                        @else
+                                            <span
+                                                class="inline-flex items-center justify-center min-w-[70px] h-6 bg-red-100 text-red-700 rounded-full text-[11px] font-medium">
+                                                Non-Aktif
+                                            </span>
+                                        @endif
+                                    </td>
 
-                                    <td class="px-3 sm:px-4 py-2 text-center" x-data="{ viewModal: false, deleteModal: false }">
+                                    <td class="px-3 sm:px-4 py-2 text-center">
                                         <div class="flex justify-center gap-1 sm:gap-2">
                                             <!-- Edit Button -->
                                             <a href="{{ route('admin.master-tindakan.edit', $t->id) }}"
-                                            class="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105 inline-block">
+                                                class="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105 inline-block">
                                                 <i class="fa-solid fa-pen"></i>
                                             </a>
 
-                                            <!-- Delete Button -->
-                                            <button @click="deleteModal = true"
+                                            <form action="{{ route('admin.master-tindakan.destroy', $t->id) }}"
+                                                method="POST" class="form-hapus inline-block">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
                                                     class="bg-red-500 hover:bg-red-600 text-white p-2 px-2.5 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
-                                        </div>
-
-                                        <!-- Delete Modal -->
-                                        <div x-show="deleteModal"
-                                            x-transition:enter="transition ease-out duration-300"
-                                            x-transition:enter-start="opacity-0"
-                                            x-transition:enter-end="opacity-100"
-                                            x-transition:leave="transition ease-in duration-200"
-                                            x-transition:leave-start="opacity-100"
-                                            x-transition:leave-end="opacity-0"
-                                            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-                                            style="display: none;">
-                                            <div @click.away="deleteModal = false"
-                                                x-transition:enter="transition ease-out duration-300 transform"
-                                                x-transition:enter-start="opacity-0 scale-95"
-                                                x-transition:enter-end="opacity-100 scale-100"
-                                                x-transition:leave="transition ease-in duration-200 transform"
-                                                x-transition:leave-start="opacity-100 scale-100"
-                                                x-transition:leave-end="opacity-0 scale-95"
-                                                class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md">
-
-                                                <!-- Icon Warning -->
-                                                <div class="flex justify-center mb-4">
-                                                    <div class="bg-red-100 rounded-full p-4 animate-pulse">
-                                                        <i class="fa-solid fa-triangle-exclamation text-red-500 text-4xl"></i>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Header -->
-                                                <h2 class="text-2xl font-bold mb-3 text-red-600 text-center">Konfirmasi Hapus</h2>
-
-                                                <!-- Content -->
-                                                <p class="text-gray-600 text-center mb-6">
-                                                    Apakah Anda yakin ingin menghapus tindakan<br>
-                                                </p>
-                                                <p class="text-sm text-gray-500 text-center mb-6 bg-yellow-50 p-3 rounded-lg border border-yellow-200">
-                                                    <i class="fa-solid fa-info-circle mr-1"></i>
-                                                    Data yang dihapus tidak dapat dikembalikan!
-                                                </p>
-
-                                                <!-- Footer -->
-                                                <div class="flex gap-3">
-                                                    <button @click="deleteModal = false"
-                                                            class="flex-1 px-4 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-300 font-medium">
-                                                        <i class="fa-solid fa-arrow-left mr-1"></i>Batal
-                                                    </button>
-                                                    <form action="#" method="POST" class="flex-1">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit"
-                                                                class="w-full px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-md hover:shadow-lg font-medium">
-                                                            <i class="fa-solid fa-trash mr-1"></i> Hapus
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
-
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
-
             </div>
         </div>
     </div>
-
-
-
 
 </x-app-layout>

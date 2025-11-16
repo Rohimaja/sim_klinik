@@ -8,18 +8,13 @@
 //     });
 // });
 
-window.loadDokterDetail = function (id) {
+window.loadPetugasDetail = function (id) {
     $.ajax({
-        url: "/admin/master-dokter/" + id,
+        url: "/admin/master-petugas/" + id,
         // url: `/admin/master-dokter/${id}`,
 
         method: "GET",
         success: function (res) {
-            const updatedDate = new Date(res.updated_at);
-            const formatted = updatedDate.toLocaleString("id-ID", {
-                dateStyle: "long",
-                timeStyle: "short",
-            });
             console.log(res);
 
             $("#nama").text(res.user.nama);
@@ -33,10 +28,11 @@ window.loadDokterDetail = function (id) {
             $("#email").text(res.user.email);
             $("#no_telp").text(res.no_telp);
             $("#alamat").text(res.alamat);
-            $("#poli").text(res.poli.nama);
             $("#no_telp").text(res.no_telp);
             $("#no_str").text(res.no_str);
             $("#no_sip").text(res.no_sip);
+            $("#no_kta").text(res.no_nira);
+            $("#jabatan").text(res.jabatan);
             // 🟢 Status aktif / non-aktif
             if (res.status === 1) {
                 $("#status")
@@ -56,7 +52,6 @@ window.loadDokterDetail = function (id) {
             //     `<i class="fa-solid fa-info-circle mr-1"></i>
             //     <strong>Terakhir diupdate:</strong> ${formatted}`
             // );
-            $("#spesialisasi").text(res.spesialisasi);
         },
         error: function () {
             alert("Gagal mengambil data dokter");

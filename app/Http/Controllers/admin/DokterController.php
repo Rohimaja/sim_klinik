@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\Update\UpdateMasterDokter;
 use App\Models\Dokter;
 use App\Models\Poli;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -105,19 +106,44 @@ class DokterController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        try {
-            $dokter = Dokter::with('user','poli')->findOrFail($id);
+public function show(string $id)
+{
+    try {
+        $dokter = Dokter::with('user', 'poli')->findOrFail($id);
 
-            return response()->json($dokter);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Data tidak ditemukan'
-            ], 404);
-        }
+        // Hitung umur
+        $tgl_lahir = Carbon::parse($dokter->tgl_lahir);
+        $umur = $tgl_lahir->age;
+
+        // Format tanggal lahir & updated_at agar lebih ramah tampil
+        $tgl_lahir_formatted = $tgl_lahir->translatedFormat('d F Y'); // Contoh: 15 Maret 1985
+        $updated_at_formatted = Carbon::parse($dokter->updated_at)->locale('id')->translatedFormat('d F Y, H:i'). ' WIB'; // Contoh: 2 jam lalu
+
+        // Kirim data JSON lengkap
+        return response()->json([
+            'id' => $dokter->id,
+            'user' => $dokter->user,
+            'poli' => $dokter->poli,
+            'jenis_kelamin' => $dokter->jenis_kelamin,
+            'tempat_lahir' => $dokter->tempat_lahir,
+            'tgl_lahir' => $tgl_lahir_formatted,
+            'umur' => $umur,
+            'email' => $dokter->user->email,
+            'no_telp' => $dokter->no_telp,
+            'alamat' => $dokter->alamat,
+            'no_str' => $dokter->no_str,
+            'no_sip' => $dokter->no_sip,
+            'status' => $dokter->status,
+            'spesialisasi' => $dokter->spesialisasi,
+            'updated_at' => $updated_at_formatted,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Data tidak ditemukan'
+        ], 404);
     }
+}
 
     /**
      * Show the form for editing the specified resource.

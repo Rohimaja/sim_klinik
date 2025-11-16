@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('stok');
             $table->decimal('harga');
             $table->string('keterangan')->nullable();
+            $table->boolean('status')->default('true');
             $table->timestamps();
         });
     }

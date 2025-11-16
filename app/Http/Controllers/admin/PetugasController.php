@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\Store\StoreMasterPetugas;
 use App\Http\Requests\Admin\Update\UpdateMasterPetugas;
 use App\Models\Petugas;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -105,7 +106,41 @@ class PetugasController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $petugas = Petugas::with('user')->findOrFail($id);
+
+            // Hitung umur
+            $tgl_lahir = Carbon::parse($petugas->tgl_lahir);
+            $umur = $tgl_lahir->age;
+
+            // Format tanggal lahir & updated_at agar lebih ramah tampil
+            $tgl_lahir_formatted = $tgl_lahir->translatedFormat('d F Y'); // Contoh: 15 Maret 1985
+            $updated_at_formatted = Carbon::parse($petugas->updated_at)->locale('id')->translatedFormat('d F Y, H:i'). ' WIB'; // Contoh: 2 jam lalu
+
+            // Kirim data JSON lengkap
+            return response()->json([
+                'id' => $petugas->id,
+                'user' => $petugas->user,
+                'jenis_kelamin' => $petugas->jenis_kelamin,
+                'tempat_lahir' => $petugas->tempat_lahir,
+                'tgl_lahir' => $tgl_lahir_formatted,
+                'umur' => $umur,
+                'email' => $petugas->user->email,
+                'no_telp' => $petugas->no_telp,
+                'alamat' => $petugas->alamat,
+                'no_str' => $petugas->no_str,
+                'no_sip' => $petugas->no_sip,
+                'no_kta' => $petugas->no_nira,
+                'jabatan' => $petugas->jabatan,
+                'status' => $petugas->status,
+                'updated_at' => $updated_at_formatted,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan'
+            ], 404);
+        }
     }
 
     /**

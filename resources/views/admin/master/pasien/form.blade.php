@@ -125,20 +125,20 @@
                                 </span>
                             </div>
 
-                        @if (isset($pasien))
-                            <div>
-                                <label for="new_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    <input type="hidden" name="old_password" id="old_password" value="{{$pasien->user->password ?? ''}}">
-                                    Password Baru <span class="text-red-500">*</span>
-                                </label>
-                                <input type="password" id="new_password" name="new_password"
-                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                                    placeholder="Contoh: Surabaya">
-                                <span class="text-red-600 text-sm" id="new_password_error">
-                                    @error('new_password'){{ $message }}@enderror
-                                </span>
-                            </div>
-                        @endif
+                            @if (isset($pasien))
+                                <div>
+                                    <label for="new_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                        <input type="hidden" name="old_password" id="old_password" value="{{$pasien->user->password ?? ''}}">
+                                        Password Baru <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="password" id="new_password" name="new_password"
+                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                        placeholder="Contoh: Surabaya">
+                                    <span class="text-red-600 text-sm" id="new_password_error">
+                                        @error('new_password'){{ $message }}@enderror
+                                    </span>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -300,7 +300,6 @@
                             </button>
                         </div>
                     </div>
-
                 </form>
             </div>
         </div>

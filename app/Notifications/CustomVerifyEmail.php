@@ -38,16 +38,20 @@ class CustomVerifyEmail extends Notification
     public function toMail(object $notifiable): MailMessage
     {
     // Ambil nim dari relasi mahasiswa
-    // $nim = $notifiable->nim ?? '(tidak tersedia)';
+        $username = $notifiable->username ?? '(tidak tersedia)';
         $verifyUrl = $this->verificationUrl($notifiable);
 
         return (new MailMessage)
-        ->subject('Verifikasi Alamat Email Anda')
+        ->subject('Akun Anda Telah Dibuat - Verifikasi & Informasi Login')
         ->greeting('Halo ' . $notifiable->name . '!')
-        ->line('Silakan klik tombol di bawah ini untuk memverifikasi email Anda.')
-        ->action('Verifikasi Email', $verifyUrl)
-        ->line('Jika Anda tidak membuat akun, Anda bisa mengabaikan email ini.')
-        ->salutation('Terima kasih, SIM - KLINIK');
+        ->line('Akun Anda telah berhasil dibuat pada sistem SIM-KLINIK.')
+        ->line('Berikut adalah informasi login Anda:')
+        ->line('**Username:** ' . $username)
+        ->line('**Password Sementara:** ' . $username)
+        ->line('Silakan klik tombol di bawah ini untuk memverifikasi akun Anda.')
+        ->action('Verifikasi Akun', $verifyUrl)
+        ->line('⚠️ Demi keamanan, segera ubah password Anda setelah berhasil login melalui menu Profile.')
+        ->salutation('Terima kasih, SIM-KLINIK');
     }
 
     protected function verificationUrl($notifiable)
