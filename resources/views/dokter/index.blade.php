@@ -211,32 +211,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Notifikasi Penting -->
-                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                        <div class="p-6">
-                            <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center">
-                                <svg class="w-5 h-5 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                                </svg>
-                                Perhatian Khusus
-                            </h3>
-                            <div class="space-y-3">
-                                <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
-                                    <p class="text-sm font-medium text-red-800 dark:text-red-300">⚠️ Pasien dengan alergi obat</p>
-                                    <p class="text-xs text-red-600 dark:text-red-400 mt-1">Siti Nurhaliza - Alergi Penisilin</p>
-                                </div>
-                                <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
-                                    <p class="text-sm font-medium text-yellow-800 dark:text-yellow-300">🔔 Pasien kontrol rutin</p>
-                                    <p class="text-xs text-yellow-600 dark:text-yellow-400 mt-1">Rudi Hartono - Hipertensi</p>
-                                </div>
-                                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
-                                    <p class="text-sm font-medium text-blue-800 dark:text-blue-300">📋 Rujukan dari poli lain</p>
-                                    <p class="text-xs text-blue-600 dark:text-blue-400 mt-1">Dewi Lestari - Dari Poli Anak</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 

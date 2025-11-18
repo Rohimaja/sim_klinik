@@ -228,7 +228,18 @@
                                     ['id' => 3, 'nama' => 'Ahmad Fauzi', 'rm' => 'RM-003', 'dokter' => 'dr. Desi Amalia', 'poli' => 'Poli Anak', 'status' => 'sedang-periksa', 'tgl_lahir' => '10-12-1992', 'jk' => 'Laki-laki', 'email' => 'ahmad@email.com', 'telp' => '081234567892', 'alamat' => 'Jl. Gatot Subroto No. 5', 'bpjs' => '-', 'jenis_pasien' => 'Umum', 'tgl_kunjungan' => '18-11-2025 09:00'],
                                     ['id' => 4, 'nama' => 'Dewi Lestari', 'rm' => 'RM-004', 'dokter' => 'dr. Edwin Kurniawan', 'poli' => 'Poli Bedah', 'status' => 'selesai', 'tgl_lahir' => '03-03-1988', 'jk' => 'Perempuan', 'email' => 'dewi@email.com', 'telp' => '081234567893', 'alamat' => 'Jl. Ahmad Yani No. 15', 'bpjs' => '0001234567893', 'jenis_pasien' => 'BPJS', 'tgl_kunjungan' => '18-11-2025 07:30'],
                                     ['id' => 5, 'nama' => 'Rudi Hartono', 'rm' => 'RM-005', 'dokter' => 'dr. Putri Lestari', 'poli' => 'Poli Kulit', 'status' => 'batal', 'tgl_lahir' => '28-07-1995', 'jk' => 'Laki-laki', 'email' => 'rudi@email.com', 'telp' => '081234567894', 'alamat' => 'Jl. Diponegoro No. 8', 'bpjs' => '-', 'jenis_pasien' => 'Umum', 'tgl_kunjungan' => '18-11-2025 10:00'],
+                                    ['id' => 6, 'nama' => 'Lina Rosita', 'rm' => 'RM-006', 'dokter' => 'dr. Maya Arsita', 'poli' => 'Poli Kandungan', 'status' => 'menunggu-skrining', 'tgl_lahir' => '12-02-1991', 'jk' => 'Perempuan', 'email' => 'lina@email.com', 'telp' => '081234567895', 'alamat' => 'Jl. Kenanga No. 3', 'bpjs' => '0001234567894', 'jenis_pasien' => 'BPJS', 'tgl_kunjungan' => '18-11-2025 07:45'],
+                                    ['id' => 7, 'nama' => 'Doni Saputra', 'rm' => 'RM-007', 'dokter' => 'dr. Rudi Santoso', 'poli' => 'Poli Mata', 'status' => 'menunggu-dokter', 'tgl_lahir' => '09-09-1993', 'jk' => 'Laki-laki', 'email' => 'doni@email.com', 'telp' => '081234567896', 'alamat' => 'Jl. Melati No. 12', 'bpjs' => '-', 'jenis_pasien' => 'Umum', 'tgl_kunjungan' => '18-11-2025 08:10'],
+                                    ['id' => 8, 'nama' => 'Ayu Kartika', 'rm' => 'RM-008', 'dokter' => 'dr. Yuni Pratiwi', 'poli' => 'Poli Gizi', 'status' => 'sedang-periksa', 'tgl_lahir' => '18-04-1997', 'jk' => 'Perempuan', 'email' => 'ayu@email.com', 'telp' => '081234567897', 'alamat' => 'Jl. Rajawali No. 9', 'bpjs' => '-', 'jenis_pasien' => 'Umum', 'tgl_kunjungan' => '18-11-2025 09:20'],
+                                    ['id' => 9, 'nama' => 'Hendra Wijaya', 'rm' => 'RM-009', 'dokter' => 'dr. Farhan Hidayat', 'poli' => 'Poli Saraf', 'status' => 'menunggu-skrining', 'tgl_lahir' => '03-11-1980', 'jk' => 'Laki-laki', 'email' => 'hendra@email.com', 'telp' => '081234567898', 'alamat' => 'Jl. Semeru No. 2', 'bpjs' => '0001234567895', 'jenis_pasien' => 'BPJS', 'tgl_kunjungan' => '18-11-2025 08:55'],
+                                    ['id' => 10, 'nama' => 'Mira Agustin', 'rm' => 'RM-010', 'dokter' => 'dr. Rani Safitri', 'poli' => 'Poli Umum', 'status' => 'menunggu-dokter', 'tgl_lahir' => '21-06-1994', 'jk' => 'Perempuan', 'email' => 'mira@email.com', 'telp' => '081234567899', 'alamat' => 'Jl. Mangga No. 14', 'bpjs' => '-', 'jenis_pasien' => 'Umum', 'tgl_kunjungan' => '18-11-2025 09:35'],
+                                    ['id' => 11, 'nama' => 'Umar Hasan', 'rm' => 'RM-011', 'dokter' => 'dr. Bayu Prakoso', 'poli' => 'Poli Jantung', 'status' => 'sedang-periksa', 'tgl_lahir' => '10-01-1983', 'jk' => 'Laki-laki', 'email' => 'umar@email.com', 'telp' => '081234567800', 'alamat' => 'Jl. Anggrek No. 5', 'bpjs' => '0001234567896', 'jenis_pasien' => 'BPJS', 'tgl_kunjungan' => '18-11-2025 10:10'],
+                                    ['id' => 12, 'nama' => 'Salsa Dewanti', 'rm' => 'RM-012', 'dokter' => 'dr. Novi Astuti', 'poli' => 'Poli Paru', 'status' => 'menunggu-skrining', 'tgl_lahir' => '05-02-1999', 'jk' => 'Perempuan', 'email' => 'salsa@email.com', 'telp' => '081234567801', 'alamat' => 'Jl. Mawar No. 18', 'bpjs' => '-', 'jenis_pasien' => 'Umum', 'tgl_kunjungan' => '18-11-2025 07:50'],
+                                    ['id' => 13, 'nama' => 'Gilang Mahendra', 'rm' => 'RM-013', 'dokter' => 'dr. Putri Lestari', 'poli' => 'Poli Kulit', 'status' => 'batal', 'tgl_lahir' => '30-08-1990', 'jk' => 'Laki-laki', 'email' => 'gilang@email.com', 'telp' => '081234567802', 'alamat' => 'Jl. Diponegoro No. 30', 'bpjs' => '-', 'jenis_pasien' => 'Umum', 'tgl_kunjungan' => '18-11-2025 11:00'],
+                                    ['id' => 14, 'nama' => 'Rara Melani', 'rm' => 'RM-014', 'dokter' => 'dr. Andi Putra', 'poli' => 'Poli Umum', 'status' => 'selesai', 'tgl_lahir' => '12-12-1998', 'jk' => 'Perempuan', 'email' => 'rara@email.com', 'telp' => '081234567803', 'alamat' => 'Jl. Balai Kota No. 6', 'bpjs' => '0001234567897', 'jenis_pasien' => 'BPJS', 'tgl_kunjungan' => '18-11-2025 06:45'],
+                                    ['id' => 15, 'nama' => 'Yoga Prasetyo', 'rm' => 'RM-015', 'dokter' => 'dr. Farhan Hidayat', 'poli' => 'Poli Saraf', 'status' => 'menunggu-dokter', 'tgl_lahir' => '27-03-1991', 'jk' => 'Laki-laki', 'email' => 'yoga@email.com', 'telp' => '081234567804', 'alamat' => 'Jl. Srikaya No. 7', 'bpjs' => '-', 'jenis_pasien' => 'Umum', 'tgl_kunjungan' => '18-11-2025 10:20'],
                                 ];
+
                             @endphp
 
                             @foreach ($kunjungan as $i => $k)
@@ -256,9 +267,6 @@
                                     </td>
                                     <td class="px-4 py-3 whitespace-nowrap text-sm">
                                         <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400">
-                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                                            </svg>
                                             {{ $k['poli'] }}
                                         </span>
                                     </td>
@@ -490,12 +498,6 @@
                                 </svg>
                                 Tutup
                             </button>
-                            <button class="px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-lg hover:from-indigo-600 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg font-medium">
-                                <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
-                                </svg>
-                                Cetak Detail
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -538,7 +540,7 @@
                         <div class="p-6">
                             <p class="text-gray-700 dark:text-gray-300 text-base leading-relaxed">
                                 Apakah Anda yakin ingin menghapus data kunjungan ini? 
-                                <span class="font-semibold text-red-600 dark:text-red-400">Semua data yang terkait akan dihapus secara permanen</span> 
+                                <span class="font-semibold text-red-600 dark:text-red-400">Semua data yang terkait akan dibatalkan secara permanen</span> 
                                 dan tidak dapat dikembalikan.
                             </p>
                             
@@ -548,7 +550,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
                                     <p class="text-sm text-red-800 dark:text-red-300">
-                                        <span class="font-semibold">Peringatan:</span> Data yang telah dihapus tidak dapat dipulihkan kembali.
+                                        <span class="font-semibold">Peringatan:</span> Data yang telah dibatalkan tidak dapat dipulihkan kembali.
                                     </p>
                                 </div>
                             </div>

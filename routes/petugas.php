@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\petugas\KunjunganPasienController;
+use App\Http\Controllers\Petugas\KunjunganPasienController;
 use Illuminate\Support\Facades\Route;
 
 

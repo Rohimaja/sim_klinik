@@ -13,8 +13,8 @@ Route::get('/', function () {
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth'])->get('/dashboard', function () {
-    $user = auth()->user();
-    $role = auth()->user()->role;
+    $user = Auth::user();
+    $role = $user->role;
 
     // 🔹 Cek dulu super admin
     if ($role === 'admin' && $user->admin->is_super_admin == 1) {
