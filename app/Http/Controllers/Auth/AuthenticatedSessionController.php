@@ -47,6 +47,27 @@ class AuthenticatedSessionController extends Controller
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'username' => 'required|string',
+    //         'password' => 'required|string',
+    //     ]);
+
+    //     if (Auth::attempt([
+    //         'username' => $request->username,
+    //         'password' => $request->password
+    //     ])) {
+    //         $request->session()->regenerate();
+    //         return redirect()->intended('/dashboard');
+    //     }
+
+    //     return back()->withErrors([
+    //         'username' => 'Username atau password salah.',
+    //     ]);
+    // }
+
+
     /**
      * Destroy an authenticated session.
      */

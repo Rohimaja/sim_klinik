@@ -70,9 +70,11 @@ class UsersTableSeeder extends Seeder
                     'no_telp' => '087997765362',
                     'alamat' => 'Jember',
                     'is_super_admin' => '1',
+                    'status' => 1, // <--- WAJIB
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]),
+
 
                 default => null,
             };

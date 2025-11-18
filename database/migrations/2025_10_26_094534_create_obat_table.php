@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('obat', function (Blueprint $table) {
             $table->id();
-            $table->string('nama','100');
-            $table->string('jenis_obat','100');
+            $table->string('nama', 100);
+            $table->string('jenis_obat', 100);
             $table->integer('stok');
-            $table->decimal('harga');
+            $table->decimal('harga', 8, 2);
             $table->string('keterangan')->nullable();
-            $table->boolean('status')->default('true');
+            $table->boolean('status')->default(true);   // ✔ perbaikan
             $table->timestamps();
         });
     }
