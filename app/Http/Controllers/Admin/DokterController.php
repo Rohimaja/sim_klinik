@@ -3,27 +3,29 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Store\StoreMasterPasien;
-use App\Http\Requests\Admin\Update\UpdateMasterPasien;
-use App\Models\Pasien;
+use App\Http\Requests\Admin\Store\StoreMasterDokter;
+use App\Http\Requests\Admin\Update\UpdateMasterDokter;
+use App\Models\Dokter;
+use App\Models\Poli;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
-class PasienController extends Controller
+class DokterController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $title = 'Master Pasien';
-        $pasien = Pasien::all();
+        $title = 'Master Dokter';
+        $dokter = Dokter::with( ['user', 'poli'])->orderByDesc('id')->get();
 
-        return view('admin.master.pasien.index',compact('title','pasien'));
+        return view('admin.master.dokter.index',compact('title','dokter'));
     }
 
     /**
@@ -31,60 +33,59 @@ class PasienController extends Controller
      */
     public function create()
     {
-        $title = 'Tambah Pasien';
+        $title = 'Tambah Dokter';
+        $poli = Poli::all();
 
-        return view('admin.master.pasien.form',compact('title'));
+        return view('admin.master.dokter.form',compact('title', 'poli'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMasterPasien $request)
+    public function store(StoreMasterDokter $request)
     {
         $request->merge([
             'nama' => ucwords(trim($request->nama)),
             'tempat_lahir' => ucwords(trim($request->tempat_lahir)),
-            'no_bpjs' => trim($request->no_bpjs),
         ]);
 
         try {
 
             DB::transaction(function () use ($request) {
 
-                $no_rm = $this->generateNoRm();
-
                 $user = User::create([
                     'nama' => $request->nama,
                     'email' => $request->email,
                     'username' => $request->username,
-                    'role' => 'pasien',
+                    'role' => 'dokter',
                     'password' => Hash::make($request->username),
                 ]);
 
                 $fotoPath = null;
                 if ($request->hasFile('foto')) {
-                    $filename = 'pasien/profile_' . $user->id . '.' . $request->file('foto')->extension();
+                    $filename = 'dokter/profile_' . $user->id . '.' . $request->file('foto')->extension();
                     $fotoPath = $request->file('foto')->storeAs( 'profiles', $filename, 'public');
                 }
                 $data = $request->validated();
                 $data = [
                     'user_id' => $user->id,
-                    'no_rm' => $no_rm,
-                    'jenis_pasien' => $request->jenis_pasien,
-                    'no_bpjs' => $request->no_bpjs,
+                    'poli_id' => $request->poli_id,
+                    'no_str' => $request->no_str,
+                    'no_sip' => $request->no_sip,
                     'jenis_kelamin' => $request->jenis_kelamin,
                     'tempat_lahir' => $request->tempat_lahir,
                     'tgl_lahir' => $request->tgl_lahir,
                     'no_telp' => $request->no_telp,
                     'alamat' => $request->alamat,
                     'foto' => $fotoPath,
+                    'spesialisasi' => $request->spesialisasi,
                     'status' => $request->status,
                 ];
 
-                Pasien::create($data);
+                Dokter::create($data);
             });
 
-            return redirect()->route('admin.master-pasien.index')->with([
+            return redirect()->route('admin.master-dokter.index')->with([
                 'status' => 'success',
                 'message' => 'Data Berhasil Ditambahkan'
             ]);
@@ -105,64 +106,100 @@ class PasienController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        //
+public function show(string $id)
+{
+    try {
+        $dokter = Dokter::with('user', 'poli')->findOrFail($id);
+
+        // Hitung umur
+        $tgl_lahir = Carbon::parse($dokter->tgl_lahir);
+        $umur = $tgl_lahir->age;
+
+        // Format tanggal lahir & updated_at agar lebih ramah tampil
+        $tgl_lahir_formatted = $tgl_lahir->translatedFormat('d F Y'); // Contoh: 15 Maret 1985
+        $updated_at_formatted = Carbon::parse($dokter->updated_at)->locale('id')->translatedFormat('d F Y, H:i'). ' WIB'; // Contoh: 2 jam lalu
+
+        // Kirim data JSON lengkap
+        return response()->json([
+            'id' => $dokter->id,
+            'user' => $dokter->user,
+            'poli' => $dokter->poli,
+            'jenis_kelamin' => $dokter->jenis_kelamin,
+            'tempat_lahir' => $dokter->tempat_lahir,
+            'tgl_lahir' => $tgl_lahir_formatted,
+            'umur' => $umur,
+            'email' => $dokter->user->email,
+            'no_telp' => $dokter->no_telp,
+            'alamat' => $dokter->alamat,
+            'no_str' => $dokter->no_str,
+            'no_sip' => $dokter->no_sip,
+            'status' => $dokter->status,
+            'spesialisasi' => $dokter->spesialisasi,
+            'updated_at' => $updated_at_formatted,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Data tidak ditemukan'
+        ], 404);
     }
+}
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
     {
-        $title = 'Perbarui Pasien';
-        $pasien = Pasien::findOrFail($id);
+        $title = 'Perbarui Dokter';
+        $poli = Poli::all();
+        $dokter = Dokter::findOrFail($id);
 
-        return view('admin.master.pasien.form',compact('title','pasien'));
+        return view('admin.master.dokter.form',compact('title','dokter','poli'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMasterPasien $request, $id)
+    public function update(UpdateMasterDokter $request, $id)
     {
         $request->merge([
             'nama' => ucwords(trim($request->nama)),
             'tempat_lahir' => ucwords(trim($request->tempat_lahir)),
-            'no_bpjs' => trim($request->no_bpjs),
         ]);
 
         try {
 
             DB::transaction(function () use($request, $id) {
 
-                $pasien = Pasien::findOrFail($id);
-                $user = $pasien->user;
+                $dokter = Dokter::findOrFail($id);
+                $user = $dokter->user;
                 $data = $request->validated();
 
                 if ($request->hasFile('foto')) {
-                    if ($pasien->foto && Storage::disk('public')->exists($pasien->foto)) {
-                        Storage::disk('public')->delete($pasien->foto);
+                    if ($dokter->foto && Storage::disk('public')->exists($dokter->foto)) {
+                        Storage::disk('public')->delete($dokter->foto);
                     }
 
-                    $filename = 'pasien/profile_' . $pasien->id . '.' . $request->file('foto')->extension();
+                    $filename = 'dokter/profile_' . $dokter->id . '.' . $request->file('foto')->extension();
                     $fotoPath = $request->file('foto')->storeAs('profiles', $filename, 'public');
-                    $pasien->foto = $fotoPath;
+                    $dokter->foto = $fotoPath;
                 }
 
                 $data = [
-                    'jenis_pasien' => $request->jenis_pasien,
-                    'no_bpjs' => $request->no_bpjs,
+                    'poli_id' => $request->poli_id,
+                    'no_str' => $request->no_str,
+                    'no_sip' => $request->no_sip,
                     'jenis_kelamin' => $request->jenis_kelamin,
                     'tempat_lahir' => $request->tempat_lahir,
                     'tgl_lahir' => $request->tgl_lahir,
                     'no_telp' => $request->no_telp,
                     'alamat' => $request->alamat,
-                    'foto' => $pasien->foto,
+                    'foto' => $dokter->foto,
+                    'spesialisasi' => $request->spesialisasi,
                     'status' => $request->status,
                 ];
 
-                $pasien->update($data);
+                $dokter->update($data);
 
                 $userData =[
                     'nama' => $request->nama,
@@ -177,13 +214,13 @@ class PasienController extends Controller
                 $user->update($userData);
             });
 
-            return redirect()->route('admin.master-pasien.index')->with([
+            return redirect()->route('admin.master-dokter.index')->with([
                 'status' => 'success',
                 'message' => 'Data Berhasil Diperbarui'
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Gagal Memperbarui Pasien', [
+            Log::error('Gagal Memperbarui Dokter', [
                 'error' => $e->getMessage(),
                 'stack' => $e->getTraceAsString(),
             ]);
@@ -200,26 +237,25 @@ class PasienController extends Controller
      */
     public function destroy(string $id)
     {
-        //
-    }
+        try {
+            $dokter = Dokter::findOrFail($id);
+            $dokter->delete();
 
-    private function generateNoRm()
-    {
-        // Ambil nomor RM terakhir
-        $last = Pasien::orderBy('no_rm', 'desc')->first();
+            return redirect()->route('admin.master-dokter.index')->with([
+                'status' => 'success',
+                'message' => 'Data Berhasil Dihapus'
+            ]);
 
-        if ($last) {
-            // Ambil 8 digit terakhir dan ubah ke integer
-            $lastNumber = (int) $last->no_rm;
+        } catch (\Exception $e) {
+            Log::error('Gagal Menghapus Dokter', [
+                'error' => $e->getMessage(),
+                'stack' => $e->getTraceAsString(),
+            ]);
 
-            // Tambah 1, lalu padding jadi 8 digit
-            $newNumber = str_pad($lastNumber + 1, 8, '0', STR_PAD_LEFT);
-        } else {
-            // Jika belum ada data sama sekali
-            $newNumber = '0001';
+            return redirect()->back()->withInput()->with([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat menghapus data: '
+            ]);
         }
-
-        return $newNumber;
     }
-
 }

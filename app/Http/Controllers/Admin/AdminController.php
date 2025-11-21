@@ -3,28 +3,28 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Store\StoreMasterDokter;
-use App\Http\Requests\Admin\Update\UpdateMasterDokter;
-use App\Models\Dokter;
-use App\Models\Poli;
+use App\Http\Requests\Admin\Store\StoreMasterAdmin;
+use App\Http\Requests\Admin\Update\UpdateMasterAdmin;
+use App\Models\Admin;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
-class DokterController extends Controller
+class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $title = 'Master Dokter';
-        $dokter = Dokter::with( ['user', 'poli'])->orderByDesc('id')->get();
+        $title = 'Master Admin';
+        $admin = Admin::with('user')->get();
 
-        return view('admin.master.dokter.index',compact('title','dokter'));
+        return view('admin.master.admin.index',compact('title','admin'));
     }
 
     /**
@@ -32,18 +32,18 @@ class DokterController extends Controller
      */
     public function create()
     {
-        $title = 'Tambah Dokter';
-        $poli = Poli::all();
+        $title = 'Tanbah Admin';
+        // $admin = Admin::with('user')->get();
 
-        return view('admin.master.dokter.form',compact('title', 'poli'));
+        return view('admin.master.admin.form',compact('title'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMasterDokter $request)
+    public function store(StoreMasterAdmin $request)
     {
-        $request->merge([
+         $request->merge([
             'nama' => ucwords(trim($request->nama)),
             'tempat_lahir' => ucwords(trim($request->tempat_lahir)),
         ]);
@@ -56,41 +56,38 @@ class DokterController extends Controller
                     'nama' => $request->nama,
                     'email' => $request->email,
                     'username' => $request->username,
-                    'role' => 'dokter',
+                    'role' => 'admin',
                     'password' => Hash::make($request->username),
                 ]);
 
                 $fotoPath = null;
                 if ($request->hasFile('foto')) {
-                    $filename = 'dokter/profile_' . $user->id . '.' . $request->file('foto')->extension();
+                    $filename = 'admin/profile_' . $user->id . '.' . $request->file('foto')->extension();
                     $fotoPath = $request->file('foto')->storeAs( 'profiles', $filename, 'public');
                 }
                 $data = $request->validated();
                 $data = [
                     'user_id' => $user->id,
-                    'poli_id' => $request->poli_id,
-                    'no_str' => $request->no_str,
-                    'no_sip' => $request->no_sip,
                     'jenis_kelamin' => $request->jenis_kelamin,
                     'tempat_lahir' => $request->tempat_lahir,
                     'tgl_lahir' => $request->tgl_lahir,
                     'no_telp' => $request->no_telp,
                     'alamat' => $request->alamat,
                     'foto' => $fotoPath,
-                    'spesialisasi' => $request->spesialisasi,
+                    'is_super_admin' => 0,
                     'status' => $request->status,
                 ];
 
-                Dokter::create($data);
+                Admin::create($data);
             });
 
-            return redirect()->route('admin.master-dokter.index')->with([
+            return redirect()->route('superadmin.master-admin.index')->with([
                 'status' => 'success',
                 'message' => 'Data Berhasil Ditambahkan'
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Gagal Menambahkan Dokter', [
+            Log::error('Gagal Menambahkan Admin', [
                 'error' => $e->getMessage(),
                 'stack' => $e->getTraceAsString(),
             ]);
@@ -108,9 +105,30 @@ class DokterController extends Controller
     public function show(string $id)
     {
         try {
-            $dokter = Dokter::with('user','poli')->findOrFail($id);
+            $admin = Admin::with('user')->findOrFail($id);
 
-            return response()->json($dokter);
+            // Hitung umur
+            $tgl_lahir = Carbon::parse($admin->tgl_lahir);
+            $umur = $tgl_lahir->age;
+
+            // Format tanggal lahir & updated_at agar lebih ramah tampil
+            $tgl_lahir_formatted = $tgl_lahir->translatedFormat('d F Y'); // Contoh: 15 Maret 1985
+            $updated_at_formatted = Carbon::parse($admin->updated_at)->locale('id')->translatedFormat('d F Y, H:i'). ' WIB'; // Contoh: 2 jam lalu
+
+            // Kirim data JSON lengkap
+            return response()->json([
+                'id' => $admin->id,
+                'user' => $admin->user,
+                'jenis_kelamin' => $admin->jenis_kelamin,
+                'tempat_lahir' => $admin->tempat_lahir,
+                'tgl_lahir' => $tgl_lahir_formatted,
+                'umur' => $umur,
+                'email' => $admin->user->email,
+                'no_telp' => $admin->no_telp,
+                'alamat' => $admin->alamat,
+                'status' => $admin->status,
+                'updated_at' => $updated_at_formatted,
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -124,17 +142,16 @@ class DokterController extends Controller
      */
     public function edit(string $id)
     {
-        $title = 'Perbarui Dokter';
-        $poli = Poli::all();
-        $dokter = Dokter::findOrFail($id);
+        $title = 'Perbarui Admin';
+        $admin = Admin::findOrFail($id);
 
-        return view('admin.master.dokter.form',compact('title','dokter','poli'));
+        return view('admin.master.admin.form',compact('title','admin'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMasterDokter $request, $id)
+    public function update(UpdateMasterAdmin $request, $id)
     {
         $request->merge([
             'nama' => ucwords(trim($request->nama)),
@@ -145,35 +162,31 @@ class DokterController extends Controller
 
             DB::transaction(function () use($request, $id) {
 
-                $dokter = Dokter::findOrFail($id);
-                $user = $dokter->user;
+                $admin = Admin::findOrFail($id);
+                $user = $admin->user;
                 $data = $request->validated();
 
                 if ($request->hasFile('foto')) {
-                    if ($dokter->foto && Storage::disk('public')->exists($dokter->foto)) {
-                        Storage::disk('public')->delete($dokter->foto);
+                    if ($admin->foto && Storage::disk('public')->exists($admin->foto)) {
+                        Storage::disk('public')->delete($admin->foto);
                     }
 
-                    $filename = 'dokter/profile_' . $dokter->id . '.' . $request->file('foto')->extension();
+                    $filename = 'admin/profile_' . $admin->id . '.' . $request->file('foto')->extension();
                     $fotoPath = $request->file('foto')->storeAs('profiles', $filename, 'public');
-                    $dokter->foto = $fotoPath;
+                    $admin->foto = $fotoPath;
                 }
 
                 $data = [
-                    'poli_id' => $request->poli_id,
-                    'no_str' => $request->no_str,
-                    'no_sip' => $request->no_sip,
                     'jenis_kelamin' => $request->jenis_kelamin,
                     'tempat_lahir' => $request->tempat_lahir,
                     'tgl_lahir' => $request->tgl_lahir,
                     'no_telp' => $request->no_telp,
                     'alamat' => $request->alamat,
-                    'foto' => $dokter->foto,
-                    'spesialisasi' => $request->spesialisasi,
+                    'foto' => $admin->foto,
                     'status' => $request->status,
                 ];
 
-                $dokter->update($data);
+                $admin->update($data);
 
                 $userData =[
                     'nama' => $request->nama,
@@ -188,7 +201,7 @@ class DokterController extends Controller
                 $user->update($userData);
             });
 
-            return redirect()->route('admin.master-dokter.index')->with([
+            return redirect()->route('superadmin.master-admin.index')->with([
                 'status' => 'success',
                 'message' => 'Data Berhasil Diperbarui'
             ]);
@@ -212,16 +225,16 @@ class DokterController extends Controller
     public function destroy(string $id)
     {
         try {
-            $dokter = Dokter::findOrFail($id);
-            $dokter->delete();
+            $admin = Admin::findOrFail($id);
+            $admin->delete();
 
-            return redirect()->route('admin.master-dokter.index')->with([
+            return redirect()->route('admin.master-admin.index')->with([
                 'status' => 'success',
                 'message' => 'Data Berhasil Dihapus'
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Gagal Menghapus Dokter', [
+            Log::error('Gagal Menghapus Admin', [
                 'error' => $e->getMessage(),
                 'stack' => $e->getTraceAsString(),
             ]);

@@ -3,27 +3,28 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Store\StoreMasterAdmin;
-use App\Http\Requests\Admin\Update\UpdateMasterAdmin;
-use App\Models\Admin;
+use App\Http\Requests\Admin\Store\StoreMasterPetugas;
+use App\Http\Requests\Admin\Update\UpdateMasterPetugas;
+use App\Models\Petugas;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
-class AdminController extends Controller
+class PetugasController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $title = 'Master Admin';
-        $admin = Admin::with('user')->get();
+        $title = 'Master Petugas';
+        $petugas = Petugas::with('user')->get();
 
-        return view('admin.master.admin.index',compact('title','admin'));
+        return view('admin.master.petugas.index',compact('title','petugas'));
     }
 
     /**
@@ -31,18 +32,17 @@ class AdminController extends Controller
      */
     public function create()
     {
-        $title = 'Tanbah Admin';
-        // $admin = Admin::with('user')->get();
+        $title = 'Tambah Petugas';
 
-        return view('admin.master.admin.form',compact('title'));
+        return view('admin.master.petugas.form',compact('title'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMasterAdmin $request)
+    public function store(StoreMasterPetugas $request)
     {
-         $request->merge([
+        $request->merge([
             'nama' => ucwords(trim($request->nama)),
             'tempat_lahir' => ucwords(trim($request->tempat_lahir)),
         ]);
@@ -55,38 +55,41 @@ class AdminController extends Controller
                     'nama' => $request->nama,
                     'email' => $request->email,
                     'username' => $request->username,
-                    'role' => 'admin',
+                    'role' => 'petugas',
                     'password' => Hash::make($request->username),
                 ]);
 
                 $fotoPath = null;
                 if ($request->hasFile('foto')) {
-                    $filename = 'admin/profile_' . $user->id . '.' . $request->file('foto')->extension();
+                    $filename = 'petugas/profile_' . $user->id . '.' . $request->file('foto')->extension();
                     $fotoPath = $request->file('foto')->storeAs( 'profiles', $filename, 'public');
                 }
                 $data = $request->validated();
                 $data = [
                     'user_id' => $user->id,
+                    'jabatan' => $request->jabatan,
+                    'no_str' => $request->no_str,
+                    'no_sip' => $request->no_sip,
+                    'no_kta' => $request->no_kta,
                     'jenis_kelamin' => $request->jenis_kelamin,
                     'tempat_lahir' => $request->tempat_lahir,
                     'tgl_lahir' => $request->tgl_lahir,
                     'no_telp' => $request->no_telp,
                     'alamat' => $request->alamat,
                     'foto' => $fotoPath,
-                    'is_super_admin' => 0,
                     'status' => $request->status,
                 ];
 
-                Admin::create($data);
+                Petugas::create($data);
             });
 
-            return redirect()->route('superadmin.master-admin.index')->with([
+            return redirect()->route('admin.master-petugas.index')->with([
                 'status' => 'success',
                 'message' => 'Data Berhasil Ditambahkan'
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Gagal Menambahkan Admin', [
+            Log::error('Gagal Menambahkan Petugas', [
                 'error' => $e->getMessage(),
                 'stack' => $e->getTraceAsString(),
             ]);
@@ -103,7 +106,41 @@ class AdminController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $petugas = Petugas::with('user')->findOrFail($id);
+
+            // Hitung umur
+            $tgl_lahir = Carbon::parse($petugas->tgl_lahir);
+            $umur = $tgl_lahir->age;
+
+            // Format tanggal lahir & updated_at agar lebih ramah tampil
+            $tgl_lahir_formatted = $tgl_lahir->translatedFormat('d F Y'); // Contoh: 15 Maret 1985
+            $updated_at_formatted = Carbon::parse($petugas->updated_at)->locale('id')->translatedFormat('d F Y, H:i'). ' WIB'; // Contoh: 2 jam lalu
+
+            // Kirim data JSON lengkap
+            return response()->json([
+                'id' => $petugas->id,
+                'user' => $petugas->user,
+                'jenis_kelamin' => $petugas->jenis_kelamin,
+                'tempat_lahir' => $petugas->tempat_lahir,
+                'tgl_lahir' => $tgl_lahir_formatted,
+                'umur' => $umur,
+                'email' => $petugas->user->email,
+                'no_telp' => $petugas->no_telp,
+                'alamat' => $petugas->alamat,
+                'no_str' => $petugas->no_str,
+                'no_sip' => $petugas->no_sip,
+                'no_kta' => $petugas->no_nira,
+                'jabatan' => $petugas->jabatan,
+                'status' => $petugas->status,
+                'updated_at' => $updated_at_formatted,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan'
+            ], 404);
+        }
     }
 
     /**
@@ -111,16 +148,16 @@ class AdminController extends Controller
      */
     public function edit(string $id)
     {
-        $title = 'Perbarui Admin';
-        $admin = Admin::findOrFail($id);
+        $title = 'Perbarui Petugas';
+        $petugas = Petugas::findOrFail($id);
 
-        return view('admin.master.admin.form',compact('title','admin'));
+        return view('admin.master.petugas.form',compact('title','petugas'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMasterAdmin $request, $id)
+    public function update(UpdateMasterPetugas $request, $id)
     {
         $request->merge([
             'nama' => ucwords(trim($request->nama)),
@@ -131,31 +168,35 @@ class AdminController extends Controller
 
             DB::transaction(function () use($request, $id) {
 
-                $admin = Admin::findOrFail($id);
-                $user = $admin->user;
+                $petugas = Petugas::findOrFail($id);
+                $user = $petugas->user;
                 $data = $request->validated();
 
                 if ($request->hasFile('foto')) {
-                    if ($admin->foto && Storage::disk('public')->exists($admin->foto)) {
-                        Storage::disk('public')->delete($admin->foto);
+                    if ($petugas->foto && Storage::disk('public')->exists($petugas->foto)) {
+                        Storage::disk('public')->delete($petugas->foto);
                     }
 
-                    $filename = 'admin/profile_' . $admin->id . '.' . $request->file('foto')->extension();
+                    $filename = 'petugas/profile_' . $petugas->id . '.' . $request->file('foto')->extension();
                     $fotoPath = $request->file('foto')->storeAs('profiles', $filename, 'public');
-                    $admin->foto = $fotoPath;
+                    $petugas->foto = $fotoPath;
                 }
 
                 $data = [
+                    'no_str' => $request->no_str,
+                    'no_sip' => $request->no_sip,
+                    'no_kta' => $request->no_kta,
+                    'jabatan' => $request->jabatan,
                     'jenis_kelamin' => $request->jenis_kelamin,
                     'tempat_lahir' => $request->tempat_lahir,
                     'tgl_lahir' => $request->tgl_lahir,
                     'no_telp' => $request->no_telp,
                     'alamat' => $request->alamat,
-                    'foto' => $admin->foto,
+                    'foto' => $petugas->foto,
                     'status' => $request->status,
                 ];
 
-                $admin->update($data);
+                $petugas->update($data);
 
                 $userData =[
                     'nama' => $request->nama,
@@ -170,13 +211,13 @@ class AdminController extends Controller
                 $user->update($userData);
             });
 
-            return redirect()->route('superadmin.master-admin.index')->with([
+            return redirect()->route('admin.master-petugas.index')->with([
                 'status' => 'success',
                 'message' => 'Data Berhasil Diperbarui'
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Gagal Memperbarui Dokter', [
+            Log::error('Gagal Memperbarui Petugas', [
                 'error' => $e->getMessage(),
                 'stack' => $e->getTraceAsString(),
             ]);
@@ -193,6 +234,25 @@ class AdminController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $petugas = Petugas::findOrFail($id);
+            $petugas->delete();
+
+            return redirect()->route('admin.master-petugas.index')->with([
+                'status' => 'success',
+                'message' => 'Data Berhasil Dihapus'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Gagal Menghapus Perawat', [
+                'error' => $e->getMessage(),
+                'stack' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->back()->withInput()->with([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat menghapus data: '
+            ]);
+        }
     }
 }

@@ -1,308 +1,234 @@
 <x-app-layout>
+    @vite(['resources/js/pages/admin/data-pasien.js'])
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Master Data > Form Tambah Pasien') }}
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Master Data > Pasien') }}
         </h2>
     </x-slot>
 
-    <div class="py-10">
-        <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-2xl">
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white shadow-md rounded-xl p-4 sm:p-6 border border-gray-100">
 
-                <!-- Header Form -->
-                <div class="bg-[linear-gradient(to_bottom,#7134FC_0%,#2088FF_100%)] p-6">
-                    <div class="flex items-center gap-3">
-                        <div class="bg-white bg-opacity-20 p-3 rounded-lg">
-                            <i class="fa-solid fa-user text-white text-2xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-white">Tambah Data Pasien Baru</h3>
-                            <p class="text-blue-100 text-sm">Lengkapi semua informasi Pasien dengan benar</p>
-                        </div>
+                <!-- Search dan Tambah Pasien -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                    <div class="w-full sm:w-1/2 relative">
+                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="tableSearch" placeholder="Cari nama pasien, alamat, atau No.Telp..."
+                            class="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                    </div>
+
+
+                    <div class="w-full sm:w-auto">
+                        <a href="{{ route('admin.master-pasien.create') }}"
+                            class="w-full sm:w-auto bg-[#7134FC] text-white px-4 py-2 text-sm rounded-lg font-medium flex items-center justify-center gap-2 shadow-md">
+                            <i class="fa-solid fa-plus"></i> Tambah Pasien
+                        </a>
                     </div>
                 </div>
 
-                <!-- Form Content -->
-                <form action="{{ isset($pasien) ? route('admin.master-pasien.update', $pasien->id) : route('admin.master-pasien.store') }}" method="POST" class="p-6 space-y-6">
-                    @csrf
-                    @if (isset($pasien))
-                        @method('PUT')
-                    @endif
+                <!-- Tabel Pasien -->
+                <div x-data="{ viewModal: false}">
+                    <div class="overflow-x-auto">
+                        <table id="dataTable" class="min-w-full border border-gray-200 text-xs sm:text-sm rounded-lg overflow-hidden">
+                            <thead class="bg-[#7134FC] text-white text-left">
+                                <tr>
+                                    <th class="px-3 sm:px-4 py-3">No</th>
+                                    <th class="px-3 sm:px-4 py-3">Nama Lengkap</th>
+                                    <th class="px-3 sm:px-4 py-3">Umur</th>
+                                    <th class="px-3 sm:px-4 py-3">Jenis kelamin</th>
+                                    <th class="px-3 sm:px-4 py-3">Alamat</th>
+                                    <th class="px-3 sm:px-4 py-3">No. Telp</th>
+                                    <th class="px-3 sm:px-4 py-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-700">
+                                @foreach ($pasien as $i => $p)
+                                    <tr class="border-b hover:bg-gray-50 transition">
+                                        <td class="px-3 sm:px-4 py-2">{{ $loop->iteration }}</td>
+                                        <td class="px-3 sm:px-4 py-2">{{ $p->user->nama ?? '' }}</td>
+                                        <td class="px-3 sm:px-4 py-2">{{ \Carbon\Carbon::parse($p->tgl_lahir)->age ?? '-' }} tahun</td>
+                                        <td class="px-3 sm:px-4 py-2">{{ $p->jenis_kelamin === 'L' ? 'Laki-laki' : ($p->jenis_kelamin === 'P' ? 'Perempuan' : '-') }}</td>
+                                        <td class="px-3 sm:px-4 py-2">{{ $p->alamat ?? '' }}</td>
+                                        <td class="px-3 sm:px-4 py-2">{{ $p->no_telp ?? '' }}</td>
 
-                    <!-- Section 1: Identitas Pribadi -->
-                    <div class="border-l-4 border-blue-500 pl-4">
-                        <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-id-card text-blue-500"></i>
-                            Identitas Pribadi
-                        </h4>
+                                        <td class="px-3 sm:px-4 py-2 text-center">
+                                            <div class="flex justify-center gap-1 sm:gap-2">
+                                                <!-- View Button -->
+                                                <button @click="viewModal = true; $nextTick(() => loadPasienDetail({{ $p->id }}))"
+                                                        class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                </button>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Nama Lengkap -->
-                            <div>
-                                <label for="nama" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Nama Lengkap <span class="text-red-500">*</span>
-                                </label>
-                                <div class="relative">
-                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                        <i class="fa-solid fa-user"></i>
-                                    </span>
-                                    <input type="text" name="nama" id="nama" value="{{ old('nama', $pasien->user->nama ?? '') }}" required
-                                           class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                                           placeholder="Contoh: Dr. Ahmad Fauzi, Sp.PD">
-                                </div>
-                                <span class="text-red-600 text-sm" id="nama_error">
-                                    @error('nama'){{ $message }}@enderror
-                                </span>
-                            </div>
+                                                <!-- Edit Button -->
+                                                <a href="{{ route('admin.master-pasien.edit', $p->id) }}"
+                                                class="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105 inline-block">
+                                                    <i class="fa-solid fa-pen"></i>
+                                                </a>
 
-                            <div>
-                                <label for="username" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Username <span class="text-red-500">*</span>
-                                </label>
-                                <input type="text" id="username" name="username" required
-                                    value="{{ old('username', $pasien->user->username ?? '') }}"
-                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                                    placeholder="Contoh: Syafiq">
-                                <span class="text-red-600 text-sm" id="username_error">
-                                    @error('username'){{ $message }}@enderror
-                                </span>
-                            </div>
-
-                            <!-- Jenis Kelamin -->
-                            <div>
-                                <label for="jenis_kelamin" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Jenis Kelamin <span class="text-red-500">*</span>
-                                </label>
-                                <div class="flex gap-4">
-                                    <label class="flex items-center gap-2 cursor-pointer">
-                                        <input type="radio" name="jenis_kelamin" id="jenis_kelamin" value="L" required checked
-                                            {{ old('jenis_kelamin', $pasien->jenis_kelamin ?? '') == 'L' ? 'checked' : '' }}
-                                            class="w-4 h-4 text-blue-500 focus:ring-blue-500">
-                                        <span class="text-gray-700 dark:text-gray-300">
-                                            <i class="fa-solid fa-mars text-blue-500"></i> Laki-laki
-                                        </span>
-                                    </label>
-                                    <label class="flex items-center gap-2 cursor-pointer">
-                                        <input type="radio" name="jenis_kelamin" id="jenis_kelamin" value="P" required
-                                            {{ old('jenis_kelamin', $pasien->jenis_kelamin ?? '') == 'P' ? 'checked' : '' }}
-                                            class="w-4 h-4 text-pink-500 focus:ring-pink-500">
-                                        <span class="text-gray-700 dark:text-gray-300">
-                                            <i class="fa-solid fa-venus text-pink-500"></i> Perempuan
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Tempat Lahir -->
-                            <div>
-                                <label for="tempat_lahir" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Tempat Lahir <span class="text-red-500">*</span>
-                                </label>
-                                <input type="text" id="tempat_lahir" name="tempat_lahir" required
-                                    value="{{ old('tempat_lahir', $pasien->tempat_lahir ?? '') }}"
-                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                                    placeholder="Contoh: Surabaya">
-                                <span class="text-red-600 text-sm" id="tempat_lahir_error">
-                                    @error('tempat_lahir'){{ $message }}@enderror
-                                </span>
-                            </div>
-
-                            <!-- Tanggal Lahir -->
-                            <div>
-                                <label for="tgl_lahir" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Tanggal Lahir <span class="text-red-500">*</span>
-                                </label>
-                                <div class="relative">
-                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                        <i class="fa-solid fa-calendar"></i>
-                                    </span>
-                                    <input type="date" name="tgl_lahir" id="tgl_lahir" required
-                                        value="{{ old('tgl_lahir', $pasien->tgl_lahir ?? '') }}"
-                                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
-                                </div>
-                                <span class="text-red-600 text-sm" id="tgl_lahir_error">
-                                    @error('tgl_lahir'){{ $message }}@enderror
-                                </span>
-                            </div>
-
-                        @if (isset($pasien))
-                            <div>
-                                <label for="new_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    <input type="hidden" name="old_password" id="old_password" value="{{$pasien->user->password ?? ''}}">
-                                    Password Baru <span class="text-red-500">*</span>
-                                </label>
-                                <input type="password" id="new_password" name="new_password"
-                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                                    placeholder="Contoh: Surabaya">
-                                <span class="text-red-600 text-sm" id="new_password_error">
-                                    @error('new_password'){{ $message }}@enderror
-                                </span>
-                            </div>
-                        @endif
-                        </div>
+                                                <!-- Delete Button -->
+                                                <form action="{{ route('admin.master-pasien.destroy', $p->id) }}" method="POST" class="form-hapus">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                        class="bg-red-500 hover:bg-red-600 text-white p-2 px-2.5 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
 
-                    <!-- Section 2: Informasi Kontak -->
-                    <div class="border-l-4 border-green-500 pl-4">
-                        <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-address-book text-green-500"></i>
-                            Informasi Kontak
-                        </h4>
+                    <!-- View Modal -->
+                    <div x-show="viewModal"
+                        x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100"
+                        x-transition:leave="transition ease-in duration-200"
+                        x-transition:leave-start="opacity-100"
+                        x-transition:leave-end="opacity-0"
+                        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+                        style="display: none;">
+                        <div @click.away="viewModal = false"
+                            x-transition:enter="transition ease-out duration-300 transform"
+                            x-transition:enter-start="opacity-0 scale-95 -translate-y-4"
+                            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                            x-transition:leave="transition ease-in duration-200 transform"
+                            x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                            x-transition:leave-end="opacity-0 scale-95 -translate-y-4"
+                            class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Email -->
-                            <div>
-                                <label for="email" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Email <span class="text-red-500">*</span>
-                                </label>
-                                <div class="relative">
-                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                        <i class="fa-solid fa-envelope"></i>
-                                    </span>
-                                    <input type="email" id="email" name="email" required
-                                        value="{{ old('email', $pasien->user->email ?? '') }}"
-                                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
-                                        placeholder="contoh@hospital.com">
+                            <!-- Header Fixed -->
+                            <div class="flex items-center justify-between p-6 pb-4 border-b-2 border-blue-500 bg-gradient-to-r from-blue-50 to-blue-100">
+                                <div>
+                                    <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                                        <i class="fa-solid fa-user-doctor text-blue-500"></i>
+                                        Detail Pasien
+                                    </h2>
+                                    <p class="text-sm text-gray-600 mt-1">Informasi lengkap data Pasien</p>
                                 </div>
-                                <span class="text-red-600 text-sm" id="email_error">
-                                    @error('email'){{ $message }}@enderror
-                                </span>
+                                <button @click="viewModal = false"
+                                        class="text-gray-400 hover:text-gray-600 transition-colors hover:rotate-90 duration-300">
+                                    <i class="fa-solid fa-times text-2xl"></i>
+                                </button>
                             </div>
 
-                            <!-- No. Telepon -->
-                            <div>
-                                <label for="no_telp" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    No. Telepon <span class="text-red-500">*</span>
-                                </label>
-                                <div class="relative">
-                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                        <i class="fa-solid fa-phone"></i>
-                                    </span>
-                                    <input type="tel" name="no_telp" id="no_telp" required
-                                        value="{{ old('no_telp', $pasien->no_telp ?? '') }}"
-                                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
-                                        placeholder="+62 812-3456-7890">
+                            <!-- Content Scrollable -->
+                            <div class="overflow-y-auto p-6 space-y-5">
+
+                                <!-- Identitas Pribadi -->
+                                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-xl border-l-4 border-blue-500">
+                                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                        <i class="fa-solid fa-id-card text-blue-500"></i>
+                                        Identitas Pribadi
+                                    </h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <p class="text-xs text-gray-500 mb-1 font-medium">Nama Lengkap</p>
+                                            <p class="text-base font-semibold text-gray-800" id="nama"></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 mb-1 font-medium">Jenis Kelamin</p>
+                                            <p class="text-base font-semibold text-gray-800" id="jenis_kelamin"> </p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 mb-1 font-medium">Tempat Lahir</p>
+                                            <p class="text-base font-semibold text-gray-800" id="tempat_lahir"></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 mb-1 font-medium">Tanggal Lahir</p>
+                                            <p class="text-base font-semibold text-gray-800" id="tgl_lahir"></p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <span class="text-red-600 text-sm" id="no_telp_error">
-                                    @error('no_telp'){{ $message }}@enderror
-                                </span>
+
+                                <!-- Kontak -->
+                                <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-5 rounded-xl border-l-4 border-green-500">
+                                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                        <i class="fa-solid fa-address-book text-green-500"></i>
+                                        Informasi Kontak
+                                    </h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <p class="text-xs text-gray-500 mb-1 font-medium">
+                                                <i class="fa-solid fa-envelope mr-1"></i>Email
+                                            </p>
+                                            <p class="text-base font-semibold text-gray-800" id="email"></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 mb-1 font-medium">
+                                                <i class="fa-solid fa-phone mr-1"></i>No. Telepon
+                                            </p>
+                                            <p class="text-base font-semibold text-gray-800" id="no_telp"></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Profesional -->
+                                <div class="bg-gradient-to-br from-purple-50 to-violet-50 p-5 rounded-xl border-l-4 border-purple-500">
+                                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                        <i class="fa-solid fa-stethoscope text-purple-500"></i>
+                                        Informasi Asuransi
+                                    </h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <p class="text-xs text-gray-500 mb-1 font-medium">No.BPJS</p>
+                                            <p class="text-base font-semibold text-gray-800" id="no_bpjs"></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 mb-1 font-medium">Jenis Pasien</p>
+                                            <p class="text-base font-semibold text-gray-800" id="jenis_pasien"></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Alamat -->
+                                <div class="bg-gradient-to-br from-red-50 to-pink-50 p-5 rounded-xl border-l-4 border-red-500">
+                                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                        <i class="fa-solid fa-location-dot text-red-500"></i>
+                                        Alamat Lengkap
+                                    </h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div class="md:col-span-2">
+                                            <p class="text-xs text-gray-500 mb-1 font-medium">Alamat Detail</p>
+                                            <p class="text-base font-semibold text-gray-800" id="alamat"></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Status -->
+                                <div class="bg-gradient-to-br from-teal-50 to-cyan-50 p-5 rounded-xl border-l-4 border-teal-500">
+                                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                        <i class="fa-solid fa-circle-info text-teal-500"></i>
+                                        Status Aktif
+                                    </h3>
+                                    <div class="mt-3 bg-blue-50 p-3 rounded-lg border border-blue-200">
+                                        <p class="text-xs text-blue-700" id="update_at"></p>
+                                    </div>
+                                </div>
+
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Section 2: Informasi Asuransi -->
-                    <div class="border-l-4 border-green-500 pl-4">
-                        <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-address-book text-green-500"></i>
-                            Informasi Asuransi
-                        </h4>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Email -->
-                            <div>
-                                <label for="jenis_pasien" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Jenis Pasien <span class="text-red-500">*</span>
-                                </label>
-                                <div class="relative">
-                                    <select name="jenis_pasien" id="jenis_pasien" required
-                                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200">
-                                        <option value="" hidden selected>Pilih Jenis Pasien</option>
-                                        <option value="Umum" {{old('jenis_pasien', $pasien->jenis_pasien ?? '') == 'Umum' ? 'selected' : ''}}>Umum</option>
-                                        <option value="BPJS" {{old('jenis_pasien', $pasien->jenis_pasien ?? '') == 'BPJS' ? 'selected' : ''}}>BPJS</option>
-                                        <option value="Lainnya" {{old('jenis_pasien', $pasien->jenis_pasien ?? '') == 'Lainnya' ? 'selected' : ''}}>Lainnya</option>
-                                    </select>
-                                </div>
-                                <span class="text-red-600 text-sm" id="jenis_pasien_error">
-                                    @error('jenis_pasien'){{ $message }}@enderror
-                                </span>
-                            </div>
-
-                            <!-- No. Telepon -->
-                            <div>
-                                <label for="no_bpjs" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    No. BPJS <span class="text-red-500">*</span>
-                                </label>
-                                <div class="relative">
-                                    <input type="text" name="no_bpjs" id="no_bpjs"
-                                        value="{{ old('no_bpjs', $pasien->no_bpjs ?? '') }}"
-                                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
-                                        placeholder="0001234567890">
-                                </div>
-                                <span class="text-red-600 text-sm" id="bo_bpjs_error">
-                                    @error('bo_bpjs'){{ $message }}@enderror
-                                </span>
+                            <!-- Footer Fixed -->
+                            <div class="p-6 pt-4 border-t bg-gray-50 flex justify-end gap-3">
+                                <button @click="viewModal = false"
+                                        class="px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-300 font-medium">
+                                    <i class="fa-solid fa-times mr-2"></i>Tutup
+                                </button>
+                                <a href="#"
+                                class="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg font-medium">
+                                    <i class="fa-solid fa-print mr-2"></i>Cetak Detail
+                                </a>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Section 4: Alamat Lengkap -->
-                    <div class="border-l-4 border-red-500 pl-4">
-                        <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-location-dot text-red-500"></i>
-                            Alamat Lengkap
-                        </h4>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Alamat Detail -->
-                            <div class="md:col-span-2">
-                                <label for="alamat" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Alamat Detail (Jalan, RT/RW, Kode Pos) <span class="text-red-500">*</span>
-                                </label>
-                                <textarea name="alamat" id="alamat" required rows="3"
-                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
-                                    placeholder="Contoh: Jl. Airlangga No. 45, RT 003 RW 005, Kode Pos 60286">{{ old('alamat', $pasien->alamat ?? '') }}</textarea>
-                                <span class="text-red-600 text-sm" id="alamat_error">
-                                    @error('alamat'){{ $message }}@enderror
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Section 6: Status perawat -->
-                    <div class="border-l-4 border-teal-500 pl-4">
-                        <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-circle-info text-teal-500"></i>
-                            Status Pasien
-                        </h4>
-
-                        <div class="bg-teal-50 p-4 rounded-lg">
-                            <label class="flex items-center gap-3 cursor-pointer">
-                                <input type="hidden" name="status" value="0">
-                                <input type="checkbox" name="status" value="1"
-                                    {{ old('status', $pasien->status ?? 0) == 1 ? 'checked' : '' }}
-                                      class="w-5 h-5 text-teal-500 rounded focus:ring-teal-500">
-                                <span class="text-gray-700 font-semibold">
-                                    <i class="fa-solid fa-circle-check text-teal-500 mr-1"></i>
-                                    Aktifkan Pasien (Pasien masih aktif)
-                                </span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Form Actions -->
-                    <div class="flex flex-col sm:flex-row items-center sm:justify-between pt-6 border-t border-gray-200 gap-3 sm:gap-0">
-
-                        <!-- Tombol Kembali -->
-                        <a href="{{ route('admin.master-pasien.index') }}"
-                        class="w-full sm:w-auto px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-300 font-medium text-center">
-                            <i class="fa-solid fa-arrow-left mr-2"></i>Kembali
-                        </a>
-
-                        <!-- Tombol Reset & Simpan -->
-                        <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                            <button type="reset"
-                                    class="w-full sm:w-auto px-6 py-2.5 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all duration-300 font-medium shadow-md hover:shadow-lg">
-                                <i class="fa-solid fa-rotate-left mr-2"></i>Reset
-                            </button>
-                            <button type="submit"
-                                    class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 font-medium shadow-md hover:shadow-lg">
-                                <i class="fa-solid fa-save mr-2"></i>Simpan Data
-                            </button>
-                        </div>
-                    </div>
-
-                </form>
+                </div>
             </div>
         </div>
     </div>
+
 </x-app-layout>

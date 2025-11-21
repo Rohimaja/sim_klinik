@@ -1,5 +1,11 @@
 <!-- Sidebar -->
-<aside class="fixed inset-y-0 left-0 z-50 w-64  bg-[linear-gradient(to_bottom,#7134FC_0%,#2088FF_100%)] dark:bg-gray-800 transform transition-transform duration-300 ease-in-out lg:translate-x-0" :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }">
+<aside
+    class="fixed inset-y-0 left-0 z-50 w-64
+    bg-[linear-gradient(to_bottom,#7134FC_0%,#2088FF_100%)]
+    dark:bg-[linear-gradient(to_bottom,#1f2937_0%,#111827_100%)]
+    transform transition-transform duration-300 ease-in-out lg:translate-x-0"
+    :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }"
+>
     <div class="flex flex-col h-full">
         <!-- Logo & Close Button -->
         <div class="flex items-center justify-between h-16 px-6 border-b border-white/10">
@@ -27,7 +33,6 @@
         <i class="fa-solid fa-house text-base w-5 text-center mr-3"></i>
         <span class="font-medium leading-none">Dashboard</span>
     </a>
-
 
     @if (Auth::user()->role === 'admin')
         @if (Auth::user()->admin->is_super_admin == 1)
@@ -81,6 +86,36 @@
         @endif
     @endif
 
+    {{-- Menu khusus untuk PETUGAS --}}
+    @if (Auth::user()->role === 'petugas')
+        <a href="{{ route('petugas.kunjungan.index') }}"
+            class="flex items-center px-4 py-3 text-white hover:bg-white/10 rounded-lg transition
+            {{ request()->routeIs('petugas.kunjungan') ? 'bg-white/20' : '' }}">
+            <i class="fa-solid fa-notes-medical text-base w-5 text-center mr-3"></i>
+            <span class="font-medium leading-none">Kunjungan Pasien</span>
+        </a>
+    @endif
+
+    {{-- Menu khusus untuk DOKTER --}}
+    @if (Auth::user()->role === 'dokter')
+        <a href="{{ route('dokter.kunjungan.index') }}"
+            class="flex items-center px-4 py-3 text-white hover:bg-white/10 rounded-lg transition
+            {{ request()->routeIs('dokter.kunjungan') ? 'bg-white/20' : '' }}">
+            <i class="fa-solid fa-notes-medical text-base w-5 text-center mr-3"></i>
+            <span class="font-medium leading-none">Kunjungan Pasien</span>
+        </a>
+    @endif
+
+    {{-- Menu khusus untuk PERAWAT --}}
+    @if (Auth::user()->role === 'perawat')
+        <a href="{{ route('perawat.kunjungan.index') }}"
+            class="flex items-center px-4 py-3 text-white hover:bg-white/10 rounded-lg transition
+            {{ request()->routeIs('perawat.kunjungan') ? 'bg-white/20' : '' }}">
+            <i class="fa-solid fa-notes-medical text-base w-5 text-center mr-3"></i>
+            <span class="font-medium leading-none">Kunjungan Pasien</span>
+        </a>
+    @endif
+
     <!-- Laporan Dropdown -->
     <div x-data="{ open: false }" class="mt-2">
         <button @click="open = !open"
@@ -130,10 +165,10 @@
             <!-- User Info Button -->
             <button @click="profileOpen = !profileOpen" class="w-full px-4 py-4 flex items-center hover:bg-white/10 transition">
                 <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-semibold mr-3 flex-shrink-0">
-                    {{ substr(Auth::user()->name, 0, 1) }}
+                    {{ substr(Auth::user()->nama, 0, 1) }}
                 </div>
                 <div class="flex-1 min-w-0 text-left">
-                    <div class="text-sm font-medium text-white truncate">{{ Auth::user()->nama }}</div>
+                    <div class="text-sm font-medium text-white truncate">{{ Auth::user()->nama}}</div>
                     <div class="text-xs text-white/70 truncate">{{ Auth::user()->email }}</div>
                 </div>
                 <svg class="w-5 h-5 text-white transition-transform" :class="{ 'rotate-180': profileOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">

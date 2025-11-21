@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete()->onUpdate('cascade');
             $table->string('no_rm', 8)->unique();
             $table->string('no_bpjs', 30)->nullable();
+            $table->string('rfid', 30)->nullable();
             $table->string('jenis_pasien', 30);
             $table->char('jenis_kelamin','1');
             $table->string('tempat_lahir','100');

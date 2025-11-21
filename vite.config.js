@@ -14,6 +14,7 @@ function getJsFilesFrom(dir) {
 }
 
 const adminPages = getJsFilesFrom("resources/js/pages/admin");
+const superadminPages = getJsFilesFrom("resources/js/pages/superadmin");
 
 export default defineConfig({
     plugins: [
@@ -22,6 +23,7 @@ export default defineConfig({
                 "resources/css/app.css",
                 "resources/js/app.js",
                 ...adminPages,
+                ...superadminPages,
             ],
             refresh: true,
         }),

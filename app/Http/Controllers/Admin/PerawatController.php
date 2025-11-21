@@ -3,27 +3,29 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Store\StoreMasterPetugas;
-use App\Http\Requests\Admin\Update\UpdateMasterPetugas;
-use App\Models\Petugas;
+use App\Http\Requests\Admin\Store\StoreMasterPerawat;
+use App\Http\Requests\Admin\Update\UpdateMasterPerawat;
+use App\Models\Perawat;
+use App\Models\Poli;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
-class PetugasController extends Controller
+class PerawatController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $title = 'Master Petugas';
-        $petugas = Petugas::with('user')->get();
+        $title = 'Master Perawat';
+        $perawat = Perawat::with('user','poli')->get();
 
-        return view('admin.master.petugas.index',compact('title','petugas'));
+        return view('admin.master.perawat.index',compact('title','perawat'));
     }
 
     /**
@@ -31,15 +33,16 @@ class PetugasController extends Controller
      */
     public function create()
     {
-        $title = 'Tambah Petugas';
+        $title = 'Tambah Perawat';
+        $poli = Poli::all();
 
-        return view('admin.master.petugas.form',compact('title'));
+        return view('admin.master.perawat.form',compact('title','poli'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMasterPetugas $request)
+    public function store(StoreMasterPerawat $request)
     {
         $request->merge([
             'nama' => ucwords(trim($request->nama)),
@@ -54,22 +57,22 @@ class PetugasController extends Controller
                     'nama' => $request->nama,
                     'email' => $request->email,
                     'username' => $request->username,
-                    'role' => 'petugas',
+                    'role' => 'perawat',
                     'password' => Hash::make($request->username),
                 ]);
 
                 $fotoPath = null;
                 if ($request->hasFile('foto')) {
-                    $filename = 'petugas/profile_' . $user->id . '.' . $request->file('foto')->extension();
+                    $filename = 'perawat/profile_' . $user->id . '.' . $request->file('foto')->extension();
                     $fotoPath = $request->file('foto')->storeAs( 'profiles', $filename, 'public');
                 }
                 $data = $request->validated();
                 $data = [
                     'user_id' => $user->id,
-                    'jabatan' => $request->jabatan,
+                    'poli_id' => $request->poli_id,
                     'no_str' => $request->no_str,
                     'no_sip' => $request->no_sip,
-                    'no_kta' => $request->no_kta,
+                    'no_nira' => $request->no_nira,
                     'jenis_kelamin' => $request->jenis_kelamin,
                     'tempat_lahir' => $request->tempat_lahir,
                     'tgl_lahir' => $request->tgl_lahir,
@@ -79,16 +82,16 @@ class PetugasController extends Controller
                     'status' => $request->status,
                 ];
 
-                Petugas::create($data);
+                Perawat::create($data);
             });
 
-            return redirect()->route('admin.master-petugas.index')->with([
+            return redirect()->route('admin.master-perawat.index')->with([
                 'status' => 'success',
                 'message' => 'Data Berhasil Ditambahkan'
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Gagal Menambahkan Petugas', [
+            Log::error('Gagal Menambahkan Perawat', [
                 'error' => $e->getMessage(),
                 'stack' => $e->getTraceAsString(),
             ]);
@@ -105,7 +108,41 @@ class PetugasController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $perawat = Perawat::with('user', 'poli')->findOrFail($id);
+
+            // Hitung umur
+            $tgl_lahir = Carbon::parse($perawat->tgl_lahir);
+            $umur = $tgl_lahir->age;
+
+            // Format tanggal lahir & updated_at agar lebih ramah tampil
+            $tgl_lahir_formatted = $tgl_lahir->translatedFormat('d F Y'); // Contoh: 15 Maret 1985
+            $updated_at_formatted = Carbon::parse($perawat->updated_at)->locale('id')->translatedFormat('d F Y, H:i'). ' WIB'; // Contoh: 2 jam lalu
+
+            // Kirim data JSON lengkap
+            return response()->json([
+                'id' => $perawat->id,
+                'user' => $perawat->user,
+                'poli' => $perawat->poli,
+                'jenis_kelamin' => $perawat->jenis_kelamin,
+                'tempat_lahir' => $perawat->tempat_lahir,
+                'tgl_lahir' => $tgl_lahir_formatted,
+                'umur' => $umur,
+                'email' => $perawat->user->email,
+                'no_telp' => $perawat->no_telp,
+                'alamat' => $perawat->alamat,
+                'no_str' => $perawat->no_str,
+                'no_sip' => $perawat->no_sip,
+                'no_nira' => $perawat->no_nira,
+                'status' => $perawat->status,
+                'updated_at' => $updated_at_formatted,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan'
+            ], 404);
+        }
     }
 
     /**
@@ -113,18 +150,19 @@ class PetugasController extends Controller
      */
     public function edit(string $id)
     {
-        $title = 'Perbarui Petugas';
-        $petugas = Petugas::findOrFail($id);
+        $title = 'Perbarui Perawat';
+        $perawat = Perawat::findOrFail($id);
+        $poli = Poli::all();
 
-        return view('admin.master.petugas.form',compact('title','petugas'));
+        return view('admin.master.perawat.form',compact('title','perawat','poli'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMasterPetugas $request, $id)
+    public function update(UpdateMasterPerawat $request, $id)
     {
-        $request->merge([
+       $request->merge([
             'nama' => ucwords(trim($request->nama)),
             'tempat_lahir' => ucwords(trim($request->tempat_lahir)),
         ]);
@@ -133,35 +171,35 @@ class PetugasController extends Controller
 
             DB::transaction(function () use($request, $id) {
 
-                $petugas = Petugas::findOrFail($id);
-                $user = $petugas->user;
+                $perawat = Perawat::findOrFail($id);
+                $user = $perawat->user;
                 $data = $request->validated();
 
                 if ($request->hasFile('foto')) {
-                    if ($petugas->foto && Storage::disk('public')->exists($petugas->foto)) {
-                        Storage::disk('public')->delete($petugas->foto);
+                    if ($perawat->foto && Storage::disk('public')->exists($perawat->foto)) {
+                        Storage::disk('public')->delete($perawat->foto);
                     }
 
-                    $filename = 'petugas/profile_' . $petugas->id . '.' . $request->file('foto')->extension();
+                    $filename = 'perawat/profile_' . $perawat->id . '.' . $request->file('foto')->extension();
                     $fotoPath = $request->file('foto')->storeAs('profiles', $filename, 'public');
-                    $petugas->foto = $fotoPath;
+                    $perawat->foto = $fotoPath;
                 }
 
                 $data = [
+                    'poli_id' => $request->poli_id,
                     'no_str' => $request->no_str,
                     'no_sip' => $request->no_sip,
-                    'no_kta' => $request->no_kta,
-                    'jabatan' => $request->jabatan,
+                    'no_nira' => $request->no_nira,
                     'jenis_kelamin' => $request->jenis_kelamin,
                     'tempat_lahir' => $request->tempat_lahir,
                     'tgl_lahir' => $request->tgl_lahir,
                     'no_telp' => $request->no_telp,
                     'alamat' => $request->alamat,
-                    'foto' => $petugas->foto,
+                    'foto' => $perawat->foto,
                     'status' => $request->status,
                 ];
 
-                $petugas->update($data);
+                $perawat->update($data);
 
                 $userData =[
                     'nama' => $request->nama,
@@ -176,13 +214,13 @@ class PetugasController extends Controller
                 $user->update($userData);
             });
 
-            return redirect()->route('admin.master-petugas.index')->with([
+            return redirect()->route('admin.master-perawat.index')->with([
                 'status' => 'success',
                 'message' => 'Data Berhasil Diperbarui'
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Gagal Memperbarui Petugas', [
+            Log::error('Gagal Memperbarui Perawat', [
                 'error' => $e->getMessage(),
                 'stack' => $e->getTraceAsString(),
             ]);
@@ -200,10 +238,10 @@ class PetugasController extends Controller
     public function destroy(string $id)
     {
         try {
-            $petugas = Petugas::findOrFail($id);
-            $petugas->delete();
+            $perawat = Perawat::findOrFail($id);
+            $perawat->delete();
 
-            return redirect()->route('admin.master-petugas.index')->with([
+            return redirect()->route('admin.master-perawat.index')->with([
                 'status' => 'success',
                 'message' => 'Data Berhasil Dihapus'
             ]);

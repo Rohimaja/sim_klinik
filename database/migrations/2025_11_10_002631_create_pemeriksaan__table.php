@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('keluhan');
             $table->string('diagnosa');
             $table->string('tindakan');
+            $table->string('catatan');
+            $table->string('tensi');
+            $table->string('suhu');
             $table->date('tgl_periksa');
             $table->timestamps();
         });
