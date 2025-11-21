@@ -15,14 +15,14 @@ class DiseaseDetection extends Controller
                 'image' => 'required|image|max:2048'
             ]
         );
-
-        $file = $request->file('file');
+        $file = $request->file('image'); 
+        $url = env('FLASK_URL');
 
         $response = Http::attach(
             'file',
             file_get_contents($file->getPathname()),
             $file->getClientOriginalName()
-        )->post('http://192.168.0.4:5000/predict');
+        )->post("$url/predict");
 
         if ($response->failed()) {
             return response()->json([
@@ -35,7 +35,8 @@ class DiseaseDetection extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => $response->json()
+            'message' => 'Klasifikasi berhasil dilakukan',
+            'data' => $response->json()
         ]);
     }
 }
