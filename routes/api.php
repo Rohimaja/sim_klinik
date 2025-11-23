@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\Api\Account\ChangePassword;
 use App\Http\Controllers\Api\Account\EditProfile;
 use App\Http\Controllers\Api\Auth\ForgetPasswordController;
 use App\Http\Controllers\Api\Auth\LoginController;
@@ -28,6 +29,8 @@ Route::middleware(['auth:sanctum'])->group(function() {
     });
     Route::prefix('account')->group(function() {
         Route::post('profile', [EditProfile::class, 'editProfile']);
+        Route::post('changePassword', [ChangePassword::class, 'changePassword']);
+        Route::post('checkPassword', [ChangePassword::class, 'checkPassword']);
     });
 });
 
