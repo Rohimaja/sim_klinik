@@ -89,6 +89,16 @@
                 @endif
             @endif
 
+            {{-- Menu khusus untuk PETUGAS --}}
+            @if (Auth::user()->role === 'petugas')
+                <a href="{{ route('petugas.kunjungan.index') }}"
+                    class="flex items-center px-4 py-3 text-white hover:bg-white/10 rounded-lg transition
+            {{ request()->routeIs('petugas.kunjungan') ? 'bg-white/20' : '' }}">
+                    <i class="fa-solid fa-notes-medical text-base w-5 text-center mr-3"></i>
+                    <span class="font-medium leading-none">Kunjungan Pasien</span>
+                </a>
+            @endif
+
             <!-- Laporan Dropdown -->
             <div x-data="{ open: false }" class="mt-2">
                 <button @click="open = !open"
