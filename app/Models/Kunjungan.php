@@ -6,27 +6,34 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
-class JadwalDokter extends Model
+class Kunjungan extends Model
 {
-    protected $table = 'jadwal_dokter';
+    protected $table = 'kunjungan';
 
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'dokter_id',
+        'pasien_id',
         'poli_id',
-        'hari',
-        'jam_mulai',
-        'jam_akhir',
-        'keterangan',
+        'dokter_id',
+        'tgl_kunjungan',
+        'keluhan_awal',
+        'status',
     ];
+
+    public function poli()
+    {
+        return $this->belongsTo(Poli::class, 'poli_id', 'id');
+    }
 
     public function dokter()
     {
         return $this->belongsTo(Dokter::class, 'dokter_id', 'id');
     }
-    public function poli()
+
+    public function pasien()
     {
-        return $this->belongsTo(Poli::class, 'poli_id', 'id');
+        return $this->belongsTo(Pasien::class, 'pasien_id', 'id');
     }
+
 }

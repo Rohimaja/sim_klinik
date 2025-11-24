@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('dokter_id')->constrained('dokter')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('poli_id')->constrained('poli')->onDelete('cascade')->onUpdate('cascade');
-            $table->date('hari');
+            $table->enum('hari',['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu']);
             $table->time('jam_mulai');
             $table->time('jam_akhir');
+            $table->string('keterangan',200)->nullable();
             $table->timestamps();
         });
     }

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('perawat', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('nama','100')->nullable();
             $table->foreignId('poli_id')->constrained('poli')->onDelete('cascade')->onUpdate('cascade');
             $table->string('no_str','20')->nullable()->unique();
             $table->string('no_sip','50')->nullable()->unique();

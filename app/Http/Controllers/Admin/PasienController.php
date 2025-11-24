@@ -67,7 +67,9 @@ class PasienController extends Controller
                     $filename = 'pasien/profile_' . $user->id . '.' . $request->file('foto')->extension();
                     $fotoPath = $request->file('foto')->storeAs( 'profiles', $filename, 'public');
                 }
+                
                 $data = $request->validated();
+
                 $data = [
                     'user_id' => $user->id,
                     'no_rm' => $no_rm,

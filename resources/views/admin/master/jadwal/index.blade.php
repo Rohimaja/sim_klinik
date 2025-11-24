@@ -78,7 +78,8 @@
 
                 <!-- Tabel Jadwal -->
                 <div class="overflow-x-auto">
-                    <table id="dataTable" class="min-w-full border border-gray-200 text-xs sm:text-sm rounded-lg overflow-hidden">
+                    <table id="dataTable"
+                        class="min-w-full border border-gray-200 text-xs sm:text-sm rounded-lg overflow-hidden">
                         <thead class="bg-[#7134FC] text-white text-left">
                             <tr>
                                 <th class="px-3 sm:px-4 py-3">No</th>
@@ -109,14 +110,13 @@
 
                             @foreach ($jadwal as $i => $j)
                                 <tr class="border-b hover:bg-gray-50 transition"
-                                    data-nama="{{ strtolower($j['nama']) }}"
-                                    data-role="{{ $j['role'] }}"
-                                    data-poli="{{ $j['poli'] }}"
-                                    data-hari="{{ $j['hari'] }}">
+                                    data-nama="{{ strtolower($j['nama']) }}" data-role="{{ $j['role'] }}"
+                                    data-poli="{{ $j['poli'] }}" data-hari="{{ $j['hari'] }}">
                                     <td class="px-3 sm:px-4 py-2">{{ $i + 1 }}</td>
                                     <td class="px-3 sm:px-4 py-2 font-medium">{{ $j['nama'] }}</td>
                                     <td class="px-3 sm:px-4 py-2">
-                                        <span class="px-2 py-1 rounded-full text-xs font-medium
+                                        <span
+                                            class="px-2 py-1 rounded-full text-xs font-medium
                                             {{ $j['role'] == 'Dokter' ? 'bg-blue-100 text-blue-700' : '' }}
                                             {{ $j['role'] == 'Perawat' ? 'bg-green-100 text-green-700' : '' }}
                                             {{ $j['role'] == 'Petugas' ? 'bg-purple-100 text-purple-700' : '' }}">
@@ -134,25 +134,22 @@
                                         <div class="flex justify-center gap-1 sm:gap-2">
                                             <!-- Edit Button -->
                                             <a href="{{ route('admin.master-jadwal.edit', $j->id) }}"
-                                            class="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105 inline-block">
+                                                class="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105 inline-block">
                                                 <i class="fa-solid fa-pen"></i>
                                             </a>
 
                                             <!-- Delete Button -->
                                             <button @click="deleteModal = true"
-                                                    class="bg-red-500 hover:bg-red-600 text-white p-2 px-2.5 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105">
+                                                class="bg-red-500 hover:bg-red-600 text-white p-2 px-2.5 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </div>
 
                                         <!-- Delete Modal -->
-                                        <div x-show="deleteModal"
-                                            x-transition:enter="transition ease-out duration-300"
-                                            x-transition:enter-start="opacity-0"
-                                            x-transition:enter-end="opacity-100"
+                                        <div x-show="deleteModal" x-transition:enter="transition ease-out duration-300"
+                                            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                                             x-transition:leave="transition ease-in duration-200"
-                                            x-transition:leave-start="opacity-100"
-                                            x-transition:leave-end="opacity-0"
+                                            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
                                             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
                                             style="display: none;">
                                             <div @click.away="deleteModal = false"
@@ -167,19 +164,23 @@
                                                 <!-- Icon Warning -->
                                                 <div class="flex justify-center mb-4">
                                                     <div class="bg-red-100 rounded-full p-4 animate-pulse">
-                                                        <i class="fa-solid fa-triangle-exclamation text-red-500 text-4xl"></i>
+                                                        <i
+                                                            class="fa-solid fa-triangle-exclamation text-red-500 text-4xl"></i>
                                                     </div>
                                                 </div>
 
                                                 <!-- Header -->
-                                                <h2 class="text-2xl font-bold mb-3 text-red-600 text-center">Konfirmasi Hapus</h2>
+                                                <h2 class="text-2xl font-bold mb-3 text-red-600 text-center">Konfirmasi
+                                                    Hapus</h2>
 
                                                 <!-- Content -->
                                                 <p class="text-gray-600 text-center mb-6">
                                                     Apakah Anda yakin ingin menghapus jadwal ini?<br>
-                                                    <strong class="text-gray-800">{{ $j['nama'] }} - {{ $j['hari'] }}</strong>
+                                                    <strong class="text-gray-800">{{ $j['nama'] }} -
+                                                        {{ $j['hari'] }}</strong>
                                                 </p>
-                                                <p class="text-sm text-gray-500 text-center mb-6 bg-yellow-50 p-3 rounded-lg border border-yellow-200">
+                                                <p
+                                                    class="text-sm text-gray-500 text-center mb-6 bg-yellow-50 p-3 rounded-lg border border-yellow-200">
                                                     <i class="fa-solid fa-info-circle mr-1"></i>
                                                     Data yang dihapus tidak dapat dikembalikan!
                                                 </p>
@@ -187,14 +188,14 @@
                                                 <!-- Footer -->
                                                 <div class="flex gap-3">
                                                     <button @click="deleteModal = false"
-                                                            class="flex-1 px-4 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-300 font-medium">
+                                                        class="flex-1 px-4 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-300 font-medium">
                                                         <i class="fa-solid fa-arrow-left mr-1"></i>Batal
                                                     </button>
                                                     <form action="#" method="POST" class="flex-1">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit"
-                                                                class="w-full px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-md hover:shadow-lg font-medium">
+                                                            class="w-full px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-md hover:shadow-lg font-medium">
                                                             <i class="fa-solid fa-trash mr-1"></i> Hapus
                                                         </button>
                                                     </form>
