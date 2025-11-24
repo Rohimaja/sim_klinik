@@ -22,7 +22,7 @@ return new class extends Migration
             $table->time('jam_akhir');
             $table->date('tgl_kunjungan');
             $table->string('keluhan_awal',100)->nullable();
-            $table->enum('status',['menunggu','dipanggil','selesai','dibatalkan']);
+            $table->enum('status',['tidak hadir','menunggu','dipanggil','selesai','dibatalkan']);
             $table->timestamps();
         });
     }

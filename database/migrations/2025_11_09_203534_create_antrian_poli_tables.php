@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('antrian_poli', function (Blueprint $table) {
             $table->id();
             $table->foreignId('kunjungan_id')->constrained('kunjungan');
-            $table->enum('status',['menunggu','dipanggil','selesai','dibatalkan']);
+            $table->enum('status',['tidak hadir','menunggu','dipanggil','selesai','dibatalkan']);
             $table->timestamps();
         });
     }
