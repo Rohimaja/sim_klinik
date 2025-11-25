@@ -18,7 +18,7 @@ class ChangePassword extends Controller
         ]);
 
         $email = $request->email;
-        $password = $request->password;
+        $password = $request->new_password;
         $hashedPassword = Hash::make($password);
 
         try {
@@ -70,7 +70,7 @@ class ChangePassword extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Password tidak sesuai.',
-                ], 401);
+                ], 400);
             }
 
             return response()->json([

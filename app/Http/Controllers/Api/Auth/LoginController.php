@@ -29,7 +29,7 @@ class LoginController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Login gagal. Password salah atau akun tidak ditemukan.',
-                ], 401);
+                ], 400);
             } else if ($user->email_verified_at == null) {
                 return response()->json([
                     'status' => 'error',
@@ -40,7 +40,7 @@ class LoginController extends Controller
             $token = $user->createToken('mobile-token');
             $accessToken = $token->accessToken;
 
-            $accessToken->expires_at = now()->addMinutes(15);
+            $accessToken->expires_at = now()->addMinutes(30);
             $accessToken->save();
 
 
