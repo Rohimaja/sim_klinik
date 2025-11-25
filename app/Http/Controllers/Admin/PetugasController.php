@@ -52,7 +52,6 @@ class PetugasController extends Controller
             DB::transaction(function () use ($request) {
 
                 $user = User::create([
-                    'nama' => $request->nama,
                     'email' => $request->email,
                     'username' => $request->username,
                     'role' => 'petugas',
@@ -67,6 +66,7 @@ class PetugasController extends Controller
                 $data = $request->validated();
                 $data = [
                     'user_id' => $user->id,
+                    'nama' => $request->nama,
                     'jabatan' => $request->jabatan,
                     'no_str' => $request->no_str,
                     'no_sip' => $request->no_sip,
@@ -183,6 +183,7 @@ class PetugasController extends Controller
                 }
 
                 $data = [
+                    'nama' => $request->nama,
                     'no_str' => $request->no_str,
                     'no_sip' => $request->no_sip,
                     'no_kta' => $request->no_kta,
@@ -199,7 +200,6 @@ class PetugasController extends Controller
                 $petugas->update($data);
 
                 $userData =[
-                    'nama' => $request->nama,
                     'username' => $request->username,
                     'email' => $request->email,
                 ];

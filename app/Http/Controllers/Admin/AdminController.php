@@ -53,7 +53,6 @@ class AdminController extends Controller
             DB::transaction(function () use ($request) {
 
                 $user = User::create([
-                    'nama' => $request->nama,
                     'email' => $request->email,
                     'username' => $request->username,
                     'role' => 'admin',
@@ -68,6 +67,7 @@ class AdminController extends Controller
                 $data = $request->validated();
                 $data = [
                     'user_id' => $user->id,
+                    'nama' => $request->nama,
                     'jenis_kelamin' => $request->jenis_kelamin,
                     'tempat_lahir' => $request->tempat_lahir,
                     'tgl_lahir' => $request->tgl_lahir,
@@ -177,6 +177,7 @@ class AdminController extends Controller
                 }
 
                 $data = [
+                    'nama' => $request->nama,
                     'jenis_kelamin' => $request->jenis_kelamin,
                     'tempat_lahir' => $request->tempat_lahir,
                     'tgl_lahir' => $request->tgl_lahir,
@@ -189,7 +190,6 @@ class AdminController extends Controller
                 $admin->update($data);
 
                 $userData =[
-                    'nama' => $request->nama,
                     'username' => $request->username,
                     'email' => $request->email,
                 ];

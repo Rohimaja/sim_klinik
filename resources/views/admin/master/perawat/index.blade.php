@@ -47,7 +47,7 @@
                                 @foreach ($perawat as $i => $p)
                                     <tr class="border-b hover:bg-gray-50 transition">
                                         <td class="px-3 sm:px-4 py-2">{{ $loop->iteration }}</td>
-                                        <td class="px-3 sm:px-4 py-2">{{ $p->user->nama }}</td>
+                                        <td class="px-3 sm:px-4 py-2">{{ $p->nama }}</td>
                                         <td class="px-3 sm:px-4 py-2 text-gray-600">{{ $p->no_nira ?? '' }}</td>
                                         <td class="px-3 sm:px-4 py-2">{{ $p->poli->nama }}</td>
                                         <td class="px-3 sm:px-4 py-2">{{ $p->no_telp }}</td>

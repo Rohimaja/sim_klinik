@@ -55,7 +55,6 @@ class PasienController extends Controller
                 $no_rm = $this->generateNoRm();
 
                 $user = User::create([
-                    'nama' => $request->nama,
                     'email' => $request->email,
                     'username' => $request->username,
                     'role' => 'pasien',
@@ -67,11 +66,12 @@ class PasienController extends Controller
                     $filename = 'pasien/profile_' . $user->id . '.' . $request->file('foto')->extension();
                     $fotoPath = $request->file('foto')->storeAs( 'profiles', $filename, 'public');
                 }
-                
+
                 $data = $request->validated();
 
                 $data = [
                     'user_id' => $user->id,
+                    'nama' => $request->nama,
                     'no_rm' => $no_rm,
                     'jenis_pasien' => $request->jenis_pasien,
                     'no_bpjs' => $request->no_bpjs,
@@ -186,6 +186,7 @@ class PasienController extends Controller
                 }
 
                 $data = [
+                    'nama' => $request->nama,
                     'jenis_pasien' => $request->jenis_pasien,
                     'no_bpjs' => $request->no_bpjs,
                     'jenis_kelamin' => $request->jenis_kelamin,
@@ -200,7 +201,6 @@ class PasienController extends Controller
                 $pasien->update($data);
 
                 $userData =[
-                    'nama' => $request->nama,
                     'username' => $request->username,
                     'email' => $request->email,
                 ];

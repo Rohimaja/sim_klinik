@@ -94,10 +94,10 @@
                 <a href="{{ route('petugas.kunjungan.index') }}"
                     class="flex items-center px-4 py-3 text-white hover:bg-white/10 rounded-lg transition
             {{ request()->routeIs('petugas.kunjungan') ? 'bg-white/20' : '' }}">
-            <i class="fa-solid fa-notes-medical text-base w-5 text-center mr-3"></i>
-            <span class="font-medium leading-none">Kunjungan Pasien</span>
-        </a>
-    @endif
+                    <i class="fa-solid fa-notes-medical text-base w-5 text-center mr-3"></i>
+                    <span class="font-medium leading-none">Kunjungan Pasien</span>
+                </a>
+            @endif
 
 
             <!-- Laporan Dropdown -->
@@ -163,10 +163,10 @@
                 class="w-full px-4 py-4 flex items-center hover:bg-white/10 transition">
                 <div
                     class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-semibold mr-3 flex-shrink-0">
-                    {{ substr(Auth::user()->nama, 0, 1) }}
+                    {{ substr(Auth::user()->display_name, 0, 1) }}
                 </div>
                 <div class="flex-1 min-w-0 text-left">
-                    <div class="text-sm font-medium text-white truncate">{{ Auth::user()->nama }}</div>
+                    <div class="text-sm font-medium text-white truncate">{{ Auth::user()->display_name }}</div>
                     <div class="text-xs text-white/70 truncate">{{ Auth::user()->email }}</div>
                 </div>
                 <svg class="w-5 h-5 text-white transition-transform" :class="{ 'rotate-180': profileOpen }"

@@ -16,7 +16,10 @@ class Kunjungan extends Model
         'pasien_id',
         'poli_id',
         'dokter_id',
+        'no_antrian',
         'tgl_kunjungan',
+        'jam_awal',
+        'jam_akhir',
         'keluhan_awal',
         'status',
     ];

@@ -14,6 +14,7 @@ class Admin extends Model
 
     protected $fillable = [
         'user_id',
+        'nama',
         'jenis_kelamin',
         'tempat_lahir',
         'tgl_lahir',

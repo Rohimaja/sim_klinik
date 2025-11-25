@@ -48,7 +48,7 @@ class StoreMasterJadwal extends FormRequest
             'jam_akhir.required' => 'Pilih Jam Selesai Terlebih dahulu',
             'jam_akhir.after' => 'Jam Selesai harus lebih besar',
 
-            'keterangan.regex' =>'Keterangan Tindakan tidak boleh mengandung simbol',
+            'keterangan.regex' =>'Keterangan tidak boleh mengandung simbol',
         ];
     }
 }

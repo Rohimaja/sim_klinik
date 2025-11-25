@@ -35,7 +35,7 @@ class StoreKunjungan extends FormRequest
             'tempat_lahir' => 'required|max:100|regex:/^[A-Za-z\s]+$/',
             'tgl_lahir' => 'required|before:today',
             'no_telp' => 'required|max:20|regex:/^[0-9]+$/',
-            'email' => ['required','email:rfc,dns','max:100'],
+            'email' => 'required|max:100',
             'alamat' => 'required|max:200',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // opsional: validasi foto
             'poli_id' => 'required',
@@ -75,7 +75,7 @@ class StoreKunjungan extends FormRequest
             'no_telp.regex' => 'Nomor Telepon hanya boleh berisi angka',
 
             'email.required' => 'Email tidak boleh kosong',
-            'email.email' => 'Format email tidak valid',
+            // 'email.email' => 'Format email tidak valid',
             'email.max' => 'Email maksimal 100 karakter',
             'email.unique' => 'Email sudah digunakan',
 

@@ -46,7 +46,7 @@
                                 @foreach ($admin as $i => $a)
                                     <tr class="border-b hover:bg-gray-50 transition">
                                         <td class="px-3 sm:px-4 py-2">{{ $loop->iteration }}</td>
-                                        <td class="px-3 sm:px-4 py-2 text-gray-600">{{ $a->user->nama ?? '' }}</td>
+                                        <td class="px-3 sm:px-4 py-2 text-gray-600">{{ $a->nama ?? '' }}</td>
                                         <td class="px-3 sm:px-4 py-2">{{ \Carbon\Carbon::parse($a->tgl_lahir)->age ?? '-' }} tahun</td>
                                         <td class="px-3 sm:px-4 py-2">{{ $a->no_telp ?? '' }}</td>
                                         <td class="px-3 sm:px-4 py-2">

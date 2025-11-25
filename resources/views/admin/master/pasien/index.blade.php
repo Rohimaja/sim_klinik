@@ -46,7 +46,7 @@
                                 @foreach ($pasien as $i => $p)
                                     <tr class="border-b hover:bg-gray-50 transition">
                                         <td class="px-3 sm:px-4 py-2">{{ $loop->iteration }}</td>
-                                        <td class="px-3 sm:px-4 py-2">{{ $p->user->nama ?? '' }}</td>
+                                        <td class="px-3 sm:px-4 py-2">{{ $p->nama ?? '' }}</td>
                                         <td class="px-3 sm:px-4 py-2">{{ \Carbon\Carbon::parse($p->tgl_lahir)->age ?? '-' }} tahun</td>
                                         <td class="px-3 sm:px-4 py-2">{{ $p->jenis_kelamin === 'L' ? 'Laki-laki' : ($p->jenis_kelamin === 'P' ? 'Perempuan' : '-') }}</td>
                                         <td class="px-3 sm:px-4 py-2">{{ $p->alamat ?? '' }}</td>

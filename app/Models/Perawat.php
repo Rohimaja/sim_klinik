@@ -14,6 +14,7 @@ class Perawat extends Model
 
     protected $fillable = [
         'user_id',
+        'nama',
         'poli_id',
         'no_str',
         'no_sip',

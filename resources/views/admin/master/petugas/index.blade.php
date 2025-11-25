@@ -48,7 +48,7 @@
                                 @foreach ($petugas as $i => $p)
                                     <tr class="border-b hover:bg-gray-50 transition">
                                         <td class="px-3 sm:px-4 py-2">{{ $loop->iteration }}</td>
-                                        <td class="px-3 sm:px-4 py-2 text-gray-600">{{ $p->user->nama ?? '' }}</td>
+                                        <td class="px-3 sm:px-4 py-2 text-gray-600">{{ $p->nama ?? '' }}</td>
                                         <td class="px-3 sm:px-4 py-2">{{ $p->no_kta ?? '' }}</td>
                                         <td class="px-3 sm:px-4 py-2">{{ $p->jabatan ?? '' }}</td>
                                         <td class="px-3 sm:px-4 py-2">{{ $p->no_telp ?? '' }}</td>

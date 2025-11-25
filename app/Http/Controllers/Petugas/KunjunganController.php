@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Petugas;
 use App\Http\Requests\Petugas\Store\StoreKunjungan;
 use App\Models\AntrianPoli;
 use App\Models\Dokter;
+use App\Models\JadwalDokter;
 use App\Models\Kunjungan;
 use App\Models\Pasien;
 use App\Models\Poli;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -23,8 +25,8 @@ class KunjunganController extends Controller
     public function index()
     {
         $title = "Tambah Kunjungan Pasien";
-        $kunjungan = Kunjungan::with(['pasien','poli','dokter'])->get();
-        $pasien = Pasien::select('id','nama','jenis_kelamin','no_rm','tgl_lahir')->get();
+        $kunjungan = Kunjungan::with(['pasien.user','poli','dokter'])->get();
+        $pasien = Pasien::select('id','nama','jenis_kelamin','no_rm','tgl_lahir','alamat')->get();
         return view('petugas.kunjungan.index', compact('title','kunjungan','pasien'));
 
     }
@@ -32,14 +34,20 @@ class KunjunganController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
         $title = 'Tambah Kunjungan';
         $poli = Poli::all();
         $dokter = Dokter::all();
-        $kunjungan = Kunjungan::all();
+        // $kunjungan = Kunjungan::all();
+        $pasien = null;
+        $mode = 'create';
 
-        return view('petugas.kunjungan.create',compact('title', 'poli','dokter','kunjungan'));
+        if ($request->pasien_id) {
+            $pasien = Pasien::find($request->pasien_id);
+        }
+
+        return view('petugas.kunjungan.form',compact('title', 'poli','dokter','pasien','mode'));
     }
 
     /**
@@ -60,35 +68,67 @@ class KunjunganController extends Controller
             $result = DB::transaction(function () use ($request) {
 
                 $no_rm = $this->generateNoRm();
+                $no_antrian = $this->generateNoAntrian($request->tgl_kunjungan);
+
+                $nik = Pasien::where('nik', $request->nik)->first();
 
                 // $data = $request->validated();
 
-                $data = [
-                    'nik' => $request->nik,
-                    'nama' => $request->nama,
-                    'no_rm' => $no_rm,
-                    'jenis_pasien' => $request->jenis_pasien,
-                    'no_bpjs' => $request->no_bpjs,
-                    'jenis_kelamin' => $request->jenis_kelamin,
-                    'tempat_lahir' => $request->tempat_lahir,
-                    'tgl_lahir' => $request->tgl_lahir,
-                    'no_telp' => $request->no_telp,
-                    'alamat' => $request->alamat,
-                    'status' => 1,
-                ];
+                if (!$nik) {
 
-                $pasien = Pasien::create($data);
+                    $user = User::create([
+                        'email' => $request->email,
+                        'role' => 'pasien'
+                    ]);
+
+                    $data = [
+                        'user_id' => $user->id,
+                        'nik' => $request->nik,
+                        'nama' => $request->nama,
+                        'no_rm' => $no_rm,
+                        'jenis_pasien' => $request->jenis_pasien,
+                        'no_bpjs' => $request->no_bpjs,
+                        'jenis_kelamin' => $request->jenis_kelamin,
+                        'tempat_lahir' => $request->tempat_lahir,
+                        'tgl_lahir' => $request->tgl_lahir,
+                        'no_telp' => $request->no_telp,
+                        'alamat' => $request->alamat,
+                        'status' => 1,
+                    ];
+
+                    $pasien = Pasien::create($data);
+
+                } else {
+
+                    // Pasien lama dipakai kembali
+                    $pasien = $nik;
+                }
+
+                    // Cek apakah pasien sudah memiliki kunjungan aktif di tanggal yang sama
+                    $cekAntrian = Kunjungan::where('pasien_id', $pasien->id)
+                        ->whereDate('tgl_kunjungan', $request->tgl_kunjungan)
+                        ->where('status', '!=', 'selesai')
+                        ->exists();
+
+                    if ($cekAntrian) {
+                        return back()
+                            ->withErrors(['nik' => 'Pasien sudah memiliki kunjungan aktif pada tanggal ini.'])
+                            ->withInput();
+                    }
 
                 $kunjungan = Kunjungan::create([
                     'pasien_id' => $pasien->id,
                     'poli_id' => $request->poli_id,
+                    'no_antrian' => $no_antrian,
                     'dokter_id' => $request->dokter_id,
                     'tgl_kunjungan' => $request->tgl_kunjungan,
+                    'jam_awal' => $request->jam_awal,
+                    'jam_akhir' => $request->jam_akhir,
                     'keluhan_awal' => $request->keluhan_awal,
                     'status' => 'menunggu',
                 ]);
 
-                $poli = AntrianPoli::create([
+                AntrianPoli::create([
                     'kunjungan_id' => $kunjungan->id,
                     'status' => 'menunggu',
                 ]);
@@ -166,7 +206,14 @@ class KunjunganController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $title = 'Update Kunjungan';
+        $poli = Poli::all();
+        $dokter = Dokter::all();
+        $kunjungan = Kunjungan::with('pasien.user','dokter','poli')->findOrFail($id);
+        $pasien = $kunjungan->pasien; // relasi pasien
+        $mode = 'edit';
+
+        return view('petugas.kunjungan.form', compact('title','poli','dokter','kunjungan', 'pasien', 'mode'));
     }
 
     /**
@@ -223,6 +270,27 @@ class KunjunganController extends Controller
         return $newNumber;
     }
 
+    private function generateNoAntrian($tanggal)
+    {
+        // Ambil nomor RM terakhir
+        $last = Kunjungan::whereDate('tgl_kunjungan', $tanggal)
+            ->orderBy('no_antrian', 'desc')
+            ->first();
+
+        if ($last) {
+            // Ambil 8 digit terakhir dan ubah ke integer
+            $lastNumber = (int) $last->no_rm;
+
+            // Tambah 1, lalu padding jadi 8 digit
+            $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+        } else {
+            // Jika belum ada data sama sekali
+            $newNumber = '0001';
+        }
+
+        return $newNumber;
+    }
+
     public function updateStatus(Request $request, $id)
     {
         try {
@@ -253,7 +321,6 @@ class KunjunganController extends Controller
 
      public function listPasien()
     {
-
 
         try {
 
@@ -300,4 +367,32 @@ class KunjunganController extends Controller
             ], 404);
         }
     }
+
+    // function convertToHari($tanggal)
+    // {
+    //     $hari = Carbon::parse($tanggal)->locale('id')->dayName;
+
+    //     return strtolower($hari);
+    // }
+
+    // public function getByDate(Request $request)
+    // {
+    //     $hari = $this->convertToHari($request->tanggal);
+
+    //     $dokter = JadwalDokter::where('hari', $hari)
+    //         ->with('dokter')
+    //         ->get();
+
+    //     return response()->json($dokter);
+    // }
+
+    // public function getJamDokter(Request $request)
+    // {
+    //     $jadwal = JadwalDokter::where('dokter_id', $request->dokter_id)->first();
+
+    //     return response()->json($jadwal);
+    // }
+
+
+
 }

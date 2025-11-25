@@ -54,7 +54,6 @@ class PerawatController extends Controller
             DB::transaction(function () use ($request) {
 
                 $user = User::create([
-                    'nama' => $request->nama,
                     'email' => $request->email,
                     'username' => $request->username,
                     'role' => 'perawat',
@@ -69,6 +68,7 @@ class PerawatController extends Controller
                 $data = $request->validated();
                 $data = [
                     'user_id' => $user->id,
+                    'nama' => $request->nama,
                     'poli_id' => $request->poli_id,
                     'no_str' => $request->no_str,
                     'no_sip' => $request->no_sip,
@@ -186,6 +186,7 @@ class PerawatController extends Controller
                 }
 
                 $data = [
+                    'nama' => $request->nama,
                     'poli_id' => $request->poli_id,
                     'no_str' => $request->no_str,
                     'no_sip' => $request->no_sip,
@@ -202,7 +203,6 @@ class PerawatController extends Controller
                 $perawat->update($data);
 
                 $userData =[
-                    'nama' => $request->nama,
                     'username' => $request->username,
                     'email' => $request->email,
                 ];

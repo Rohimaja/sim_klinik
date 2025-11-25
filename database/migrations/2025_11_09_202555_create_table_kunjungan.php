@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('pasien_id')->constrained('pasien');
             $table->foreignId('poli_id')->constrained('poli')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('dokter_id')->constrained('dokter')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('jadwal_id')->constrained('jadwal_dokter')->onDelete('cascade')->onUpdate('cascade');
             $table->string('no_antrian',20);
             $table->time('jam_awal');
             $table->time('jam_akhir');

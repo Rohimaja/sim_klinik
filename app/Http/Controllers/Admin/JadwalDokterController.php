@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\Store\StoreMasterJadwal;
 use App\Models\Dokter;
 use App\Models\JadwalDokter;
 use App\Models\Poli;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -132,5 +133,56 @@ class JadwalDokterController extends Controller
                 'message' => 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage()
             ]);
         }
+    }
+
+
+    function convertToHari($tanggal)
+    {
+        $hari = Carbon::parse($tanggal)->locale('id')->dayName;
+
+        return strtolower($hari);
+    }
+
+    // public function getByDate(Request $request)
+    // {
+    //     $hari = $this->convertToHari($request->tanggal);
+
+    //     $dokter = JadwalDokter::with('dokter')
+    //         ->where('poli_id', $request->poli_id)
+    //         ->where('hari', $hari)
+    //         ->get();
+
+    //     return response()->json($dokter);
+    // }
+
+        public function getByDate(Request $request)
+    {
+        $poli = $request->query('poli_id');
+        $tanggal = $request->query('tanggal');
+
+        // $tahunAjaranAktif = TahunAjaran::where('status',  true)->first();
+
+        $query = Dokter::query();
+
+        if ($poli) {
+            $query->where('poli_id', $poli);
+        }
+
+        if ($tanggal) {
+            $query->where('tgl_kunjungan', $tanggal);
+        }
+
+        $dokter = $query->get(['id', 'nama']);
+
+        return response()->json($dokter);
+    }
+
+    public function getJamDokter(Request $request)
+    {
+        $hari = $this->convertToHari($request->tanggal);
+
+        $jadwal = JadwalDokter::where('hari',$hari)->where('dokter_id', $request->dokter_id)->first();
+
+        return response()->json($jadwal);
     }
 }

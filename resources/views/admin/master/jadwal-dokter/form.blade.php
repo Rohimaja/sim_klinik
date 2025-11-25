@@ -105,7 +105,7 @@
                                 </label>
                                 <select name="poli_id" required
                                     class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200">
-                                    <option value="" idden selected>Pilih Poli</option>
+                                    <option value="" hidden selected>Pilih Poli</option>
                                     @foreach ($poli as $p)
                                         <option value="{{ $p->id }}"
                                             {{ old('poli_id', $jadwal->poli_id ?? '') == $p->id ? 'selected' : '' }}>

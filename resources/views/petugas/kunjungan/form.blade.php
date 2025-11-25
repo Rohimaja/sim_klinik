@@ -1,4 +1,6 @@
 <x-app-layout>
+    @vite(['resources/js/pages/petugas/kunjungan.js'])
+
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Kunjungan Pasien') }}
@@ -22,13 +24,25 @@
                     </div>
                 </div>
 
+                @if ($errors->any())
+                    <div class="alert alert-danger text-red-600 dark:text-red-400">
+                        <ul>
+                            @foreach ($errors->all() as $err)
+                                <li>{{ $err }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <!-- Form -->
                 <form method="POST" class="p-6 space-y-6"
-                    action="{{ isset($pasien) ? route('petugas.kunjungan.update', $pasien->id) : route('petugas.kunjungan.store') }}"
+                    action="{{ $mode == 'edit' ? route('petugas.kunjungan.update', $kunjungan->id) : route('petugas.kunjungan.store') }}"
                     method="POST" class="p-6 space-y-6">
+
                     @csrf
-                    @if (isset($pasien))
+                    @if ($mode == 'edit')
                         @method('PUT')
+                        <input type="hidden" id="edit_id" value="{{ $kunjungan->id }}">
                     @endif
 
                     <!-- Identitas Pasien -->
@@ -39,6 +53,16 @@
                         </h4>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                            {{-- <input type="hidden" id="is_edit" value="{{ isset($kunjungan) ? '1' : '0' }}">
+                            <input type="hidden" id="edit_dokter_id" value="{{ $kunjungan->dokter_id ?? '' }}">
+                            <input type="hidden" id="edit_jam_awal" value="{{ $kunjungan->jam_awal ?? '' }}">
+                            <input type="hidden" id="edit_jam_akhir" value="{{ $kunjungan->jam_akhir ?? '' }}"> --}}
+                            {{-- <input type="hidden" id="edit_dokter_id" value="{{ $kunjungan->dokter_id ?? '' }}"> --}}
+
+                            <input type="hidden" name="pasien_id" value="{{ $pasien->id ?? '' }}">
+
+
 
                             <!-- Nama Pasien -->
                             <div>
@@ -63,6 +87,8 @@
                             </div>
 
                             <!-- Nama Pasien -->
+
+
                             <div>
                                 <label for="nama"
                                     class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
@@ -171,6 +197,28 @@
                                 </span>
                             </div>
 
+                            <!-- Email -->
+                            <div>
+                                <label for="email"
+                                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    Email <span class="text-red-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                        <i class="fa-solid fa-envelope"></i>
+                                    </span>
+                                    <input type="email" id="email" name="email" required
+                                        value="{{ old('email', $pasien->user->email ?? '') }}"
+                                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                                        placeholder="contoh@hospital.com">
+                                </div>
+                                <span class="text-red-600 text-sm" id="email_error">
+                                    @error('email')
+                                        {{ $message }}
+                                    @enderror
+                                </span>
+                            </div>
+
                         </div>
                     </div>
 
@@ -223,7 +271,7 @@
                                         placeholder="0001234567890">
                                 </div>
                                 <span class="text-red-600 text-sm" id="bo_bpjs_error">
-                                    @error('bo_bpjs')
+                                    @error('no_bpjs')
                                         {{ $message }}
                                     @enderror
                                 </span>
@@ -278,11 +326,16 @@
                                     <option value="" hidden selected>-- Pilih Poli --</option>
                                     @foreach ($poli as $p)
                                         <option value="{{ $p->id }}"
-                                            {{ old('poli_id') == $p->id ? 'selected' : '' }}>
+                                            {{ old('poli_id', $kunjungan->poli_id ?? '') == $p->id ? 'selected' : '' }}>
                                             {{ $p->nama }}
                                         </option>
                                     @endforeach
                                 </select>
+                                <span class="text-red-600 text-sm" id="poli_id_error">
+                                    @error('poli_id')
+                                        {{ $message }}
+                                    @enderror
+                                </span>
                             </div>
 
                             <!-- Dokter Tujuan -->
@@ -292,15 +345,40 @@
                                     Dokter <span class="text-red-500">*</span>
                                 </label>
                                 <select name="dokter_id" id="dokter_id"
+                                    data-old="{{ old('dokter_id', $kunjungan->dokter_id ?? '') }}"
                                     class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-purple-500">
                                     <option value="" hidden selected>-- Pilih Dokter --</option>
-                                    @foreach ($dokter as $d)
+                                    {{-- @foreach ($dokter as $d)
                                         <option value="{{ $d->id }}"
-                                            {{ old('poli_id') == $d->id ? 'selected' : '' }}>
+                                            {{ old('dokter_id') == $d->id ? 'selected' : '' }}>
                                             {{ $d->nama }}
                                         </option>
-                                    @endforeach
+                                    @endforeach --}}
                                 </select>
+                                <span class="text-red-600 text-sm" id="dokter_id_error">
+                                    @error('dokter_id')
+                                        {{ $message }}
+                                    @enderror
+                                </span>
+                            </div>
+
+                            <div>
+                                <label for="jam"
+                                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    Jam Kunjungan <span class="text-red-500">*</span>
+                                </label>
+                                <select name="jam" id="jam"
+                                    class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-purple-500">
+                                    <option value="" hidden selected>-- Pilih Jam Kunjungan --</option>
+                                </select>
+
+                                <input type="hidden" name="jam_awal" id="jam_awal">
+                                <input type="hidden" name="jam_akhir" id="jam_akhir">
+                                <span class="text-red-600 text-sm" id="jam_error">
+                                    @error('jam')
+                                        {{ $message }}
+                                    @enderror
+                                </span>
                             </div>
 
                             <!-- Tanggal Kunjungan -->
@@ -313,10 +391,16 @@
                                         <i class="fa-solid fa-calendar"></i>
                                     </span>
                                     <input type="date" name="tgl_kunjungan" id="tgl_kunjungan" required
-                                        value="{{ old('tgl_kunjungan', $pasien->tgl_kunjungan ?? '') }}"
+                                        value="{{ old('tgl_kunjungan', $kunjungan->tgl_kunjungan ?? '') }}"
                                         class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+                                    <span class="text-red-600 text-sm" id="tgl_kunjungan">
+                                        @error('tgl_kunjungan')
+                                            {{ $message }}
+                                        @enderror
+                                    </span>
                                 </div>
                             </div>
+
 
                             <!-- Keluhan -->
                             <div class="md:col-span-2">
@@ -326,7 +410,12 @@
                                 </label>
                                 <textarea name="keluhan_awal" id="keluhan_awal" rows="3"
                                     class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-purple-500"
-                                    placeholder="Contoh: Demam, batuk sejak 3 hari, sesak napas ringan">{{ old('keluhan_awal') }}</textarea>
+                                    placeholder="Contoh: Demam, batuk sejak 3 hari, sesak napas ringan">{{ old('keluhan_awal', $kunjungan->keluhan_awal ?? '') }}</textarea>
+                                <span class="text-red-600 text-sm" id="keluhan_awal">
+                                    @error('keluhan_awal')
+                                        {{ $message }}
+                                    @enderror
+                                </span>
                             </div>
 
                         </div>
