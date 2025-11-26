@@ -141,41 +141,7 @@
                                 </td>
                             </tr>
 
-                            <!-- Baris 3 - Selesai -->
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                                <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">3</td>
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">RM-001236</td>
-                                <td class="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-gray-100">Ahmad Rizki</td>
-                                <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">45 tahun</td>
-                                <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">Kontrol diabetes</td>
-                                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">07:45 WIB</td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
-                                        Selesai
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <div class="flex items-center justify-center gap-2">
-                                        <button @click="showDetail({
-                                            no_rm: 'RM-001236',
-                                            nama: 'Ahmad Rizki',
-                                            umur: '45 tahun',
-                                            jenis_kelamin: 'Laki-laki',
-                                            nik: '3509xxxxxxxxxx',
-                                            keluhan: 'Kontrol diabetes',
-                                            waktu: '07:45 WIB',
-                                            status: 'Selesai'
-                                        })" class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-lg transition-colors text-xs font-medium">
-                                            <i class="fa-solid fa-eye mr-1"></i> Detail
-                                        </button>
-                                        <button class="px-3 py-1.5 bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white rounded-lg transition-colors text-xs font-medium">
-                                            <i class="fa-solid fa-file-medical mr-1"></i> Lihat RM
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <!-- Baris 4 - Menunggu -->
+                            <!-- Baris 3 - Menunggu -->
                             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                                 <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">4</td>
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">RM-001237</td>
@@ -209,7 +175,7 @@
                                 </td>
                             </tr>
 
-                            <!-- Baris 5 - Menunggu -->
+                            <!-- Baris 4 - Menunggu -->
                             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                                 <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">5</td>
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">RM-001238</td>
@@ -252,10 +218,10 @@
 
         <!-- Modal Detail Pasien -->
         <div x-show="viewModal" 
-             x-cloak
-             @click.away="viewModal = false"
-             class="fixed inset-0 z-50 overflow-y-auto" 
-             style="display: none;">
+            x-cloak
+            @click.away="viewModal = false"
+            class="fixed inset-0 z-50 overflow-y-auto" 
+            style="display: none;">
             <!-- Backdrop -->
             <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"></div>
             
@@ -288,12 +254,12 @@
                             <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Status</p>
                                 <p class="text-lg font-semibold" 
-                                   :class="{
-                                       'text-yellow-600 dark:text-yellow-400': selectedKunjungan?.status === 'Menunggu',
-                                       'text-blue-600 dark:text-blue-400': selectedKunjungan?.status === 'Sedang Diperiksa',
-                                       'text-green-600 dark:text-green-400': selectedKunjungan?.status === 'Selesai'
-                                   }"
-                                   x-text="selectedKunjungan?.status"></p>
+                                :class="{
+                                    'text-yellow-600 dark:text-yellow-400': selectedKunjungan?.status === 'Menunggu',
+                                    'text-blue-600 dark:text-blue-400': selectedKunjungan?.status === 'Sedang Diperiksa',
+                                    'text-green-600 dark:text-green-400': selectedKunjungan?.status === 'Selesai'
+                                }"
+                                x-text="selectedKunjungan?.status"></p>
                             </div>
                         </div>
 
@@ -329,18 +295,49 @@
                             </div>
                         </div>
 
-                    </div>
-
-                    <!-- Modal Footer -->
-                    <div class="bg-gray-50 dark:bg-gray-700/50 px-6 py-4 rounded-b-xl flex justify-end gap-2">
-                        <button @click="viewModal = false" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 rounded-lg transition-colors font-medium">
-                            Tutup
-                        </button>
+                        <!-- Hasil Skrining -->
+                        <div class="border-t dark:border-gray-700 pt-4">
+                            <p class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-3">Hasil Skrining:</p>
+                            <div class="space-y-3">
+                                <div class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
+                                    <div class="flex justify-between items-start">
+                                        <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Tekanan Darah:</span>
+                                        <span class="text-sm font-semibold text-gray-900 dark:text-gray-100" x-text="selectedKunjungan?.hasil_skrining?.tekanan_darah || '-'"></span>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
+                                    <div class="flex justify-between items-start">
+                                        <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Berat Badan:</span>
+                                        <span class="text-sm font-semibold text-gray-900 dark:text-gray-100" x-text="selectedKunjungan?.hasil_skrining?.berat_badan || '-'"></span>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
+                                <div class="flex justify-between items-start">
+                                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Tinggi Badan:</span>
+                                    <span class="text-sm font-semibold text-gray-900 dark:text-gray-100" x-text="selectedKunjungan?.hasil_skrining?.tinggi_badan || '-'"></span>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
+                                <div class="flex justify-between items-start">
+                                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Suhu Tubuh:</span>
+                                    <span class="text-sm font-semibold text-gray-900 dark:text-gray-100" x-text="selectedKunjungan?.hasil_skrining?.suhu_tubuh || '-'"></span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
-            </div>
+
+                <!-- Modal Footer -->
+                <div class="bg-gray-50 dark:bg-gray-700/50 px-6 py-4 rounded-b-xl flex justify-end gap-2">
+                    <button @click="viewModal = false" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 rounded-lg transition-colors font-medium">
+                        Tutup
+                    </button>
+                </div>
+
         </div>
+    </div>
+</div>
 
     </div>
 </x-app-layout>
