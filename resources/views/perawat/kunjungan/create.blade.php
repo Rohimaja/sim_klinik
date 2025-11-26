@@ -69,28 +69,6 @@
                                 </div>
                             </div>
 
-                            <!-- Denyut Nadi -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Denyut Nadi <span class="text-red-500">*</span>
-                                </label>
-                                <div class="flex items-center gap-2">
-                                    <input type="number" placeholder="72" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100" required>
-                                    <span class="text-gray-600 dark:text-gray-400 text-sm whitespace-nowrap">bpm</span>
-                                </div>
-                            </div>
-
-                            <!-- Respirasi -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Respirasi (RR) <span class="text-red-500">*</span>
-                                </label>
-                                <div class="flex items-center gap-2">
-                                    <input type="number" placeholder="18" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100" required>
-                                    <span class="text-gray-600 dark:text-gray-400 text-sm whitespace-nowrap">x/menit</span>
-                                </div>
-                            </div>
-
                             <!-- Berat Badan -->
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">

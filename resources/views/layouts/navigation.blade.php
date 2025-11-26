@@ -99,6 +99,23 @@
                 </a>
             @endif
 
+            @if (Auth::user()->role === 'perawat')
+                <a href="{{ route('perawat.kunjungan.index') }}"
+                    class="flex items-center px-4 py-3 text-white hover:bg-white/10 rounded-lg transition
+            {{ request()->routeIs('perawat.kunjungan') ? 'bg-white/20' : '' }}">
+                    <i class="fa-solid fa-notes-medical text-base w-5 text-center mr-3"></i>
+                    <span class="font-medium leading-none">Kunjungan Pasien</span>
+                </a>
+            @endif
+
+            @if (Auth::user()->role === 'dokter')
+                <a href="{{ route('dokter.kunjungan.index') }}"
+                    class="flex items-center px-4 py-3 text-white hover:bg-white/10 rounded-lg transition
+            {{ request()->routeIs('dokter.kunjungan') ? 'bg-white/20' : '' }}">
+                    <i class="fa-solid fa-notes-medical text-base w-5 text-center mr-3"></i>
+                    <span class="font-medium leading-none">Kunjungan Pasien</span>
+                </a>
+            @endif
 
             <!-- Laporan Dropdown -->
             <div x-data="{ open: false }" class="mt-2">
