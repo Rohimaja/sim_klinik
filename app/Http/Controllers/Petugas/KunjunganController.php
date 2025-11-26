@@ -128,6 +128,17 @@ class KunjunganController extends Controller
                     'status' => 'menunggu',
                 ]);
 
+                    // 2. Cek apakah dokter benar dari poli tsb
+                    $dokterValid = Dokter::where('id', $request->dokter_id)
+                        ->where('poli_id', $request->poli_id)
+                        ->exists();
+
+                    if (!$dokterValid) {
+                        return back()->withErrors([
+                            'dokter_id' => 'Dokter tidak sesuai dengan poli yang dipilih.',
+                        ])->withInput();
+                    }
+
                 AntrianPoli::create([
                     'kunjungan_id' => $kunjungan->id,
                     'status' => 'menunggu',
@@ -221,7 +232,68 @@ class KunjunganController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+
+            $result = DB::transaction(function () use ($request, $id) {
+                $kunjungan = Kunjungan::with('pasien.user','dokter','poli')->findOrFail($id);
+
+                    // Cek apakah pasien sudah memiliki kunjungan aktif di tanggal yang sama
+                    $cekAntrian = Kunjungan::where('pasien_id', $request->pasien_id)
+                        ->whereDate('tgl_kunjungan', $request->tgl_kunjungan)
+                        ->where('id', '!=', $id) // penting!
+                        ->where('status', '!=', 'selesai')
+                        ->exists();
+
+                    if ($cekAntrian) {
+                        return back()
+                            ->withErrors(['nik' => 'Pasien sudah memiliki kunjungan aktif pada tanggal ini.'])
+                            ->withInput();
+                    }
+                    // 2. Cek apakah dokter benar dari poli tsb
+                    $dokterValid = Dokter::where('id', $request->dokter_id)
+                        ->where('poli_id', $request->poli_id)
+                        ->exists();
+
+                    if (!$dokterValid) {
+                        return back()->withErrors([
+                            'dokter_id' => 'Dokter tidak sesuai dengan poli yang dipilih.',
+                        ])->withInput();
+                    }
+
+                $kunjungan->update([
+                    'pasien_id'     => $request->pasien_id,
+                    'poli_id'       => $request->poli_id,
+                    'dokter_id'     => $request->dokter_id,
+                    'tgl_kunjungan' => $request->tgl_kunjungan,
+                    'jam_awal'      => $request->jam_awal,
+                    'jam_akhir'     => $request->jam_akhir,
+                    'keluhan_awal'  => $request->keluhan_awal,
+                ]);
+
+
+                return true;
+            });
+
+            if ($result !== true) {
+                return $result;
+            }
+
+            return redirect()->route('petugas.kunjungan.index')->with([
+                'status' => 'success',
+                'message' => 'Data Berhasil Diperbarui'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Gagal memperbarui Presensi', [
+                'error' => $e->getMessage(),
+                'stack' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->back()->withInput()->with([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat memperbarui data: '
+            ]);
+        }
     }
 
     /**

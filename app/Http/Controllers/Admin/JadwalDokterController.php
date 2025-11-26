@@ -155,27 +155,21 @@ class JadwalDokterController extends Controller
     //     return response()->json($dokter);
     // }
 
-        public function getByDate(Request $request)
+    public function getByDate(Request $request)
     {
         $poli = $request->query('poli_id');
         $tanggal = $request->query('tanggal');
 
-        // $tahunAjaranAktif = TahunAjaran::where('status',  true)->first();
+        $hari = $this->convertToHari($request->tanggal);
 
-        $query = Dokter::query();
-
-        if ($poli) {
-            $query->where('poli_id', $poli);
-        }
-
-        if ($tanggal) {
-            $query->where('tgl_kunjungan', $tanggal);
-        }
-
-        $dokter = $query->get(['id', 'nama']);
+        $dokter = JadwalDokter::with('dokter')
+            ->where('poli_id', $poli)
+            ->where('hari', strtolower($hari))
+            ->get();
 
         return response()->json($dokter);
     }
+
 
     public function getJamDokter(Request $request)
     {

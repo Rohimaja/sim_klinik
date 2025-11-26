@@ -171,7 +171,7 @@ $(document).ready(function () {
     // OLD VALUE (mode edit)
     const oldPoli = $("#poli_id").val();
     const oldTgl = $("#tgl_kunjungan").val();
-    const oldDokter = $("#edit_dokter_id").val(); // pastikan hidden id ada
+    const oldDokter = $("#dokter_id").data("old"); // pastikan hidden id ada
 
     if (oldPoli && oldTgl) {
         loadDokter(oldPoli, oldTgl, oldDokter);

@@ -10,7 +10,6 @@
         viewModal: false,
         selectedKunjungan: null,
         deleteId: null,
-        ...dataPasien()
     }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6 border border-gray-100 dark:border-gray-700">
@@ -288,7 +287,7 @@
                                                 <table id="data-pasien" class="">
                                                     <thead>
                                                         <tr>
-                                                            <th>#</th>
+                                                            <th>No</th>
                                                             <th>Nama</th>
                                                             <th>No RM</th>
                                                             <th>Jenis Kelamin</th>
@@ -307,7 +306,7 @@
                                                                 <td class="px-3 sm:px-4 py-2">
                                                                     {{ $p->no_rm ?? '' }}</td>
                                                                 <td class="px-3 sm:px-4 py-2">
-                                                                    {{ $p->jenis_kelamin ?? '' }}
+                                                                    {{ $p->jenis_kelamin === 'L' ? 'Laki-laki' : ($p->jenis_kelamin === 'P' ? 'Perempuan' : '-') }}
                                                                 </td>
                                                                 <td class="px-3 sm:px-4 py-2">{{ $p->alamat ?? '' }}
                                                                 </td>
@@ -316,8 +315,8 @@
                                                                     <div class="flex justify-center gap-1 sm:gap-2">
                                                                         <!-- Edit Button -->
                                                                         <a href="{{ route('petugas.kunjungan.create', ['pasien_id' => $p->id]) }}"
-                                                                            class="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105 inline-block">
-                                                                            <i class="fa-solid fa-pen"></i>
+                                                                            class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105 inline-block">
+                                                                            Pilih
                                                                         </a>
                                                                     </div>
                                                                 </td>
@@ -333,7 +332,7 @@
                                         </div>
                                     </div>
 
-                                    <div
+                                    {{-- <div
                                         class="bg-gray-50 dark:bg-gray-700 px-6 py-4 flex justify-between items-center border-t border-gray-200 dark:border-gray-600">
                                         <p class="text-sm text-gray-600 dark:text-gray-400">
                                             <span x-show="pasienDipilih"
@@ -364,7 +363,7 @@
                                                 </span>
                                             </button>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
