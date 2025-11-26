@@ -19,6 +19,26 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
     {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'system';
+            const html = document.documentElement;
+
+            if (theme === 'dark') {
+                html.classList.add('dark');
+            } else if (theme === 'light') {
+                html.classList.remove('dark');
+            } else {
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    html.classList.add('dark');
+                } else {
+                    html.classList.remove('dark');
+                }
+            }
+        })();
+    </script>
+
 </head>
 <body class="font-sans antialiased bg-gray-100 dark:bg-gray-900">
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900" x-data="{ sidebarOpen: false, profileOpen: false }">

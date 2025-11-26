@@ -21,6 +21,24 @@
                 @vite(['resources/css/app.css', 'resources/js/app.js'])
             @endif
 
+        <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'system';
+            const html = document.documentElement;
+
+            if (theme === 'dark') {
+                html.classList.add('dark');
+            } else if (theme === 'light') {
+                html.classList.remove('dark');
+            } else {
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    html.classList.add('dark');
+                } else {
+                    html.classList.remove('dark');
+                }
+            }
+        })();
+    </script>
     </head>
     <body class="font-sans text-gray-900 antialiased bg-gray-100 dark:bg-gray-900">
     <div class="flex justify-center items-center min-h-screen px-4 sm:px-6">

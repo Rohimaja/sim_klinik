@@ -1,6 +1,9 @@
 <!-- Sidebar -->
 <aside
-    class="fixed inset-y-0 left-0 z-50 w-64  bg-[linear-gradient(to_bottom,#7134FC_0%,#2088FF_100%)] dark:bg-gray-800 transform transition-transform duration-300 ease-in-out lg:translate-x-0"
+    class="fixed inset-y-0 left-0 z-50 w-64
+           bg-[linear-gradient(to_bottom,#7134FC_0%,#2088FF_100%)]
+           dark:bg-none dark:bg-gray-800
+           transform transition-transform duration-300 ease-in-out lg:translate-x-0"
     :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }">
     <div class="flex flex-col h-full">
         <!-- Logo & Close Button -->
@@ -153,14 +156,17 @@
                 x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-2"
                 class="absolute bottom-full left-0 right-0 mb-2 mx-4 bg-white dark:bg-gray-700 rounded-lg shadow-lg overflow-hidden"
                 style="display: none;">
-                <a href="{{ route('profile.edit') }}"
+                <a href="{{ route('pengaturan.profile') }}"
                     class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 transition">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
-                    <span class="text-sm font-medium">{{ __('Profile') }}</span>
+                    <span class="text-sm font-medium">
+                        Pengaturan Akun
+                    </span>
                 </a>
+
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
