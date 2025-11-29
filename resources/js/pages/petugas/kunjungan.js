@@ -1,12 +1,12 @@
-$(document).ready(function () {
-    table = $("#data-pasien").DataTable({
-        searching: true,
-        paging: true,
-        info: true,
-        scrollX: true,
-        autoWidth: false,
-    });
-});
+// $(document).ready(function () {
+//     table = $("#data-pasien").DataTable({
+//         searching: true,
+//         paging: true,
+//         info: true,
+//         scrollX: true,
+//         autoWidth: false,
+//     });
+// });
 
 window.loadKunjunganDetail = function (id) {
     $.ajax({

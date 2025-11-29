@@ -33,19 +33,19 @@ window.loadKunjunganDetail = function (id) {
             $("#no_rm").text(res.no_rm);
             // 🟢 Status aktif / non-aktif
             if (res.status === "menunggu") {
-                $("#status").html("Menunggu");
+                $("#statusDetail").html("Menunggu");
             } else if (res.status === "dipanggil") {
-                $("#status")
-                    .html("Di Panggil")
+                $("#statusDetail")
+                    .html("Sedang Diperiksa")
                     .removeClass("text-yellow-600 dark:text-yellow-400")
                     .addClass("text-blue-600 dark:text-blue-400");
             } else if (res.status === "selesai") {
-                $("#status")
+                $("#statusDetail")
                     .html("Selesai")
                     .removeClass("text-yellow-600 dark:text-yellow-400")
                     .addClass("text-green-600 dark:text-green-400");
             } else {
-                $("#status")
+                $("#statusDetail")
                     .html("Di Batalkan")
                     .removeClass("text-yellow-600 dark:text-yellow-400")
                     .addClass("text-red-600 dark:text-red-400");

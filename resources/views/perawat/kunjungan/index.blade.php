@@ -36,7 +36,7 @@
                                 class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                                 <option value="">Semua Status</option>
                                 <option value="menunggu">Menunggu</option>
-                                <option value="sedang_diperiksa">Sedang Diperiksa</option>
+                                <option value="dipanggil">Sedang Diperiksa</option>
                                 <option value="selesai">Selesai</option>
                             </select>
                         </div>
@@ -194,7 +194,7 @@
                             </div>
                             <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Status</p>
-                                <p class="text-lg font-semibold text-yellow-600 dark:text-yellow-400" id="status">
+                                <p class="text-lg font-semibold text-yellow-600 dark:text-yellow-400" id="statusDetail">
                                 </p>
                             </div>
                         </div>

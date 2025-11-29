@@ -298,6 +298,85 @@
                         </div>
                     </div>
 
+                    <div class="border-l-4 border-blue-500 pl-4">
+                        <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-heartbeat text-blue-500"></i>
+                            Tanda Vital
+                        </h4>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                            <!-- Tekanan Darah -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    Tekanan Darah <span class="text-red-500">*</span>
+                                </label>
+                                <div class="flex items-center gap-2">
+                                    <input type="text" name="sistol" id="sistol" placeholder="Sistol"
+                                        readonly value="{{ old('sistol', $skrining->tensi ?? '') }}"
+                                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
+                                        required>
+                                    <span
+                                        class="text-gray-600 dark:text-gray-400 text-sm whitespace-nowrap">mmHg</span>
+                                </div>
+                            </div>
+
+                            <!-- Suhu -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    Suhu Tubuh <span class="text-red-500">*</span>
+                                </label>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" name="suhu" id="suhu" step="0.1"
+                                        value="{{ old('suhu', $skrining->suhu ?? '') }}" placeholder="36.5" readonly
+                                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
+                                        required>
+                                    <span class="text-gray-600 dark:text-gray-400 text-sm whitespace-nowrap">°C</span>
+                                </div>
+                            </div>
+
+                            <!-- Berat Badan -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    Berat Badan
+                                </label>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" name="berat_badan" id="berat_badan" step="0.1"
+                                        readonly value="{{ old('berat_badan', $skrining->berat_badan ?? '') }}"
+                                        placeholder="70"
+                                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100">
+                                    <span class="text-gray-600 dark:text-gray-400 text-sm whitespace-nowrap">kg</span>
+                                </div>
+                            </div>
+
+                            <!-- Tinggi Badan -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    Tinggi Badan
+                                </label>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" name="tinggi_badan" id="tinggi_badan" readonly
+                                        value="{{ old('tinggi_badan', $skrining->tinggi_badan ?? '') }}"
+                                        placeholder="170"
+                                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100">
+                                    <span class="text-gray-600 dark:text-gray-400 text-sm whitespace-nowrap">cm</span>
+                                </div>
+                            </div>
+
+                            <!-- Keluhan -->
+                            <div class="md:col-span-1">
+                                <label id="keluhan"
+                                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    Keluhan Pasien <span class="text-red-500">*</span>
+                                </label>
+                                <textarea name="keluhan_utama" id="keluhan" rows="2" readonly
+                                    class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
+                                    placeholder="Contoh: Demam, batuk sejak 3 hari, sesak napas ringan">{{ old('keluhan', $skrining->keluhan_utama ?? '') }}</textarea>
+                            </div>
+
+                        </div>
+                    </div>
+
                     <!-- Kunjungan Pasien -->
                     <div class="border-l-4 border-purple-500 pl-4">
                         <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">

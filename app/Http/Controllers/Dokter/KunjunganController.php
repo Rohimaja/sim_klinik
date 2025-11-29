@@ -209,8 +209,9 @@ class KunjunganController extends Controller
         // $dokter = Dokter::all();
         $kunjungan = AntrianPoli::with('kunjungan')->findOrFail($id);
         $pasien = $kunjungan->kunjungan->pasien; // relasi pasien
+        $skrining = $kunjungan->kunjungan->skrining; // relasi pasien
 
-        return view('dokter.kunjungan.form', compact('title','kunjungan', 'pasien'));
+        return view('dokter.kunjungan.form', compact('title','kunjungan', 'pasien','skrining'));
     }
 
     /**

@@ -117,7 +117,7 @@ class KunjunganController extends Controller
     public function show(string $id)
     {
         try {
-            $kunjungan = Kunjungan::with('pasien')->findOrFail($id);
+            $kunjungan = Kunjungan::with('pasien','skrining')->findOrFail($id);
 
             // Hitung umur
             $tgl_lahir = Carbon::parse($kunjungan->pasien->tgl_lahir);
@@ -189,6 +189,10 @@ class KunjunganController extends Controller
                     'tinggi_badan'    => $request->tinggi_badan,
                     'keluhan_utama'   => $request->keluhan_utama,
                 ]);
+
+                $kunjungan = Kunjungan::find($request->kunjungan_id);
+                $kunjungan->status = 'selesai';
+                $kunjungan->save();
 
 
                 return true;
@@ -290,6 +294,26 @@ class KunjunganController extends Controller
 
         $kunjungan = $query->get();
 
+        $kunjungan = $kunjungan->map(function ($item) {
+            $tgl_lahir = Carbon::parse($item->pasien->tgl_lahir);
+            $item->umur = $tgl_lahir->age;
+            return $item;
+        });
+
         return response()->json($kunjungan);
+
+            // return response()->json([
+            //     'id' => $kunjungan->id,
+            //     'nama' => $kunjungan->pasien->nama,
+            //     'nik' => $kunjungan->pasien->nik,
+            //     'no_rm' => $kunjungan->pasien->no_rm,
+            //     'status' => $kunjungan->status,
+            //     'tgl_kunjungan' => $kunjungan->tgl_kunjungan,
+            //     'jenis_kelamin' => $kunjungan->pasien->jenis_kelamin,
+            //     'tgl_lahir' => $tgl_lahir_formatted,
+            //     'umur' => $umur,
+            //     'email' => optional($kunjungan->pasien->user)->email,
+            //     'keluhan_awal' => $kunjungan->keluhan_awal,
+            // ]);
     }
 }
