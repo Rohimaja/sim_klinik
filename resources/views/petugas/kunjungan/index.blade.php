@@ -35,7 +35,7 @@
                         dataPasien() --}}
                         <!-- Tombol Dropdown -->
                         <button @click="dropdownOpen = !dropdownOpen"
-                            class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white px-5 py-2.5 rounded-lg font-medium text-sm shadow-md hover:shadow-lg transition-all duration-200 w-full sm:w-auto">
+                            class="inline-flex items-center justify-center gap-2 bg-[#4C4CFF] hover:bg-[#3A63FF] dark:bg-[#2F80FF] dark:hover:bg-[#1F6EFF] text-white px-5 py-2.5 rounded-lg font-medium text-sm shadow-md hover:shadow-lg transition-all duration-200 w-full sm:w-auto">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 4v16m8-8H4"></path>
@@ -199,9 +199,9 @@
                 </div>
 
                 <!-- Tabel Kunjungan Pasien -->
-                <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
-                    <table id="dataTable" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                        <thead class="bg-gradient-to-r from-indigo-600 to-indigo-700">
+                <div class="overflow-x-auto border border-gray-200 dark:border-gray-700">
+                    <table id="dataTable" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 overflow-hidden">
+                        <thead class="bg-[#4C4CFF] dark:bg-gray-700 text-white text-left">
                             <tr>
                                 <th
                                     class="px-4 py-3.5 text-left text-xs font-semibold text-white uppercase tracking-wider">
@@ -233,7 +233,7 @@
                                     <td class="px-4 py-3 whitespace-nowrap">
                                         <div class="flex items-center gap-2">
                                             <div
-                                                class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-700 text-white font-bold text-sm shadow-md">
+                                                class="flex items-center justify-center w-10 h-10 rounded-full bg-[#4C4CFF] dark:bg-[#2F80FF]  text-white font-bold text-sm shadow-md">
                                                 {{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}
                                             </div>
                                         </div>
@@ -292,59 +292,62 @@
                                         <div class="flex justify-center gap-1 sm:gap-2">
 
                                             <div class="relative group">
-
                                                 <!-- Tombol (hanya hiasan) -->
-                                                <button class="p-2 bg-gray-200 hover:bg-gray-300 rounded-lg">
+                                                <button class="p-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition-colors text-gray-600 dark:text-gray-300">
                                                     ⋮
                                                 </button>
-
+                                                
                                                 <!-- Dropdown -->
-                                                <div
-                                                    class="absolute top-1/2 -translate-y-1/2 right-0
-                                                            w-32 bg-white border rounded-lg shadow-lg z-50
+                                                <div class="absolute top-1/2 -translate-y-1/2 right-0 w-32 
+                                                            bg-white dark:bg-gray-800 
+                                                            border border-gray-200 dark:border-gray-700 
+                                                            rounded-lg shadow-lg dark:shadow-xl z-50
                                                             opacity-0 invisible group-hover:opacity-100 group-hover:visible
                                                             transition-all duration-200">
-                                                    {{-- <div
-                                                    class="absolute top-1/2 -translate-y-1/2 right-0
-                                                            w-32 bg-white border rounded-lg shadow-lg z-50
-                                                            opacity-0 invisible group-hover:opacity-100 group-hover:visible
-                                                            transition-all duration-200"> --}}
-
-                                                    <form
-                                                        action="{{ route('petugas.kunjungan.updateStatus', $k->id) }}"
-                                                        method="POST">
+                                                    
+                                                    <!-- PANGGIL -->
+                                                    <form action="{{ route('petugas.kunjungan.updateStatus', $k->id) }}" method="POST">
                                                         @csrf
                                                         <input type="hidden" name="status" value="dipanggil">
                                                         <button type="submit"
-                                                            class="block w-full text-left px-4 py-2 hover:bg-gray-100">
+                                                            class="block w-full text-left px-4 py-2 
+                                                                    text-gray-700 dark:text-gray-300
+                                                                    hover:bg-gray-100 dark:hover:bg-gray-700
+                                                                    transition-colors duration-150
+                                                                    first:rounded-t-md">
                                                             Panggil
                                                         </button>
                                                     </form>
-
-                                                    <!-- BERUBAH -->
-                                                    <form
-                                                        action="{{ route('petugas.kunjungan.updateStatus', $k->id) }}"
-                                                        method="POST">
+                                                    
+                                                    <!-- BERUBAH/SELESAI -->
+                                                    <form action="{{ route('petugas.kunjungan.updateStatus', $k->id) }}" method="POST">
                                                         @csrf
                                                         <input type="hidden" name="status" value="selesai">
                                                         <button type="submit"
-                                                            class="block w-full text-left px-4 py-2 hover:bg-gray-100">
+                                                            class="block w-full text-left px-4 py-2 
+                                                                    text-gray-700 dark:text-gray-300
+                                                                    hover:bg-gray-100 dark:hover:bg-gray-700
+                                                                    transition-colors duration-150
+                                                                    border-t border-gray-200 dark:border-gray-700">
                                                             Selesai
                                                         </button>
                                                     </form>
-
+                                                    
                                                     <!-- BATAL -->
-                                                    <form
-                                                        action="{{ route('petugas.kunjungan.updateStatus', $k->id) }}"
-                                                        method="POST">
+                                                    <form action="{{ route('petugas.kunjungan.updateStatus', $k->id) }}" method="POST">
                                                         @csrf
                                                         <input type="hidden" name="status" value="dibatalkan">
                                                         <button type="submit"
-                                                            class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500">
+                                                            class="block w-full text-left px-4 py-2 
+                                                                    text-red-600 dark:text-red-400
+                                                                    hover:bg-gray-100 dark:hover:bg-gray-700
+                                                                    hover:text-red-700 dark:hover:text-red-300
+                                                                    transition-colors duration-150
+                                                                    border-t border-gray-200 dark:border-gray-700
+                                                                    last:rounded-b-md">
                                                             Batalkan
                                                         </button>
                                                     </form>
-
                                                 </div>
                                             </div>
 
@@ -366,7 +369,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
-                                                    class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg text-sm transition-all duration-300 hover:shadow-lg hover:scale-105">
+                                                    class="bg-red-500 hover:bg-red-600 text-white p-2.5 rounded-lg text-sm transition-all duration-300 hover:shadow-lg hover:scale-105">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
@@ -613,13 +616,34 @@
 @endpush
 
 <style>
+    /* Styling untuk DataTables */
+    .dataTables_wrapper {
+        color: inherit;
+    }
+
+    /* Light Mode */
     .dataTables_length select,
-    .dataTables_filter input{
-        background: #1f2937;
-        color: white;
+    .dataTables_filter input {
+        color: #000 !important;
+        background-color: #fff !important;
         padding: 6px 10px;
         border-radius: 6px;
         margin-left: 6px;
+        border: 1px solid #d1d5db !important;
+    }
+
+    .dataTables_length select:hover,
+    .dataTables_filter input:hover {
+        border-color: #9ca3af;
+    }
+
+    .dataTables_length select:focus,
+    .dataTables_filter input:focus {
+        outline: none;
+        border-color: #4f46e5;
+        background-color: #fff !important;
+        color: #000 !important;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
     }
 
     .dataTables_info,
@@ -630,6 +654,13 @@
         margin-top: 10px;
     }
 
+    .dataTables_paginate .paginate_button.current,
+    .dataTables_paginate .paginate_button:hover {
+        background-color: #4f46e5 !important;
+        color: white !important;
+        border: 1px solid #4f46e5 !important;
+    }
+
     table.dataTable {
         border-collapse: collapse !important;
     }
@@ -637,26 +668,73 @@
     table.dataTable tbody tr {
         background: transparent;
     }
+
+    /* Dark Mode */
+    :root {
+        color-scheme: light dark;
+    }
+
+    /* Untuk browser yang support dark mode dengan class */
+    .dark .dataTables_length select,
+    .dark .dataTables_filter input {
+        color: #e5e7eb !important;
+        background-color: #374151 !important;
+        border-color: #4b5563 !important;
+    }
+
+    .dark .dataTables_length select:hover,
+    .dark .dataTables_filter input:hover {
+        border-color: #6b7280;
+    }
+
+    .dark .dataTables_length select:focus,
+    .dark .dataTables_filter input:focus {
+        outline: none;
+        border-color: #818cf8;
+        background-color: #374151 !important;
+        color: #e5e7eb !important;
+        box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.1);
+    }
+
+    .dark .dataTables_info,
+    .dark .dataTables_length,
+    .dark .dataTables_filter,
+    .dark .dataTables_paginate {
+        color: #9ca3af !important;
+    }
+
+    .dark .dataTables_paginate .paginate_button {
+        color: #e5e7eb !important;
+        border-color: #4b5563 !important;
+    }
+
+    .dark .dataTables_paginate .paginate_button:hover {
+        background-color: #4f46e5 !important;
+        color: white !important;
+        border-color: #4f46e5 !important;
+    }
+
+    .dark .dataTables_paginate .paginate_button.current {
+        background-color: #4f46e5 !important;
+        color: white !important;
+        border-color: #4f46e5 !important;
+    }
 </style>
 
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-
     if ($.fn.DataTable.isDataTable('#data-pasien')) {
         $('#data-pasien').DataTable().destroy();
     }
-
     $('#data-pasien').DataTable({
         pageLength: 5,
+        lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
         responsive: true,
-
-        // Mengatur posisi search & filter di atas
         dom: 
             "<'flex flex-col sm:flex-row justify-between items-center mb-4'lf>" +
             "<'overflow-x-auto't>" +
             "<'flex flex-col sm:flex-row justify-between items-center mt-4'ip>",
-
         language: {
             search: "Cari pasien:",
             lengthMenu: "Tampilkan _MENU_",
@@ -668,6 +746,18 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // Observe dark mode changes
+    const observer = new MutationObserver(function(mutations) {
+        // Trigger DataTables redraw untuk apply styling
+        if ($.fn.DataTable.isDataTable('#data-pasien')) {
+            $.fn.dataTable.tables().nodes().to$().DataTable().draw(false);
+        }
+    });
+
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
 });
 </script>
 
