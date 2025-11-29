@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Petugas\KunjunganController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -74,6 +75,9 @@ Route::prefix('admin/laporan')->group(function () {
     Route::get('/pendapatan', fn() => view('admin.laporan.pendapatan'))->name('laporan.pendapatan');
     Route::get('/stokobat', fn() => view('admin.laporan.stokobat'))->name('laporan.stokobat');
 });
+
+    Route::get('/rfid/kunjungan',[KunjunganController::class,'prosesKunjungan']);
+
 
 
 

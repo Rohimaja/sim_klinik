@@ -6,15 +6,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
-class AntrianPoli extends Model
+class Skrining extends Model
 {
-    protected $table = 'antrian_poli';
+    protected $table = 'skrining';
 
     use HasFactory, Notifiable;
 
     protected $fillable = [
         'kunjungan_id',
-        'status',
+        'perawat_id',
+        'berat_badan',
+        'tinggi_badan',
+        'denyut_nadi',
+        'tensi',
+        'suhu',
+        'keluhan_utama',
     ];
 
     public function kunjungan()
@@ -22,9 +28,9 @@ class AntrianPoli extends Model
         return $this->belongsTo(Kunjungan::class, 'kunjungan_id', 'id');
     }
 
-    public function pemeriksaan()
+    public function perawat()
     {
-        return $this->hasOne(Pemeriksaan::class);
+        return $this->belongsTo(Perawat::class, 'perawat_id', 'id');
     }
 
 }

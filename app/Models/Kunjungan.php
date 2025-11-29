@@ -39,4 +39,9 @@ class Kunjungan extends Model
         return $this->belongsTo(Pasien::class, 'pasien_id', 'id');
     }
 
+        public function skrining()
+    {
+        return $this->hasOne(Skrining::class);
+    }
+
 }

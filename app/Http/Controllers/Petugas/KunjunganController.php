@@ -467,4 +467,76 @@ class KunjunganController extends Controller
 
 
 
+    public function prosesKunjungan(Request $request){
+        $rfid = strtoupper($request->query('rfid'));
+        $pasien = Pasien::where('rfid', $rfid)->first();
+
+        if (!$pasien) {
+            return response()->json(['status' => 'error', 'message' => 'Pasien tidak ditemukan'], 404);
+        }
+
+        $now = Carbon::now();
+
+        try {
+            $kunjungan = Kunjungan::whereDate('tgl_kunjungan', Carbon::today())
+                ->where('pasien_id', $pasien->id)
+                ->whereTime('jam_awal', '<=', $now)
+                ->whereTime('jam_akhir', '>=', $now)
+                ->where('status', 'tidak hadir') // Bisa juga 'menunggu' tergantung alur
+                ->first();
+
+            if (!$kunjungan) {
+                return response()->json(['status' => 'error', 'message' => 'Tidak ada kunjungan aktif saat ini'], 404);
+            }
+
+            // 2. Cek apakah sudah punya antrian poli
+            $cekAntrian = AntrianPoli::where('kunjungan_id', $kunjungan->id)->first();
+
+            if ($cekAntrian) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Pasien sudah masuk antrian poli'
+                ], 409);
+            }
+
+            // 3. Buat antrian baru
+            $antrian = AntrianPoli::create([
+                'kunjungan_id' => $kunjungan->id,
+                'status'       => 'menunggu',
+                // 'waktu_masuk'  => now()
+            ]);
+
+            // 4. Update status kunjungan (opsional)
+            $kunjungan->update([
+                'status' => 'menunggu'
+            ]);
+
+            // $tglPresensi = $antrian->tgl_presensi;
+            // $jamAwal = $antrian->jam_awal;
+            // $jamAkhir = $antrian->jam_akhir;
+
+            // $timeMulai = Carbon::parse("$tglPresensi $jamAwal");
+            // $timeBerakhir = Carbon::parse("$tglPresensi $jamAkhir");
+
+            // if ($now->lt($timeMulai)) {
+            //     return response()->json(['status' => 'error', 'message' => 'Absensi belum dimulai']);
+            // } elseif ($now->gt($timeBerakhir)) {
+            //     return response()->json(['status' => 'error', 'message' => 'Absensi sudah kadaluarsa']);
+            // }
+
+            // DetailPresensi::where('mahasiswa_id', $pasien->id)
+            //     ->where('presensi_id', $antrian->id)
+            //     ->whereNull('waktu_presensi')
+            //     ->update([
+            //         'waktu_presensi' => now(),
+            //         'status' => 1,
+            //     ]);
+
+            return response()->json(['status' => 'success', 'message' => 'Pasien berhasil masuk antrian poli', 'antrian_id' => $antrian->id]);
+        } catch (\Exception $e) {
+            Log::error('RFID Error: ' . $e->getMessage());
+            return response()->json(['status' => 'error', 'message' => 'Terjadi Kesalahan sistem'], 404);
+        }
+    }
+
 }

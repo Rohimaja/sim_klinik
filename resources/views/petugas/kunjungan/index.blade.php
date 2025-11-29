@@ -372,7 +372,7 @@
 
                 <!-- Tabel Kunjungan Pasien -->
                 <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
-                    <table id="dataTable" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <table id="data-kunjungan" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead class="bg-gradient-to-r from-indigo-600 to-indigo-700">
                             <tr>
                                 <th
@@ -438,11 +438,6 @@
                                                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800">
                                                 Menunggu Skrining
                                             </span>
-                                        @elseif ($k['status'] === 'menunggu-dokter')
-                                            <span
-                                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-400 border border-orange-200 dark:border-orange-800">
-                                                Menunggu Dokter
-                                            </span>
                                         @elseif ($k['status'] === 'dipanggil')
                                             <span
                                                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
@@ -451,7 +446,7 @@
                                         @elseif ($k['status'] === 'selesai')
                                             <span
                                                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 border border-green-200 dark:border-green-800">
-                                                Selesai
+                                                Selesai Diperiksa
                                             </span>
                                         @elseif ($k['status'] === 'dibatalkan')
                                             <span
