@@ -1,5 +1,4 @@
 <x-app-layout>
-    @vite(['resources/js/pages/petugas/kunjungan.js'])
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Kunjungan Pasien') }}
@@ -83,291 +82,119 @@
                             </a>
                         </div>
 
-                        <!-- Modal Cari Pasien Lama -->
-                        <div x-show="modalOpen" x-cloak class="fixed inset-0 z-50 overflow-y-auto"
-                            style="display: none;">
-                            <div
-                                class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-                                <div @click="modalOpen = false" x-show="modalOpen"
-                                    x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
-                                    x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
-                                    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                                    class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"></div>
+                        <div x-show="modalOpen" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+                            <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+                                
+                                <div @click="modalOpen = false"
+                                    x-show="modalOpen"
+                                    x-transition:enter="ease-out duration-300"
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100"
+                                    x-transition:leave="ease-in duration-200"
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                    class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75">
+                                </div>
 
                                 <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
 
-                                <div x-transition:enter="ease-out duration-300"
+                                <div
+                                    x-transition:enter="ease-out duration-300"
                                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                                     x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
                                     x-transition:leave="ease-in duration-200"
                                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                    class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+                                    class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full"
+                                >
 
-                                    {{-- <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-4">
-                                        <div class="flex items-center justify-between">
-                                            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
-                                                <svg class="w-6 h-6" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                                </svg>
-                                                Pasien Lama
-                                            </h3>
-                                            <button @click="modalOpen = false; loadPasien()"
-                                             <button @click="modalOpen = false; $nextTick(() => loadPasien({})) "
-                                                class="text-white hover:text-gray-200 transition-colors">
-                                                <svg class="w-6 h-6" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </div> --}}
+                                    <!-- Header Modal -->
+                                    <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 dark:from-indigo-900 dark:to-indigo-800 px-6 py-4 flex justify-between items-center">
+                                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                                            <i class="fa-solid fa-user-plus"></i>
+                                            Pilih Pasien
+                                        </h2>
+                                        <button @click="modalOpen = false" class="text-white hover:bg-indigo-800 p-1 rounded transition">
+                                            <i class="fa-solid fa-times text-2xl"></i>
+                                        </button>
+                                    </div>
 
+                                    <!-- Table Container -->
                                     <div class="px-6 py-4">
-                                        {{-- <div class="mb-4">
-                                            <div class="relative">
-                                                <div
-                                                    class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                    <svg class="w-5 h-5 text-gray-400" fill="none"
-                                                        stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                                    </svg>
-                                                </div>
-                                                <input x-model="searchPasien" type="text"
-                                                    placeholder="Cari nama atau nomor rekam medis pasien..."
-                                                    class="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
-                                            </div>
-                                        </div> --}}
+                                        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
 
-                                        <div class="max-h-96 overflow-y-auto space-y-2">
-                                            {{-- <template
-                                                x-for="pasien in pasienList.filter(p =>
-        searchPasien === '' ||
-        p.nama.toLowerCase().includes(searchPasien.toLowerCase()) ||
-        p.no_rm.toLowerCase().includes(searchPasien.toLowerCase())
-    )"
-                                                :key="pasien.id">
-                                                <div @click="pasienDipilih = pasien"
-                                                    :class="pasienDipilih?.id === pasien.id ?
-                                                        'bg-indigo-50 dark:bg-indigo-900/30 border-indigo-500 ring-2 ring-indigo-500' :
-                                                        'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'"
-                                                    class="p-4 border-2 rounded-lg cursor-pointer transition-all duration-200">
-                                                    <div class="flex items-center justify-between">
-
-                                                        <div class="flex items-center gap-3">
-                                                            <div
-                                                                class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center text-white font-semibold text-lg shadow-md">
-                                                                <span
-                                                                    x-text="pasien.nama.charAt(0).toUpperCase()"></span>
-                                                            </div>
-
-                                                            <div>
-                                                                <h4 class="font-semibold text-gray-900 dark:text-gray-100"
-                                                                    x-text="pasien.nama"></h4>
-
-                                                                <p
-                                                                    class="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                                                                    <svg class="w-4 h-4" fill="none"
-                                                                        stroke="currentColor" viewBox="0 0 24 24">
-                                                                        <path stroke-linecap="round"
-                                                                            stroke-linejoin="round" stroke-width="2"
-                                                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                                                        </path>
-                                                                    </svg>
-                                                                    <span x-text="pasien.no_rm"></span>
-                                                                </p>
-
-                                                                <p
-                                                                    class="text-xs text-gray-500 dark:text-gray-500 flex items-center gap-1 mt-1">
-                                                                    <svg class="w-3 h-3" fill="none"
-                                                                        stroke="currentColor" viewBox="0 0 24 24">
-                                                                        <path stroke-linecap="round"
-                                                                            stroke-linejoin="round" stroke-width="2"
-                                                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                                                        </path>
-                                                                    </svg>
-                                                                    <span
-                                                                        x-text="'Lahir: ' + pasien.tgl_lahir + ' (' + pasien.jenis_kelamin + ')'"></span>
-                                                                </p>
-                                                            </div>
-
-                                                        </div>
-
-                                                        <div x-show="pasienDipilih?.id === pasien.id"
-                                                            class="flex-shrink-0">
-                                                            <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400"
-                                                                fill="currentColor" viewBox="0 0 20 20">
-                                                                <path fill-rule="evenodd"
-                                                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                                                    clip-rule="evenodd"></path>
-                                                            </svg>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </template> --}}
-
-                                            {{-- <template
-                                                x-for="pasien in pasienList.filter(p =>
-                                                searchPasien === '' ||
-                                                p.nama.toLowerCase().includes(searchPasien.toLowerCase()) ||
-                                                p.rm.toLowerCase().includes(searchPasien.toLowerCase()))"
-                                                :key="pasien.id">
-                                                <div @click="pasienDipilih = pasien"
-                                                    :class="pasienDipilih?.id === pasien.id ?
-                                                        'bg-indigo-50 dark:bg-indigo-900/30 border-indigo-500 ring-2 ring-indigo-500' :
-                                                        'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'"
-                                                    class="p-4 border-2 rounded-lg cursor-pointer transition-all duration-200">
-                                                    <div class="flex items-center justify-between">
-                                                        <div class="flex items-center gap-3">
-                                                            <div
-                                                                class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center text-white font-semibold text-lg shadow-md">
-                                                                <span
-                                                                    x-text="pasien.nama.charAt(0).toUpperCase()"></span>
-                                                            </div>
-                                                            <div>
-                                                                <h4 class="font-semibold text-gray-900 dark:text-gray-100"
-                                                                    x-text="pasien.nama"></h4>
-                                                                <p
-                                                                    class="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                                                                    <svg class="w-4 h-4" fill="none"
-                                                                        stroke="currentColor" viewBox="0 0 24 24">
-                                                                        <path stroke-linecap="round"
-                                                                            stroke-linejoin="round" stroke-width="2"
-                                                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                                                        </path>
-                                                                    </svg>
-                                                                    <span x-text="pasien.rm"></span>
-                                                                </p>
-                                                                <p
-                                                                    class="text-xs text-gray-500 dark:text-gray-500 flex items-center gap-1 mt-1">
-                                                                    <svg class="w-3 h-3" fill="none"
-                                                                        stroke="currentColor" viewBox="0 0 24 24">
-                                                                        <path stroke-linecap="round"
-                                                                            stroke-linejoin="round" stroke-width="2"
-                                                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                                                        </path>
-                                                                    </svg>
-                                                                    <span
-                                                                        x-text="'Lahir: ' + pasien.tgl_lahir + ' (' + pasien.jk + ')'"></span>
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                        <div x-show="pasienDipilih?.id === pasien.id"
-                                                            class="flex-shrink-0">
-                                                            <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400"
-                                                                fill="currentColor" viewBox="0 0 20 20">
-                                                                <path fill-rule="evenodd"
-                                                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                                                    clip-rule="evenodd"></path>
-                                                            </svg>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </template> --}}
-
-
-                                            <!-- Modal -->
-                                            {{-- <div x-show="modalOpen" --}}
-                                            {{-- class="fixed inset-0 bg-black/40 flex items-center justify-center p-4"> --}}
-
-                                            <div class="bg-white w-5/5 max-h-[80vh] rounded-lg shadow-lg p-4 relative">
-
-                                                <!-- Tombol close -->
-                                                <button @click="modalOpen = false"
-                                                    class="absolute top-2 right-2 text-xl">&times;</button>
-
-                                                <h2 class="text-lg font-bold mb-4">Pilih Pasien</h2>
-
-                                                <table id="data-pasien" class="">
-                                                    <thead>
+                                            <div class="overflow-x-auto">
+                                                <table id="data-pasien" class="w-full text-sm stripe hover">
+                                                    <thead class="bg-indigo-600 text-white">
                                                         <tr>
-                                                            <th>#</th>
-                                                            <th>Nama</th>
-                                                            <th>No RM</th>
-                                                            <th>Jenis Kelamin</th>
-                                                            <th>Alamat</th>
-                                                            <th>Aksi</th>
+                                                            <th class="px-4 py-3 text-left w-10">#</th>
+                                                            <th class="px-4 py-3 text-left">Nama</th>
+                                                            <th class="px-4 py-3 text-left w-32">No RM</th>
+                                                            <th class="px-4 py-3 text-left w-40">Jenis Kelamin</th>
+                                                            <th class="px-4 py-3 text-left">Alamat</th>
+                                                            <th class="px-4 py-3 text-center w-20">Aksi</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody class="text-gray-700">
-
+                                                    <tbody class="text-gray-700 dark:text-gray-300">
                                                         @foreach ($pasien as $i => $p)
-                                                            <tr class="border-b hover:bg-gray-50 transition">
-                                                                <td class="px-3 sm:px-4 py-2">{{ $loop->iteration }}
-                                                                </td>
-                                                                <td class="px-3 sm:px-4 py-2">
-                                                                    {{ $p->nama ?? '' }}</td>
-                                                                <td class="px-3 sm:px-4 py-2">
-                                                                    {{ $p->no_rm ?? '' }}</td>
-                                                                <td class="px-3 sm:px-4 py-2">
-                                                                    {{ $p->jenis_kelamin ?? '' }}
-                                                                </td>
-                                                                <td class="px-3 sm:px-4 py-2">{{ $p->alamat ?? '' }}
-                                                                </td>
-
-                                                                <td class="px-3 sm:px-4 py-2 text-center">
-                                                                    <div class="flex justify-center gap-1 sm:gap-2">
-                                                                        <!-- Edit Button -->
-                                                                        <a href="{{ route('petugas.kunjungan.create', ['pasien_id' => $p->id]) }}"
-                                                                            class="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105 inline-block">
-                                                                            <i class="fa-solid fa-pen"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
+                                                        <tr class="hover:bg-indigo-50 dark:hover:bg-gray-700 transition">
+                                                            <td class="px-4 py-2">{{ $loop->iteration }}</td>
+                                                            <td class="px-4 py-2 font-medium">{{ $p->nama }}</td>
+                                                            <td class="px-4 py-2">{{ $p->no_rm }}</td>
+                                                            <td class="px-4 py-2">{{ $p->jenis_kelamin }}</td>
+                                                            <td class="px-4 py-2">{{ $p->alamat }}</td>
+                                                            <td class="px-4 py-2 text-center">
+                                                                <a href="{{ route('petugas.kunjungan.create', ['pasien_id' => $p->id]) }}"
+                                                                class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 text-xs rounded transition-all">
+                                                                Pilih
+                                                                </a>
+                                                            </td>
+                                                        </tr>
                                                         @endforeach
                                                     </tbody>
                                                 </table>
-
                                             </div>
-                                            {{-- </div> --}}
-
 
                                         </div>
                                     </div>
 
-                                    <div
-                                        class="bg-gray-50 dark:bg-gray-700 px-6 py-4 flex justify-between items-center border-t border-gray-200 dark:border-gray-600">
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">
-                                            <span x-show="pasienDipilih"
-                                                x-text="'Dipilih: ' + (pasienDipilih?.nama || '')"></span>
-                                            <span x-show="!pasienDipilih"
-                                                class="text-gray-400 dark:text-gray-500">Pilih
-                                                pasien dari
-                                                daftar</span>
-                                        </p>
+
+                                    <!-- Footer Modal -->
+                                    <div class="bg-gray-50 dark:bg-gray-700 px-6 py-4 flex justify-between items-center border-t border-gray-200 dark:border-gray-600">
+                                        <div class="text-sm">
+                                            <p x-show="pasienDipilih" class="text-indigo-600 dark:text-indigo-400 font-medium">
+                                                <i class="fa-solid fa-check-circle"></i>
+                                                <span x-text="'Dipilih: ' + (pasienDipilih?.nama || '')"></span>
+                                            </p>
+                                            <p x-show="!pasienDipilih" class="text-gray-400 dark:text-gray-500">
+                                                <i class="fa-solid fa-info-circle"></i>
+                                                Pilih pasien dari daftar
+                                            </p>
+                                        </div>
+
                                         <div class="flex gap-3">
                                             <button @click="modalOpen = false; pasienDipilih = null"
-                                                class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 font-medium transition-colors">
+                                                class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 font-medium transition-colors">
                                                 Batal
                                             </button>
+
                                             <button
                                                 @click="if(pasienDipilih) { alert('Pasien ' + pasienDipilih.nama + ' (' + pasienDipilih.rm + ') ditambahkan ke kunjungan!'); modalOpen = false; pasienDipilih = null; }"
                                                 :disabled="!pasienDipilih"
-                                                :class="pasienDipilih ? 'bg-indigo-600 hover:bg-indigo-700 cursor-pointer' :
-                                                    'bg-gray-300 dark:bg-gray-600 cursor-not-allowed'"
-                                                class="px-5 py-2 rounded-lg text-white font-medium transition-all shadow-md">
-                                                <span class="flex items-center gap-2">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                                    </svg>
-                                                    Pilih Pasien
-                                                </span>
+                                                :class="pasienDipilih ? 'bg-indigo-600 hover:bg-indigo-700 cursor-pointer text-white' : 'bg-gray-300 dark:bg-gray-600 cursor-not-allowed text-gray-500'"
+                                                class="px-5 py-2 rounded-lg font-medium transition-all shadow-md flex items-center gap-2">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                                Pilih Pasien
                                             </button>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
 
@@ -780,3 +607,68 @@
         </div>
     </div>
 </x-app-layout>
+
+@push('scripts')
+    @vite(['resources/js/pages/petugas/kunjungan.js'])
+@endpush
+
+<style>
+    .dataTables_length select,
+    .dataTables_filter input{
+        background: #1f2937;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 6px;
+        margin-left: 6px;
+    }
+
+    .dataTables_info,
+    .dataTables_length,
+    .dataTables_filter,
+    .dataTables_paginate {
+        color: #9ca3af !important;
+        margin-top: 10px;
+    }
+
+    table.dataTable {
+        border-collapse: collapse !important;
+    }
+
+    table.dataTable tbody tr {
+        background: transparent;
+    }
+</style>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    if ($.fn.DataTable.isDataTable('#data-pasien')) {
+        $('#data-pasien').DataTable().destroy();
+    }
+
+    $('#data-pasien').DataTable({
+        pageLength: 5,
+        responsive: true,
+
+        // Mengatur posisi search & filter di atas
+        dom: 
+            "<'flex flex-col sm:flex-row justify-between items-center mb-4'lf>" +
+            "<'overflow-x-auto't>" +
+            "<'flex flex-col sm:flex-row justify-between items-center mt-4'ip>",
+
+        language: {
+            search: "Cari pasien:",
+            lengthMenu: "Tampilkan _MENU_",
+            info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+            paginate: {
+                previous: "‹",
+                next: "›"
+            }
+        }
+    });
+
+});
+</script>
+
+
