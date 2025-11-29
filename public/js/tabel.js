@@ -13,7 +13,7 @@ $(document).ready(function () {
                 previous: "‹"
             },
             infoEmpty: "Tidak ada data",
-            emptyTable: "Belum ada data dokter"
+            emptyTable: "Belum ada data tersedia",
         }
     });
 

@@ -1,3 +1,59 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* =====================================
+   GLOBAL INPUT DARK MODE FIX
+   ===================================== */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #374151; /* gray-700 */
+  color: #ffffff;
+}
+
+
+/* =====================================
+   FIX AUTOFILL DARK MODE
+   ===================================== */
+
+/* Chrome, Edge, Safari */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0 1000px #374151 inset !important; /* gray-700 */
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* Untuk Light Mode */
+html:not(.dark) input:-webkit-autofill,
+html:not(.dark) input:-webkit-autofill:hover,
+html:not(.dark) input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #111827 !important; /* text-gray-900 */
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+}
+
+
+/* =====================================
+   SUPAYA PLACEHOLDER JUGA RAPI
+   ===================================== */
+input::placeholder,
+textarea::placeholder {
+  color: #9CA3AF; /* gray-400 */
+}
+
+
+/* =====================================
+   TRANSISI HALUS SAAT MODE BERUBAH
+   ===================================== */
+body, 
+input, 
+textarea, 
+select, 
+button {
+  transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease;
+}
