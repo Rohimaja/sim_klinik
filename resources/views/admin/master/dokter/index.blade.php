@@ -27,13 +27,7 @@
 
                     <div class="w-full sm:w-auto">
                         <a href="{{ route('admin.master-dokter.create') }}"
-                            class="w-full sm:w-auto 
-                                   bg-[#7134FC] hover:bg-indigo-600
-                                   dark:bg-indigo-500 dark:hover:bg-indigo-400
-                                   text-white 
-                                   px-4 py-2 text-sm rounded-lg font-medium 
-                                   flex items-center justify-center gap-2 
-                                   shadow-md transition">
+                            class="w-full sm:w-auto bg-[#4C4CFF] hover:bg-[#3A63FF] dark:bg-[#2F80FF] dark:hover:bg-[#1F6EFF] text-white px-4 py-2 text-sm rounded-lg font-medium flex items-center justify-center gap-2 shadow-md transition">
                             <i class="fa-solid fa-plus"></i> Tambah Dokter
                         </a>
                     </div>
@@ -46,9 +40,9 @@
 
                         <table id="dataTable"
                             class="min-w-full border border-gray-200 dark:border-slate-600
-                                   text-xs sm:text-sm rounded-lg overflow-hidden">
+                                   text-xs sm:text-sm overflow-hidden">
 
-                            <thead class="bg-[#7134FC] dark:bg-indigo-600 text-white text-left">
+                            <thead class="bg-[#4C4CFF] dark:bg-gray-700 text-white text-left">
                                 <tr>
                                     <th class="px-3 sm:px-4 py-3">No</th>
                                     <th class="px-3 sm:px-4 py-3">Nama Lengkap</th>
