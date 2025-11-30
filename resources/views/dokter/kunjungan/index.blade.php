@@ -88,37 +88,37 @@
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
 
-                            @foreach ($kunjungan as $i => $k)
+                            @foreach ($antrian as $i => $a)
                                 <!-- Baris 1 - Menunggu -->
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                                     <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
                                         {{ $loop->iteration }}</td>
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
-                                        {{ $k->kunjungan->pasien->no_rm ?? '' }} </td>
+                                        {{ $a->kunjungan->pasien->no_rm ?? '' }} </td>
                                     <td class="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-gray-100">
-                                        {{ $k->kunjungan->pasien->nama ?? '' }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">{{ $k->umur }}
+                                        {{ $a->kunjungan->pasien->nama ?? '' }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">{{ $a->umur }}
                                         tahun</td>
                                     <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
-                                        {{ $k->kunjungan->keluhan_awal ?? '' }}
+                                        {{ $a->kunjungan->keluhan_awal ?? '' }}
                                     </td>
                                     <td class="px-6 py-4 text-center">
-                                        @if ($k->status === 'menunggu')
+                                        @if ($a->status === 'menunggu')
                                             <span
                                                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800">
                                                 Menunggu Dokter
                                             </span>
-                                        @elseif ($k['status'] === 'dipanggil')
+                                        @elseif ($a['status'] === 'dipanggil')
                                             <span
                                                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
                                                 Sedang Periksa
                                             </span>
-                                        @elseif ($k['status'] === 'selesai')
+                                        @elseif ($a['status'] === 'selesai')
                                             <span
                                                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 border border-green-200 dark:border-green-800">
                                                 Selesai
                                             </span>
-                                        @elseif ($k['status'] === 'dibatalkan')
+                                        @elseif ($a['status'] === 'dibatalkan')
                                             <span
                                                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 border border-red-200 dark:border-red-800">
                                                 Batal
@@ -128,15 +128,40 @@
                                     <td class="px-6 py-4 text-center">
                                         <div class="flex items-center justify-center gap-2">
                                             <button
-                                                @click="viewModal = true; $nextTick(() => loadKunjunganDetail({{ $k->id }}))"
+                                                @click="viewModal = true; $nextTick(() => loadKunjunganDetail({{ $a->id }}))"
                                                 class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-lg transition-colors text-xs font-medium">
                                                 <i class="fa-solid fa-eye mr-1"></i> Detail
                                             </button>
-                                            <a href="{{ route('dokter.kunjungan.edit', $k->id) }}"
+                                            @if ($a->pemeriksaan)
+                                                {{-- Sudah Skrining --}}
+                                                <a href="{{ route('dokter.kunjungan.edit', $a->pemeriksaan->id) }}"
+                                                    class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors text-xs font-medium">
+                                                    <i class="fa-solid fa-pen-to-square mr-1"></i> Edit Skrining
+                                                </a>
+                                            @else
+                                                {{-- Belum Skrining --}}
+                                                <form action="{{ route('dokter.kunjungan.panggil', $a->id) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    <button type="submit"
+                                                        class="px-3 py-1.5 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors text-xs font-medium">
+                                                        <i class="fa-solid fa-file-medical mr-1"></i> Panggil
+                                                    </button>
+                                                </form>
+                                            @endif
+
+                                        </div>
+                                        {{-- <div class="flex items-center justify-center gap-2">
+                                            <button
+                                                @click="viewModal = true; $nextTick(() => loadKunjunganDetail({{ $a->id }}))"
+                                                class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-lg transition-colors text-xs font-medium">
+                                                <i class="fa-solid fa-eye mr-1"></i> Detail
+                                            </button>
+                                            <a href="{{ route('dokter.kunjungan.edit', $a->id) }}"
                                                 class="px-3 py-1.5 bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white rounded-lg transition-colors text-xs font-medium">
                                                 <i class="fa-solid fa-notes-medical mr-1"></i> Periksa
                                             </a>
-                                        </div>
+                                        </div> --}}
                                     </td>
                                 </tr>
                             @endforeach

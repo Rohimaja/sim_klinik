@@ -15,12 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('antrian_poli_id')->constrained('antrian_poli');
             $table->foreignId('dokter_id')->constrained('dokter');
-            $table->string('keluhan');
             $table->string('diagnosa');
             $table->string('tindakan');
             $table->string('catatan');
-            $table->string('tensi');
-            $table->float('suhu');
             $table->dateTime('tgl_periksa');
             $table->timestamps();
         });

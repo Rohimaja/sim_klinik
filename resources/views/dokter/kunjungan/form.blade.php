@@ -36,12 +36,14 @@
 
                 <!-- Form -->
                 <form method="POST" class="p-6 space-y-6"
-                    action="{{ isset($kunjungan) ? route('dokter.kunjungan.update', $kunjungan->id) : route('dokter.kunjungan.store') }}"
+                    action="{{ isset($pemeriksaan) ? route('dokter.kunjungan.update', $pemeriksaan->id) : route('dokter.kunjungan.store') }}"
                     method="POST" class="p-6 space-y-6">
                     @csrf
-                    @if (isset($kunjungan))
+                    @if (isset($pemeriksaan))
                         @method('PUT')
                     @endif
+
+                    <input type="hidden" name="antrian_poli_id" value="{{ $antrian->id }}">
 
                     <!-- Identitas Pasien -->
                     <div class="border-l-4 border-blue-500 pl-4">
@@ -393,7 +395,7 @@
                                 </label>
                                 <div class="relative">
                                     <input type="datetime-local" name="tgl_periksa" id="tgl_periksa"
-                                        value="{{ old('tgl_periksa', $periksa->tgl_periksa ?? '') }}"
+                                        value="{{ old('tgl_periksa', $pemeriksaan->tgl_periksa ?? '') }}"
                                         class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200">
                                 </div>
                                 <span class="text-red-600 text-sm" id="bo_bpjs_error">
@@ -411,67 +413,12 @@
                                 </label>
                                 <div class="relative">
                                     <input type="text" name="diagnosa" id="diagnosa" required
-                                        value="{{ old('diagnosa', $periksa->diagnosa ?? '') }}"
+                                        value="{{ old('diagnosa', $pemeriksaan->diagnosa ?? '') }}"
                                         class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
                                         placeholder="0001234567890">
                                 </div>
                                 <span class="text-red-600 text-sm" id="diagnosa_error">
                                     @error('diagnosa')
-                                        {{ $message }}
-                                    @enderror
-                                </span>
-                            </div>
-
-                            <!-- Tensi -->
-                            <div>
-                                <label for="tensi"
-                                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Tensi Pasien <span class="text-red-500">*</span>
-                                </label>
-                                <div class="relative">
-                                    <input type="text" name="tensi" id="tensi"
-                                        value="{{ old('diagnosa', $periksa->tensi ?? '') }}"
-                                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
-                                        placeholder="120/80">
-                                </div>
-                                <span class="text-red-600 text-sm" id="tensi_error">
-                                    @error('tensi')
-                                        {{ $message }}
-                                    @enderror
-                                </span>
-                            </div>
-
-                            <!-- Suhu -->
-                            <div>
-                                <label for="suhu"
-                                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Suhu Pasien <span class="text-red-500">*</span>
-                                </label>
-                                <div class="relative">
-                                    <input type="number" name="suhu" id="suhu"
-                                        value="{{ old('diagnosa', $periksa->suhu ?? '') }}"
-                                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
-                                        placeholder="30">
-                                </div>
-                                <span class="text-red-600 text-sm" id="diagnosa_error">
-                                    @error('diagnosa')
-                                        {{ $message }}
-                                    @enderror
-                                </span>
-                            </div>
-
-
-                            <!-- Keluhan -->
-                            <div class="md:col-span-1">
-                                <label id="keluhan"
-                                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Keluhan Pasien <span class="text-red-500">*</span>
-                                </label>
-                                <textarea name="keluhan" id="keluhan" rows="2"
-                                    class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-purple-500"
-                                    placeholder="Contoh: Demam, batuk sejak 3 hari, sesak napas ringan">{{ old('keluhan', $periksa->keluhan ?? '') }}</textarea>
-                                <span class="text-red-600 text-sm" id="keluhan_error">
-                                    @error('keluhan')
                                         {{ $message }}
                                     @enderror
                                 </span>
@@ -485,7 +432,7 @@
                                 </label>
                                 <textarea name="tindakan" id="tindakan" rows="2"
                                     class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-purple-500"
-                                    placeholder="Contoh: Demam, batuk sejak 3 hari, sesak napas ringan">{{ old('tindakan', $periksa->tindakan ?? '') }}</textarea>
+                                    placeholder="Contoh: Demam, batuk sejak 3 hari, sesak napas ringan">{{ old('tindakan', $pemeriksaan->tindakan ?? '') }}</textarea>
                                 <span class="text-red-600 text-sm" id="tindakan_error">
                                     @error('tindakan')
                                         {{ $message }}
@@ -501,7 +448,7 @@
                                 </label>
                                 <textarea name="catatan" id="catatan" rows="2"
                                     class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-purple-500"
-                                    placeholder="Contoh: Demam, batuk sejak 3 hari, sesak napas ringan">{{ old('catatan', $periksa->catatan ?? '') }}</textarea>
+                                    placeholder="Contoh: Demam, batuk sejak 3 hari, sesak napas ringan">{{ old('catatan', $pemeriksaan->catatan ?? '') }}</textarea>
                                 <span class="text-red-600 text-sm" id="catatan_error">
                                     @error('catatan ')
                                         {{ $message }}

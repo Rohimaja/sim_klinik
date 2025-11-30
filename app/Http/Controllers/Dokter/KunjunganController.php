@@ -3,9 +3,15 @@
 namespace App\Http\Controllers\Dokter;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dokter\Store\StorePemeriksaan;
+use App\Http\Requests\Dokter\Update\UpdatePemeriksaan;
 use App\Models\AntrianPoli;
+use App\Models\Pemeriksaan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class KunjunganController extends Controller
 {
@@ -15,122 +21,61 @@ class KunjunganController extends Controller
     public function index()
     {
         $title = "Tambah Kunjungan Pasien";
-        $kunjungan = AntrianPoli::with(['kunjungan'])->get();
-        $kunjungan = $kunjungan->map(function ($item) {
+        $antrian = AntrianPoli::with(['kunjungan'])->get();
+        $kunjungan = $antrian->map(function ($item) {
             $tgl_lahir = Carbon::parse($item->kunjungan->pasien->tgl_lahir);
             $item->umur = $tgl_lahir->age;
             return $item;
         });
-        return view('dokter.kunjungan.index', compact('title','kunjungan'));
+        return view('dokter.kunjungan.index', compact('title','antrian'));
 
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    public function create(Request $request, string $id)
     {
         $title = 'Tambah Kunjungan';
-        // $poli = Poli::all();
-        // $dokter = Dokter::all();
-        // $kunjungan = Kunjungan::all();
+        $antrian = AntrianPoli::with('kunjungan.pasien')->findOrFail($id);
+        $pasien = $antrian->kunjungan->pasien;
+        $skrining = $antrian->kunjungan->skrining;
 
-        return view('petugas.kunjungan.form',compact('title', 'pasien','mode'));
+        return view('dokter.kunjungan.form',compact('title','antrian','pasien','skrining'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreKunjungan $request)
+    public function store(StorePemeriksaan $request)
     {
         $request->merge([
-            'nama' => ucwords(trim($request->nama)),
-            'tempat_lahir' => ucwords(trim($request->tempat_lahir)),
-            'nik' => trim($request->nik),
-            'no_bpjs' => trim($request->no_bpjs),
-            'keluhan_awal' => trim($request->keluhan_awal),
+            'diagnosa' => ucwords(trim($request->diagnosa)),
+            'tindakan' => ucwords(trim($request->tindakan)),
+            'catatan' => ucwords(trim($request->catatan)),
         ]);
 
         try {
 
             $result = DB::transaction(function () use ($request) {
 
-                $no_rm = $this->generateNoRm();
-                $no_antrian = $this->generateNoAntrian($request->tgl_kunjungan);
+                $dokter = Auth::user()->dokter;
 
-                $nik = Pasien::where('nik', $request->nik)->first();
 
-                // $data = $request->validated();
+                $data = [
+                    'dokter_id'         => $dokter->id,
+                    'antrian_poli_id'   => $request->antrian_poli_id, // ← langsung ambil dari request
+                    'diagnosa'          => $request->diagnosa,
+                    'tindakan'          => $request->tindakan,
+                    'catatan'           => $request->catatan,
+                    'tgl_periksa'       => $request->tgl_periksa,
+                ];
 
-                if (!$nik) {
+                Pemeriksaan::create($data);
 
-                    $user = User::create([
-                        'email' => $request->email,
-                        'role' => 'pasien'
-                    ]);
-
-                    $data = [
-                        'user_id' => $user->id,
-                        'nik' => $request->nik,
-                        'nama' => $request->nama,
-                        'no_rm' => $no_rm,
-                        'jenis_pasien' => $request->jenis_pasien,
-                        'no_bpjs' => $request->no_bpjs,
-                        'jenis_kelamin' => $request->jenis_kelamin,
-                        'tempat_lahir' => $request->tempat_lahir,
-                        'tgl_lahir' => $request->tgl_lahir,
-                        'no_telp' => $request->no_telp,
-                        'alamat' => $request->alamat,
-                        'status' => 1,
-                    ];
-
-                    $pasien = Pasien::create($data);
-
-                } else {
-
-                    // Pasien lama dipakai kembali
-                    $pasien = $nik;
-                }
-
-                    // Cek apakah pasien sudah memiliki kunjungan aktif di tanggal yang sama
-                    $cekAntrian = Kunjungan::where('pasien_id', $pasien->id)
-                        ->whereDate('tgl_kunjungan', $request->tgl_kunjungan)
-                        ->where('status', '!=', 'selesai')
-                        ->exists();
-
-                    if ($cekAntrian) {
-                        return back()
-                            ->withErrors(['nik' => 'Pasien sudah memiliki kunjungan aktif pada tanggal ini.'])
-                            ->withInput();
-                    }
-
-                $kunjungan = Kunjungan::create([
-                    'pasien_id' => $pasien->id,
-                    'poli_id' => $request->poli_id,
-                    'no_antrian' => $no_antrian,
-                    'dokter_id' => $request->dokter_id,
-                    'tgl_kunjungan' => $request->tgl_kunjungan,
-                    'jam_awal' => $request->jam_awal,
-                    'jam_akhir' => $request->jam_akhir,
-                    'keluhan_awal' => $request->keluhan_awal,
-                    'status' => 'menunggu',
-                ]);
-
-                    // 2. Cek apakah dokter benar dari poli tsb
-                    $dokterValid = Dokter::where('id', $request->dokter_id)
-                        ->where('poli_id', $request->poli_id)
-                        ->exists();
-
-                    if (!$dokterValid) {
-                        return back()->withErrors([
-                            'dokter_id' => 'Dokter tidak sesuai dengan poli yang dipilih.',
-                        ])->withInput();
-                    }
-
-                AntrianPoli::create([
-                    'kunjungan_id' => $kunjungan->id,
-                    'status' => 'menunggu',
-                ]);
+                $antrian = AntrianPoli::find($request->antrian_poli_id);
+                $antrian->status = 'selesai';
+                $antrian->save();
 
                 return true;
             });
@@ -139,13 +84,13 @@ class KunjunganController extends Controller
                 return $result;
             }
 
-            return redirect()->route('petugas.kunjungan.index')->with([
+            return redirect()->route('dokter.kunjungan.index')->with([
                 'status' => 'success',
                 'message' => 'Data Berhasil Ditambahkan'
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Gagal Menambahkan Kunjungan Pasien', [
+            Log::error('Gagal Menambahkan Pemeriksaan Pasien', [
                 'error' => $e->getMessage(),
                 'stack' => $e->getTraceAsString(),
             ]);
@@ -204,58 +149,38 @@ class KunjunganController extends Controller
      */
     public function edit(string $id)
     {
-        $title = 'Update Pemeriksaan Pasien';
-        // $poli = Poli::all();
-        // $dokter = Dokter::all();
-        $kunjungan = AntrianPoli::with('kunjungan')->findOrFail($id);
-        $pasien = $kunjungan->kunjungan->pasien; // relasi pasien
-        $skrining = $kunjungan->kunjungan->skrining; // relasi pasien
+        $title = 'Perbarui Pemeriksaan Pasien';
+        $pemeriksaan = Pemeriksaan::with('antrian.kunjungan.pasien')->findOrFail($id);
+        $antrian = $pemeriksaan->antrian;
+        $pasien = $antrian->kunjungan->pasien;
+        $skrining = $antrian->kunjungan->skrining;
 
-        return view('dokter.kunjungan.form', compact('title','kunjungan', 'pasien','skrining'));
+        return view('dokter.kunjungan.form', compact('title','pemeriksaan', 'pasien','antrian','skrining'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdatePemeriksaan $request, string $id)
     {
         try {
 
             $result = DB::transaction(function () use ($request, $id) {
-                $kunjungan = Kunjungan::with('pasien.user','dokter','poli')->findOrFail($id);
+                $pemeriksaan = Pemeriksaan::with('antrian.kunjungan.pasien')->findOrFail($id);
 
-                    // Cek apakah pasien sudah memiliki kunjungan aktif di tanggal yang sama
-                    $cekAntrian = Kunjungan::where('pasien_id', $request->pasien_id)
-                        ->whereDate('tgl_kunjungan', $request->tgl_kunjungan)
-                        ->where('id', '!=', $id) // penting!
-                        ->where('status', '!=', 'selesai')
-                        ->exists();
+                $dokter = Auth::user()->dokter;
 
-                    if ($cekAntrian) {
-                        return back()
-                            ->withErrors(['nik' => 'Pasien sudah memiliki kunjungan aktif pada tanggal ini.'])
-                            ->withInput();
-                    }
-                    // 2. Cek apakah dokter benar dari poli tsb
-                    $dokterValid = Dokter::where('id', $request->dokter_id)
-                        ->where('poli_id', $request->poli_id)
-                        ->exists();
-
-                    if (!$dokterValid) {
-                        return back()->withErrors([
-                            'dokter_id' => 'Dokter tidak sesuai dengan poli yang dipilih.',
-                        ])->withInput();
-                    }
-
-                $kunjungan->update([
-                    'pasien_id'     => $request->pasien_id,
-                    'poli_id'       => $request->poli_id,
-                    'dokter_id'     => $request->dokter_id,
-                    'tgl_kunjungan' => $request->tgl_kunjungan,
-                    'jam_awal'      => $request->jam_awal,
-                    'jam_akhir'     => $request->jam_akhir,
-                    'keluhan_awal'  => $request->keluhan_awal,
+                $pemeriksaan->update([
+                    'dokter_id'         => $dokter->id,
+                    'diagnosa'          => $request->diagnosa,
+                    'tindakan'          => $request->tindakan,
+                    'catatan'           => $request->catatan,
+                    'tgl_periksa'       => $request->tgl_periksa,
                 ]);
+
+                $antrian = AntrianPoli::find($request->antrian_poli_id);
+                $antrian->status = 'selesai';
+                $antrian->save();
 
 
                 return true;
@@ -265,13 +190,13 @@ class KunjunganController extends Controller
                 return $result;
             }
 
-            return redirect()->route('petugas.kunjungan.index')->with([
+            return redirect()->route('dokter.kunjungan.index')->with([
                 'status' => 'success',
                 'message' => 'Data Berhasil Diperbarui'
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Gagal memperbarui Presensi', [
+            Log::error('Gagal memperbarui Pemeriksaan', [
                 'error' => $e->getMessage(),
                 'stack' => $e->getTraceAsString(),
             ]);
@@ -289,10 +214,10 @@ class KunjunganController extends Controller
     public function destroy(string $id)
     {
         try {
-            $kunjungan = Kunjungan::findOrFail($id);
-            $kunjungan->delete();
+            $antrian = AntrianPoli::findOrFail($id);
+            $antrian->delete();
 
-            return redirect()->route('petugas.kunjungan.index')->with([
+            return redirect()->route('dokter.kunjungan.index')->with([
                 'status' => 'success',
                 'message' => 'Data Berhasil Dihapus'
             ]);
@@ -306,6 +231,36 @@ class KunjunganController extends Controller
             return redirect()->back()->withInput()->with([
                 'status' => 'error',
                 'message' => 'Terjadi kesalahan saat menghapus data: '
+            ]);
+        }
+    }
+
+    public function updateStatus($id)
+    {
+        try {
+
+            $antrian = AntrianPoli::findOrFail($id);
+            $antrian->status = 'dipanggil';
+            $antrian->save();
+
+            return redirect()->route('dokter.kunjungan.create', $id);
+
+            // return back()->with([
+            //     'status' => 'success',
+            //     'message' => 'Status Berhasil diperbarui'
+            // ]);
+
+        // return back()->with('success', 'Status berhasil diperbarui!');
+
+        } catch (\Exception $e) {
+            Log::error('Gagal Perbarui Status Pasien', [
+                'error' => $e->getMessage(),
+                'stack' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->back()->withInput()->with([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat menambahkan data: '
             ]);
         }
     }

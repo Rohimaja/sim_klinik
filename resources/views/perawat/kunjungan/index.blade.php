@@ -116,6 +116,11 @@
                                                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 border border-red-200 dark:border-red-800">
                                                 Batal
                                             </span>
+                                        @elseif ($k['status'] === 'tidak hadir')
+                                            <span
+                                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 border border-red-200 dark:border-red-800">
+                                                Tidak Hadir
+                                            </span>
                                         @endif
                                     </td>
 

@@ -482,11 +482,11 @@ class KunjunganController extends Controller
                 ->where('pasien_id', $pasien->id)
                 ->whereTime('jam_awal', '<=', $now)
                 ->whereTime('jam_akhir', '>=', $now)
-                ->where('status', 'tidak hadir') // Bisa juga 'menunggu' tergantung alur
+                ->whereNotIn('status', ['selesai', 'batal'])
                 ->first();
 
             if (!$kunjungan) {
-                return response()->json(['status' => 'error', 'message' => 'Tidak ada kunjungan aktif saat ini'], 404);
+                return response()->json(['status' => 'error', 'message' => 'Tidak ada kunjungan aktif'], 404);
             }
 
             // 2. Cek apakah sudah punya antrian poli
