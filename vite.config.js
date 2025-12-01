@@ -18,6 +18,15 @@ const superadminPages = getJsFilesFrom("resources/js/pages/superadmin");
 const petugasPages = getJsFilesFrom("resources/js/pages/petugas");
 
 export default defineConfig({
+    // server: {
+    //     host: true, // memungkinkan akses via IP
+    //     // host: '0.0.0.0', // memungkinkan akses via IP
+    //     port: 5173,
+    //     cors: true, // >> IZINKAN CORS <<
+    //     hmr: {
+    //         host: "192.168.1.6", // sesuaikan dengan IP LAN kamu
+    //     },
+    // },
     plugins: [
         laravel({
             input: [

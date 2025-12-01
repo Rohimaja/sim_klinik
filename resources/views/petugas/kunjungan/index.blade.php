@@ -224,6 +224,9 @@
                                     Poli</th>
                                 <th
                                     class="px-4 py-3.5 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                                    Tanggal Kunjungan</th>
+                                <th
+                                    class="px-4 py-3.5 text-left text-xs font-semibold text-white uppercase tracking-wider">
                                     Status</th>
                                 <th
                                     class="px-4 py-3.5 text-center text-xs font-semibold text-white uppercase tracking-wider">
@@ -238,7 +241,7 @@
                                         <div class="flex items-center gap-2">
                                             <div
                                                 class="flex items-center justify-center w-10 h-10 rounded-full bg-[#4C4CFF] dark:bg-[#2F80FF]  text-white font-bold text-sm shadow-md">
-                                                {{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}
+                                                {{ str_pad($k->no_antrian, 2, '0', STR_PAD_LEFT) }}
                                             </div>
                                         </div>
                                     </td>
@@ -262,6 +265,12 @@
                                         <span
                                             class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400">
                                             {{ $k->poli->nama }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400">
+                                            {{ $k->tgl_kunjungan }}
                                         </span>
                                     </td>
                                     <td class="px-4 py-3 whitespace-nowrap">
