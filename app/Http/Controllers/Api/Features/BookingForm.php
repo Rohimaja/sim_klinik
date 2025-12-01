@@ -23,7 +23,7 @@ class BookingForm extends Controller
             "jam_awal" => "required",
             "jam_akhir" => "required",
             "tgl_kunjungan" => "required|date",
-            "keluhan_awal" => "",
+            "keluhan_awal" => "required",
 
         ]);
         $pasienId = $request->pasien_id;

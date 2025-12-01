@@ -31,7 +31,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('disease-detection', [DiseaseDetection::class, 'prediction']);
         Route::post('add-booking', [BookingForm::class, 'addBooking']);
         Route::get('list/poli', [BookingForm::class, 'listPoli']);
-        Route::get('list/doctor', [BookingForm::class, 'listDoctor']);
+        Route::get('list/dashboard/doctor', [DashboardController::class, 'listDoctor']);
         Route::get('list/scheduleDoctor', [BookingForm::class, 'listScheduleDoctor']);
         Route::get('practice/list/poli', [PracticeSchedule::class, 'listPoli']);
         Route::get('practice/list/scheduleDoctor', [PracticeSchedule::class, 'detailListPoli']);

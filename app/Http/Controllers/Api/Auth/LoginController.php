@@ -52,7 +52,7 @@ class LoginController extends Controller
                 'expired_at' => $token->accessToken->expires_at,
                 'token_type' => 'Bearer',
                 'data' => [
-                    'pasien_id' => $pasien->id,
+                    'pasien_id' => $pasien->id ?? null,
                     'user_id' => $user->id,
                     'email' => $user->email,
                     'username' => $user->username,
