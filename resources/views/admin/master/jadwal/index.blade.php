@@ -69,7 +69,7 @@
 
                         <div class="w-full sm:w-auto">
                             <a href="{{ route('admin.master-jadwal.create') }}"
-                                class="w-full sm:w-auto bg-[#7134FC] text-white px-4 py-2 text-sm rounded-lg font-medium flex items-center justify-center gap-2 shadow-md hover:bg-[#5a28d4] transition-all">
+                                class="w-full sm:w-auto bg-[#4C4CFF] hover:bg-[#3A63FF] dark:bg-[#2F80FF] dark:hover:bg-[#1F6EFF] text-white px-4 py-2 text-sm rounded-lg font-medium flex items-center justify-center gap-2 shadow-md hover:bg-[#5a28d4] transition-all">
                                 <i class="fa-solid fa-plus"></i> Tambah Jadwal
                             </a>
                         </div>
@@ -79,8 +79,10 @@
                 <!-- Tabel Jadwal -->
                 <div class="overflow-x-auto">
                     <table id="dataTable"
-                        class="min-w-full border border-gray-200 text-xs sm:text-sm rounded-lg overflow-hidden">
-                        <thead class="bg-[#7134FC] text-white text-left">
+                            class="min-w-full border border-gray-200 dark:border-slate-600
+                                   text-xs sm:text-sm overflow-hidden">
+
+                            <thead class="bg-[#4C4CFF] dark:bg-gray-700 text-white text-left">
                             <tr>
                                 <th class="px-3 sm:px-4 py-3">No</th>
                                 <th class="px-3 sm:px-4 py-3">Nama Tenaga</th>

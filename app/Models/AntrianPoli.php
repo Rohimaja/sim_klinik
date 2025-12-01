@@ -22,4 +22,9 @@ class AntrianPoli extends Model
         return $this->belongsTo(Kunjungan::class, 'kunjungan_id', 'id');
     }
 
+    public function pemeriksaan()
+    {
+        return $this->hasOne(Pemeriksaan::class);
+    }
+
 }

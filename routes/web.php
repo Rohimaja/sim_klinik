@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Petugas\KunjunganController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\PengaturanController;
 
 Route::get('/', function () {
     return view('auth/login');
@@ -75,14 +77,29 @@ Route::prefix('admin/laporan')->group(function () {
     Route::get('/stokobat', fn() => view('admin.laporan.stokobat'))->name('laporan.stokobat');
 });
 
+    Route::get('/rfid/kunjungan',[KunjunganController::class,'prosesKunjungan']);
+
 
 
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/pengaturan', [PengaturanController::class, 'profile'])
+        ->name('pengaturan.profile');
+
+    Route::get('/pengaturan/password', [PengaturanController::class, 'password'])
+        ->name('pengaturan.password');
+
+    Route::get('/pengaturan/tampilan', [PengaturanController::class, 'tampilan'])
+        ->name('pengaturan.tampilan');
+
 });
+
+// Route::middleware('auth')->group(function () {
+//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+// });
 
 require __DIR__.'/auth.php';
 require __DIR__.'/admin.php';

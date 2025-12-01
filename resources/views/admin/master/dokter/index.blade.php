@@ -1,38 +1,48 @@
 <x-app-layout>
     @vite(['resources/js/pages/admin/data-dokter.js'])
+
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-white leading-tight">
             {{ __('Master Data > Dokter') }}
         </h2>
     </x-slot>
 
-    <div class="py-6">
+    <div class="py-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-md rounded-xl p-4 sm:p-6 border border-gray-100">
+            <div
+                class="bg-white dark:bg-gray-800 shadow-md rounded-xl p-4 sm:p-6 border border-gray-100 dark:border-gray-700">
 
                 <!-- Search dan Tambah Dokter -->
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+
                     <div class="w-full sm:w-1/2 relative">
                         <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                         <input type="text" id="tableSearch" placeholder="Cari nama dokter, spesialis, atau STR..."
-                            class="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                            class="w-full border border-gray-300 dark:border-gray-600
+                                   bg-white dark:bg-slate-700
+                                   text-gray-800 dark:text-white
+                                   rounded-lg pl-10 pr-3 py-2 text-sm
+                                   focus:ring-2 focus:ring-indigo-400 focus:outline-none">
                     </div>
-
 
                     <div class="w-full sm:w-auto">
                         <a href="{{ route('admin.master-dokter.create') }}"
-                            class="w-full sm:w-auto bg-[#7134FC] text-white px-4 py-2 text-sm rounded-lg font-medium flex items-center justify-center gap-2 shadow-md">
+                            class="w-full sm:w-auto bg-[#4C4CFF] hover:bg-[#3A63FF] dark:bg-[#2F80FF] dark:hover:bg-[#1F6EFF] text-white px-4 py-2 text-sm rounded-lg font-medium flex items-center justify-center gap-2 shadow-md transition">
                             <i class="fa-solid fa-plus"></i> Tambah Dokter
                         </a>
                     </div>
+
                 </div>
 
                 <!-- Tabel Dokter -->
                 <div x-data="{ viewModal: false }">
                     <div class="overflow-x-auto">
+
                         <table id="dataTable"
-                            class="min-w-full border border-gray-200 text-xs sm:text-sm rounded-lg overflow-hidden">
-                            <thead class="bg-[#7134FC] text-white text-left">
+                            class="min-w-full border border-gray-200 dark:border-slate-600
+                                   text-xs sm:text-sm overflow-hidden">
+
+                            <thead class="bg-[#4C4CFF] dark:bg-gray-700 text-white text-left">
                                 <tr>
                                     <th class="px-3 sm:px-4 py-3">No</th>
                                     <th class="px-3 sm:px-4 py-3">Nama Lengkap</th>
@@ -43,24 +53,35 @@
                                     <th class="px-3 sm:px-4 py-3 text-center">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody class="text-gray-700">
+
+                            <tbody class="text-gray-700 dark:text-gray-300">
 
                                 @foreach ($dokter as $i => $d)
-                                    <tr class="border-b hover:bg-gray-50 transition">
+                                    <tr
+                                        class="border-b border-gray-200 dark:border-slate-700
+                                               hover:bg-gray-50 dark:hover:bg-slate-700 transition">
+
                                         <td class="px-3 sm:px-4 py-2">{{ $loop->iteration }}</td>
-                                        <td class="px-3 sm:px-4 py-2 text-gray-600">{{ $d->nama ?? '' }}</td>
-                                        <td class="px-3 sm:px-4 py-2 text-gray-600">{{ $d->poli->nama }}</td>
+                                        <td class="px-3 sm:px-4 py-2">{{ $d->nama ?? '' }}</td>
+                                        <td class="px-3 sm:px-4 py-2">{{ $d->poli->nama }}</td>
                                         <td class="px-3 sm:px-4 py-2">{{ $d->spesialisasi ?? '' }}</td>
                                         <td class="px-3 sm:px-4 py-2">{{ $d->no_telp }}</td>
+
                                         <td class="px-3 sm:px-4 py-2">
                                             @if ($d->status === 1)
                                                 <span
-                                                    class="inline-flex items-center justify-center min-w-[70px] h-6 bg-green-100 text-green-700 rounded-full text-[11px] font-medium">
+                                                    class="inline-flex items-center justify-center min-w-[70px] h-6
+                                                           bg-green-100 dark:bg-green-900/30
+                                                           text-green-700 dark:text-green-400
+                                                           rounded-full text-[11px] font-medium">
                                                     Aktif
                                                 </span>
                                             @else
                                                 <span
-                                                    class="inline-flex items-center justify-center min-w-[70px] h-6 bg-red-100 text-red-700 rounded-full text-[11px] font-medium">
+                                                    class="inline-flex items-center justify-center min-w-[70px] h-6
+                                                           bg-red-100 dark:bg-red-900/30
+                                                           text-red-700 dark:text-red-400
+                                                           rounded-full text-[11px] font-medium">
                                                     Non-Aktif
                                                 </span>
                                             @endif
@@ -68,212 +89,189 @@
 
                                         <td class="px-3 sm:px-4 py-2 text-center">
                                             <div class="flex justify-center gap-1 sm:gap-2">
-                                                <!-- View Button -->
+
+                                                <!-- View -->
                                                 <button
                                                     @click="viewModal = true; $nextTick(() => loadDokterDetail({{ $d->id }}))"
-                                                    class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105">
+                                                    class="bg-blue-500 hover:bg-blue-600 text-white
+                                                           p-2 rounded-lg text-xs transition hover:scale-105">
                                                     <i class="fa-solid fa-eye"></i>
                                                 </button>
 
-                                                <!-- Edit Button -->
+                                                <!-- Edit -->
                                                 <a href="{{ route('admin.master-dokter.edit', $d->id) }}"
-                                                    class="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105 inline-block">
+                                                    class="bg-yellow-500 hover:bg-yellow-600 text-white
+                                                           p-2 rounded-lg text-xs transition hover:scale-105">
                                                     <i class="fa-solid fa-pen"></i>
                                                 </a>
 
-                                                <!-- Delete Button -->
+                                                <!-- Delete -->
                                                 <form action="{{ route('admin.master-dokter.destroy', $d->id) }}"
                                                     method="POST" class="form-hapus">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
-                                                        class="bg-red-500 hover:bg-red-600 text-white p-2 px-2.5 rounded-lg text-xs transition-all duration-300 hover:shadow-lg hover:scale-105">
+                                                        class="bg-red-500 hover:bg-red-600 text-white
+                                                               p-2 px-2.5 rounded-lg text-xs transition hover:scale-105">
                                                         <i class="fa-solid fa-trash"></i>
                                                     </button>
                                                 </form>
+
                                             </div>
                                         </td>
                                     </tr>
                                 @endforeach
+
                             </tbody>
                         </table>
+
                     </div>
 
-                    <!-- View Modal -->
-                    <div x-show="viewModal" x-cloak x-transition:enter="transition ease-out duration-300"
-                        x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-                        x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
-                        x-transition:leave-end="opacity-0"
-                        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-                        style="display: none;">
-                        <div @click.away="viewModal = false"
-                            x-transition:enter="transition ease-out duration-300 transform"
-                            x-transition:enter-start="opacity-0 scale-95 -translate-y-4"
-                            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                            x-transition:leave="transition ease-in duration-200 transform"
-                            x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-                            x-transition:leave-end="opacity-0 scale-95 -translate-y-4"
-                            class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+                    <!-- ================= MODAL ================= -->
+                    <div x-show="viewModal" x-cloak
+                        class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
 
-                            <!-- Header Fixed -->
+                        <div @click.away="viewModal = false"
+                            class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl
+                                   w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+
+                            <!-- Header -->
                             <div
-                                class="flex items-center justify-between p-6 pb-4 border-b-2 border-blue-500 bg-gradient-to-r from-blue-50 to-blue-100">
+                                class="flex items-center justify-between p-6 pb-4
+                                       border-b border-blue-500
+                                       bg-blue-50 dark:bg-slate-800">
+
                                 <div>
-                                    <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                                    <h2
+                                        class="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
                                         <i class="fa-solid fa-user-doctor text-blue-500"></i>
                                         Detail Dokter
                                     </h2>
-                                    <p class="text-sm text-gray-600 mt-1">Informasi lengkap data dokter</p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                        Informasi lengkap data dokter
+                                    </p>
                                 </div>
+
                                 <button @click="viewModal = false"
-                                    class="text-gray-400 hover:text-gray-600 transition-colors hover:rotate-90 duration-300">
+                                    class="text-gray-400 hover:text-red-500 transition">
                                     <i class="fa-solid fa-times text-2xl"></i>
                                 </button>
+
                             </div>
 
-                            <!-- Content Scrollable -->
-                            <div class="overflow-y-auto p-6 space-y-5">
+                            <!-- Content -->
+                            <div class="overflow-y-auto p-6 space-y-5 text-gray-800 dark:text-gray-200">
 
-                                <!-- Identitas Pribadi -->
+                                <!-- IDENTITAS -->
                                 <div
-                                    class="bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-xl border-l-4 border-blue-500">
-                                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                    class="bg-blue-50 dark:bg-slate-800 p-5 rounded-xl border-l-4 border-blue-500">
+
+                                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
                                         <i class="fa-solid fa-id-card text-blue-500"></i>
                                         Identitas Pribadi
                                     </h3>
+
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
-                                            <p class="text-xs text-gray-500 mb-1 font-medium">Nama Lengkap</p>
-                                            <p class="text-base font-semibold text-gray-800" id="nama"></p>
+                                            <p class="text-xs text-gray-500">Nama Lengkap</p>
+                                            <p class="text-base font-semibold" id="nama"></p>
                                         </div>
+
                                         <div>
-                                            <p class="text-xs text-gray-500 mb-1 font-medium">Jenis Kelamin</p>
-                                            <p class="text-base font-semibold text-gray-800" id="jenis_kelamin"> </p>
+                                            <p class="text-xs text-gray-500">Jenis Kelamin</p>
+                                            <p class="text-base font-semibold" id="jenis_kelamin"></p>
                                         </div>
+
                                         <div>
-                                            <p class="text-xs text-gray-500 mb-1 font-medium">Tempat Lahir</p>
-                                            <p class="text-base font-semibold text-gray-800" id="tempat_lahir"></p>
+                                            <p class="text-xs text-gray-500">Tempat Lahir</p>
+                                            <p class="text-base font-semibold" id="tempat_lahir"></p>
                                         </div>
+
                                         <div>
-                                            <p class="text-xs text-gray-500 mb-1 font-medium">Tanggal Lahir</p>
-                                            <p class="text-base font-semibold text-gray-800" id="tgl_lahir"></p>
+                                            <p class="text-xs text-gray-500">Tanggal Lahir</p>
+                                            <p class="text-base font-semibold" id="tgl_lahir"></p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Kontak -->
+                                <!-- KONTAK -->
                                 <div
-                                    class="bg-gradient-to-br from-green-50 to-emerald-50 p-5 rounded-xl border-l-4 border-green-500">
-                                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                    class="bg-green-50 dark:bg-slate-800 p-5 rounded-xl border-l-4 border-green-500">
+
+                                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
                                         <i class="fa-solid fa-address-book text-green-500"></i>
                                         Informasi Kontak
                                     </h3>
+
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
-                                            <p class="text-xs text-gray-500 mb-1 font-medium">
-                                                <i class="fa-solid fa-envelope mr-1"></i>Email
-                                            </p>
-                                            <p class="text-base font-semibold text-gray-800" id="email"></p>
+                                            <p class="text-xs text-gray-500">Email</p>
+                                            <p class="text-base font-semibold" id="email"></p>
                                         </div>
+
                                         <div>
-                                            <p class="text-xs text-gray-500 mb-1 font-medium">
-                                                <i class="fa-solid fa-phone mr-1"></i>No. Telepon
-                                            </p>
-                                            <p class="text-base font-semibold text-gray-800" id="no_telp"></p>
+                                            <p class="text-xs text-gray-500">No. Telepon</p>
+                                            <p class="text-base font-semibold" id="no_telp"></p>
                                         </div>
                                     </div>
+
                                 </div>
 
-                                <!-- Profesional -->
+                                <!-- PROFESIONAL -->
                                 <div
-                                    class="bg-gradient-to-br from-purple-50 to-violet-50 p-5 rounded-xl border-l-4 border-purple-500">
-                                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                    class="bg-purple-50 dark:bg-slate-800 p-5 rounded-xl border-l-4 border-purple-500">
+
+                                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
                                         <i class="fa-solid fa-stethoscope text-purple-500"></i>
                                         Informasi Profesional
                                     </h3>
+
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
-                                            <p class="text-xs text-gray-500 mb-1 font-medium">No. STR</p>
-                                            <p class="text-base font-semibold text-gray-800" id="no_str"></p>
+                                            <p class="text-xs text-gray-500">No. STR</p>
+                                            <p class="text-base font-semibold" id="no_str"></p>
                                         </div>
-                                        <div>
-                                            <p class="text-xs text-gray-500 mb-1 font-medium">No. SIP</p>
-                                            <p class="text-base font-semibold text-gray-800" id="no_sip"></p>
-                                        </div>
-                                        <div>
-                                            <p class="text-xs text-gray-500 mb-1 font-medium">Spesialisasi</p>
-                                            <p class="text-base font-semibold text-gray-800">
-                                                <span class="px-3 py-1 bg-purple-500 text-white text-sm rounded-full"
-                                                    id="spesialisasi">
 
-                                                </span>
-                                            </p>
-                                        </div>
                                         <div>
-                                            <p class="text-xs text-gray-500 mb-1 font-medium">Unit / Poli Bertugas</p>
-                                            <p class="text-base font-semibold text-gray-800" id="poli"></p>
+                                            <p class="text-xs text-gray-500">No. SIP</p>
+                                            <p class="text-base font-semibold" id="no_sip"></p>
+                                        </div>
+
+                                        <div>
+                                            <p class="text-xs text-gray-500">Spesialisasi</p>
+                                            <span id="spesialisasi"
+                                                class="px-3 py-1 bg-purple-600 text-white text-sm rounded-full"></span>
+                                        </div>
+
+                                        <div>
+                                            <p class="text-xs text-gray-500">Unit / Poli</p>
+                                            <p class="text-base font-semibold" id="poli"></p>
                                         </div>
                                     </div>
+
                                 </div>
 
-                                <!-- Alamat -->
-                                <div
-                                    class="bg-gradient-to-br from-red-50 to-pink-50 p-5 rounded-xl border-l-4 border-red-500">
-                                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                        <i class="fa-solid fa-location-dot text-red-500"></i>
-                                        Alamat Lengkap
-                                    </h3>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div class="md:col-span-2">
-                                            <p class="text-xs text-gray-500 mb-1 font-medium">Alamat Detail</p>
-                                            <p class="text-base font-semibold text-gray-800" id="alamat"></p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Status -->
-                                <div
-                                    class="bg-gradient-to-br from-teal-50 to-cyan-50 p-5 rounded-xl border-l-4 border-teal-500">
-                                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                        <i class="fa-solid fa-circle-info text-teal-500"></i>
-                                        Status Aktif
-                                    </h3>
-
-                                    {{-- tidak aktif --}}
-                                    <div class="flex items-center justify-between bg-white p-4 rounded-lg">
-                                        <div>
-                                            <p class="text-xs text-gray-500 mb-1 font-medium">Status Dokter</p>
-                                            <p class="text-base font-semibold text-gray-800">Sedang Tidak Aktif
-                                                Bertugas</p>
-                                        </div>
-                                        <span
-                                            class="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-bold rounded-full shadow-lg flex items-center gap-2"
-                                            id="status">
-                                            <i class="fa-solid fa-times"></i>
-                                            Non-Aktif
-                                        </span>
-                                    </div>
-                                    <div class="mt-3 bg-blue-50 p-3 rounded-lg border border-blue-200">
-                                        <p class="text-xs text-blue-700" id="update_at"></p>
-                                    </div>
-                                </div>
                             </div>
 
-                            <!-- Footer Fixed -->
-                            <div class="p-6 pt-4 border-t bg-gray-50 flex justify-end gap-3">
+                            <!-- Footer -->
+                            <div
+                                class="p-6 border-t border-slate-700 bg-gray-50 dark:bg-slate-800 flex justify-end gap-3">
+
                                 <button @click="viewModal = false"
-                                    class="px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-300 font-medium">
+                                    class="px-6 py-2 bg-gray-300 dark:bg-slate-600
+                                           text-gray-800 dark:text-white rounded-lg hover:opacity-90">
                                     <i class="fa-solid fa-times mr-2"></i>Tutup
                                 </button>
-                                <a href="#"
-                                    class="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg font-medium">
-                                    <i class="fa-solid fa-print mr-2"></i>Cetak Detail
-                                </a>
+
                             </div>
+
                         </div>
                     </div>
+                    <!-- =============== END MODAL ================ -->
+
                 </div>
             </div>
         </div>
     </div>
+
 </x-app-layout>

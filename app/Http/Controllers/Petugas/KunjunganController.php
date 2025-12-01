@@ -128,6 +128,17 @@ class KunjunganController extends Controller
                     'status' => 'menunggu',
                 ]);
 
+                    // 2. Cek apakah dokter benar dari poli tsb
+                    $dokterValid = Dokter::where('id', $request->dokter_id)
+                        ->where('poli_id', $request->poli_id)
+                        ->exists();
+
+                    if (!$dokterValid) {
+                        return back()->withErrors([
+                            'dokter_id' => 'Dokter tidak sesuai dengan poli yang dipilih.',
+                        ])->withInput();
+                    }
+
                 AntrianPoli::create([
                     'kunjungan_id' => $kunjungan->id,
                     'status' => 'menunggu',
@@ -221,7 +232,68 @@ class KunjunganController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+
+            $result = DB::transaction(function () use ($request, $id) {
+                $kunjungan = Kunjungan::with('pasien.user','dokter','poli')->findOrFail($id);
+
+                    // Cek apakah pasien sudah memiliki kunjungan aktif di tanggal yang sama
+                    $cekAntrian = Kunjungan::where('pasien_id', $request->pasien_id)
+                        ->whereDate('tgl_kunjungan', $request->tgl_kunjungan)
+                        ->where('id', '!=', $id) // penting!
+                        ->where('status', '!=', 'selesai')
+                        ->exists();
+
+                    if ($cekAntrian) {
+                        return back()
+                            ->withErrors(['nik' => 'Pasien sudah memiliki kunjungan aktif pada tanggal ini.'])
+                            ->withInput();
+                    }
+                    // 2. Cek apakah dokter benar dari poli tsb
+                    $dokterValid = Dokter::where('id', $request->dokter_id)
+                        ->where('poli_id', $request->poli_id)
+                        ->exists();
+
+                    if (!$dokterValid) {
+                        return back()->withErrors([
+                            'dokter_id' => 'Dokter tidak sesuai dengan poli yang dipilih.',
+                        ])->withInput();
+                    }
+
+                $kunjungan->update([
+                    'pasien_id'     => $request->pasien_id,
+                    'poli_id'       => $request->poli_id,
+                    'dokter_id'     => $request->dokter_id,
+                    'tgl_kunjungan' => $request->tgl_kunjungan,
+                    'jam_awal'      => $request->jam_awal,
+                    'jam_akhir'     => $request->jam_akhir,
+                    'keluhan_awal'  => $request->keluhan_awal,
+                ]);
+
+
+                return true;
+            });
+
+            if ($result !== true) {
+                return $result;
+            }
+
+            return redirect()->route('petugas.kunjungan.index')->with([
+                'status' => 'success',
+                'message' => 'Data Berhasil Diperbarui'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Gagal memperbarui Presensi', [
+                'error' => $e->getMessage(),
+                'stack' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->back()->withInput()->with([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat memperbarui data: '
+            ]);
+        }
     }
 
     /**
@@ -394,5 +466,77 @@ class KunjunganController extends Controller
     // }
 
 
+
+    public function prosesKunjungan(Request $request){
+        $rfid = strtoupper($request->query('rfid'));
+        $pasien = Pasien::where('rfid', $rfid)->first();
+
+        if (!$pasien) {
+            return response()->json(['status' => 'error', 'message' => 'Pasien tidak ditemukan'], 404);
+        }
+
+        $now = Carbon::now();
+
+        try {
+            $kunjungan = Kunjungan::whereDate('tgl_kunjungan', Carbon::today())
+                ->where('pasien_id', $pasien->id)
+                ->whereTime('jam_awal', '<=', $now)
+                ->whereTime('jam_akhir', '>=', $now)
+                ->whereNotIn('status', ['selesai', 'batal'])
+                ->first();
+
+            if (!$kunjungan) {
+                return response()->json(['status' => 'error', 'message' => 'Tidak ada kunjungan aktif'], 404);
+            }
+
+            // 2. Cek apakah sudah punya antrian poli
+            $cekAntrian = AntrianPoli::where('kunjungan_id', $kunjungan->id)->first();
+
+            if ($cekAntrian) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Pasien sudah masuk antrian poli'
+                ], 409);
+            }
+
+            // 3. Buat antrian baru
+            $antrian = AntrianPoli::create([
+                'kunjungan_id' => $kunjungan->id,
+                'status'       => 'menunggu',
+                // 'waktu_masuk'  => now()
+            ]);
+
+            // 4. Update status kunjungan (opsional)
+            $kunjungan->update([
+                'status' => 'menunggu'
+            ]);
+
+            // $tglPresensi = $antrian->tgl_presensi;
+            // $jamAwal = $antrian->jam_awal;
+            // $jamAkhir = $antrian->jam_akhir;
+
+            // $timeMulai = Carbon::parse("$tglPresensi $jamAwal");
+            // $timeBerakhir = Carbon::parse("$tglPresensi $jamAkhir");
+
+            // if ($now->lt($timeMulai)) {
+            //     return response()->json(['status' => 'error', 'message' => 'Absensi belum dimulai']);
+            // } elseif ($now->gt($timeBerakhir)) {
+            //     return response()->json(['status' => 'error', 'message' => 'Absensi sudah kadaluarsa']);
+            // }
+
+            // DetailPresensi::where('mahasiswa_id', $pasien->id)
+            //     ->where('presensi_id', $antrian->id)
+            //     ->whereNull('waktu_presensi')
+            //     ->update([
+            //         'waktu_presensi' => now(),
+            //         'status' => 1,
+            //     ]);
+
+            return response()->json(['status' => 'success', 'message' => 'Pasien berhasil masuk antrian poli', 'antrian_id' => $antrian->id]);
+        } catch (\Exception $e) {
+            Log::error('RFID Error: ' . $e->getMessage());
+            return response()->json(['status' => 'error', 'message' => 'Terjadi Kesalahan sistem'], 404);
+        }
+    }
 
 }
