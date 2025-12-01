@@ -24,6 +24,7 @@ class LoginController extends Controller
 
         try {
             $user = User::where('username', $request->username)->first();
+            $pasien = Pasien::where('user_id', $user->id)->first();
 
             if (!$user || !Hash::check($password, $user->password)) {
                 return response()->json([
@@ -51,6 +52,7 @@ class LoginController extends Controller
                 'expired_at' => $token->accessToken->expires_at,
                 'token_type' => 'Bearer',
                 'data' => [
+                    'pasien_id' => $pasien->id ?? null,
                     'user_id' => $user->id,
                     'email' => $user->email,
                     'username' => $user->username,
