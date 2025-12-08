@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Home;
 use App\Http\Controllers\Controller;
 use App\Models\Dokter;
 use App\Models\JadwalDokter;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 
@@ -12,8 +13,13 @@ class DashboardController extends Controller
 {
     function listScheduleDoctor(Request $request)
     {
+
+        $today = Carbon::now('Asia/Jakarta')->locale('id')->isoFormat('dddd');
+
         $schedule = JadwalDokter::select('jadwal_dokter.id', 'jadwal_dokter.dokter_id', 'jadwal_dokter.poli_id', 'jadwal_dokter.hari', 'jadwal_dokter.jam_mulai', 'jadwal_dokter.jam_akhir', 'jadwal_dokter.keterangan', 'poli.nama as nama_poli')
-            ->join('poli', 'poli.id', '=', 'jadwal_dokter.poli_id')->get();
+            ->join('poli', 'poli.id', '=', 'jadwal_dokter.poli_id')
+            ->where('jadwal_dokter.hari', $today)
+            ->get();
 
         return response()->json([
             'status' => 'success',
@@ -24,6 +30,8 @@ class DashboardController extends Controller
 
     function listDoctor(Request $request)
     {
+        $today = Carbon::now('Asia/Jakarta')->locale('id')->isoFormat('dddd');
+
         $doctors = Dokter::select(
             'dokter.id',
             'dokter.nama',
@@ -34,6 +42,7 @@ class DashboardController extends Controller
         ) AS time")
         )
             ->join('jadwal_dokter', 'jadwal_dokter.dokter_id', '=', 'dokter.id')
+            ->where('jadwal_dokter.hari', $today)
             ->get();
 
         return response()->json([

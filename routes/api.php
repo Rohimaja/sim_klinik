@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\Auth\RegisterVerificationController;
 use App\Http\Controllers\Api\Features\BookingForm;
 use App\Http\Controllers\Api\Features\DiseaseDetection;
+use App\Http\Controllers\Api\Features\MedicalHistory;
 use App\Http\Controllers\Api\Features\PracticeSchedule;
 use App\Http\Controllers\Api\Home\DashboardController;
 use Illuminate\Support\Facades\Route;
@@ -24,7 +25,6 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('home')->group(function () {
-        Route::post('dashboard', [DashboardController::class, 'dashboard']);
         Route::get('list/scheduleDoctor', [DashboardController::class, 'listScheduleDoctor']);
     });
     Route::prefix('features')->group(function () {
@@ -35,6 +35,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('list/scheduleDoctor', [BookingForm::class, 'listScheduleDoctor']);
         Route::get('practice/list/poli', [PracticeSchedule::class, 'listPoli']);
         Route::get('practice/list/scheduleDoctor', [PracticeSchedule::class, 'detailListPoli']);
+        Route::get('history/listHistory', [MedicalHistory::class, 'listHistory']);
     });
     Route::prefix('account')->group(function () {
         Route::post('profile', [EditProfile::class, 'editProfile']);

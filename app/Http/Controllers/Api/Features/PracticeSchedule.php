@@ -29,7 +29,7 @@ class PracticeSchedule extends Controller
         $idPoli = $request->query('id_poli');
 
         $schedule = JadwalDokter::select('jadwal_dokter.id', 'jadwal_dokter.dokter_id', 'jadwal_dokter.poli_id', 'jadwal_dokter.hari', 'jadwal_dokter.jam_mulai', 
-        'jadwal_dokter.jam_akhir', 'jadwal_dokter.keterangan', 'poli.nama as nama_poli', 'dokter.nama', 'dokter.spesialisasi')
+        'jadwal_dokter.jam_akhir', 'jadwal_dokter.keterangan', 'poli.nama as nama_poli', 'dokter.nama as nama_dokter', 'dokter.spesialisasi', 'dokter.foto as foto_dokter')
             ->join('poli', 'poli.id', '=', 'jadwal_dokter.poli_id')
             ->join('dokter', 'dokter.id', '=', 'jadwal_dokter.dokter_id')
             ->where('jadwal_dokter.poli_id', $idPoli)->get();

@@ -325,6 +325,22 @@
                                                         action="{{ route('petugas.kunjungan.updateStatus', $k->id) }}"
                                                         method="POST">
                                                         @csrf
+                                                        <input type="hidden" name="status" value="tidak hadir">
+                                                        <button type="submit"
+                                                            class="block w-full text-left px-4 py-2
+                                                                    text-red-700 dark:text-red-300
+                                                                    hover:bg-red-100 dark:hover:bg-red-700
+                                                                    transition-colors duration-150
+                                                                    first:rounded-t-md">
+                                                            Tidak Hadir
+                                                        </button>
+                                                    </form>
+
+                                                    <!-- PANGGIL -->
+                                                    <form
+                                                        action="{{ route('petugas.kunjungan.updateStatus', $k->id) }}"
+                                                        method="POST">
+                                                        @csrf
                                                         <input type="hidden" name="status" value="dipanggil">
                                                         <button type="submit"
                                                             class="block w-full text-left px-4 py-2

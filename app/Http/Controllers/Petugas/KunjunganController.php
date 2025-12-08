@@ -25,9 +25,9 @@ class KunjunganController extends Controller
     public function index()
     {
         $title = "Tambah Kunjungan Pasien";
-        $kunjungan = Kunjungan::with(['pasien.user','poli','dokter'])->get();
-        $pasien = Pasien::select('id','nama','jenis_kelamin','no_rm','tgl_lahir','alamat')->get();
-        return view('petugas.kunjungan.index', compact('title','kunjungan','pasien'));
+        $kunjungan = Kunjungan::with(['pasien.user', 'poli', 'dokter'])->get();
+        $pasien = Pasien::select('id', 'nama', 'jenis_kelamin', 'no_rm', 'tgl_lahir', 'alamat')->get();
+        return view('petugas.kunjungan.index', compact('title', 'kunjungan', 'pasien'));
 
     }
 
@@ -47,7 +47,7 @@ class KunjunganController extends Controller
             $pasien = Pasien::find($request->pasien_id);
         }
 
-        return view('petugas.kunjungan.form',compact('title', 'poli','dokter','pasien','mode'));
+        return view('petugas.kunjungan.form', compact('title', 'poli', 'dokter', 'pasien', 'mode'));
     }
 
     /**
@@ -104,17 +104,17 @@ class KunjunganController extends Controller
                     $pasien = $nik;
                 }
 
-                    // Cek apakah pasien sudah memiliki kunjungan aktif di tanggal yang sama
-                    $cekAntrian = Kunjungan::where('pasien_id', $pasien->id)
-                        ->whereDate('tgl_kunjungan', $request->tgl_kunjungan)
-                        ->where('status', '!=', 'selesai')
-                        ->exists();
+                // Cek apakah pasien sudah memiliki kunjungan aktif di tanggal yang sama
+                $cekAntrian = Kunjungan::where('pasien_id', $pasien->id)
+                    ->whereDate('tgl_kunjungan', $request->tgl_kunjungan)
+                    ->where('status', '!=', 'selesai')
+                    ->exists();
 
-                    if ($cekAntrian) {
-                        return back()
-                            ->withErrors(['nik' => 'Pasien sudah memiliki kunjungan aktif pada tanggal ini.'])
-                            ->withInput();
-                    }
+                if ($cekAntrian) {
+                    return back()
+                        ->withErrors(['nik' => 'Pasien sudah memiliki kunjungan aktif pada tanggal ini.'])
+                        ->withInput();
+                }
 
                 $kunjungan = Kunjungan::create([
                     'pasien_id' => $pasien->id,
@@ -128,21 +128,21 @@ class KunjunganController extends Controller
                     'status' => 'menunggu',
                 ]);
 
-                    // 2. Cek apakah dokter benar dari poli tsb
-                    $dokterValid = Dokter::where('id', $request->dokter_id)
-                        ->where('poli_id', $request->poli_id)
-                        ->exists();
+                // 2. Cek apakah dokter benar dari poli tsb
+                $dokterValid = Dokter::where('id', $request->dokter_id)
+                    ->where('poli_id', $request->poli_id)
+                    ->exists();
 
-                    if (!$dokterValid) {
-                        return back()->withErrors([
-                            'dokter_id' => 'Dokter tidak sesuai dengan poli yang dipilih.',
-                        ])->withInput();
-                    }
+                if (!$dokterValid) {
+                    return back()->withErrors([
+                        'dokter_id' => 'Dokter tidak sesuai dengan poli yang dipilih.',
+                    ])->withInput();
+                }
 
-                AntrianPoli::create([
-                    'kunjungan_id' => $kunjungan->id,
-                    'status' => 'menunggu',
-                ]);
+                // AntrianPoli::create([
+                //     'kunjungan_id' => $kunjungan->id,
+                //     'status' => 'menunggu',
+                // ]);
 
                 return true;
             });
@@ -175,7 +175,7 @@ class KunjunganController extends Controller
     public function show(string $id)
     {
         try {
-            $kunjungan = Kunjungan::with('pasien.user', 'poli','dokter')->findOrFail($id);
+            $kunjungan = Kunjungan::with('pasien.user', 'poli', 'dokter')->findOrFail($id);
 
             // Hitung umur
             $tgl_lahir = Carbon::parse($kunjungan->pasien->tgl_lahir);
@@ -220,11 +220,11 @@ class KunjunganController extends Controller
         $title = 'Update Kunjungan';
         $poli = Poli::all();
         $dokter = Dokter::all();
-        $kunjungan = Kunjungan::with('pasien.user','dokter','poli')->findOrFail($id);
+        $kunjungan = Kunjungan::with('pasien.user', 'dokter', 'poli')->findOrFail($id);
         $pasien = $kunjungan->pasien; // relasi pasien
         $mode = 'edit';
 
-        return view('petugas.kunjungan.form', compact('title','poli','dokter','kunjungan', 'pasien', 'mode'));
+        return view('petugas.kunjungan.form', compact('title', 'poli', 'dokter', 'kunjungan', 'pasien', 'mode'));
     }
 
     /**
@@ -235,39 +235,39 @@ class KunjunganController extends Controller
         try {
 
             $result = DB::transaction(function () use ($request, $id) {
-                $kunjungan = Kunjungan::with('pasien.user','dokter','poli')->findOrFail($id);
+                $kunjungan = Kunjungan::with('pasien.user', 'dokter', 'poli')->findOrFail($id);
 
-                    // Cek apakah pasien sudah memiliki kunjungan aktif di tanggal yang sama
-                    $cekAntrian = Kunjungan::where('pasien_id', $request->pasien_id)
-                        ->whereDate('tgl_kunjungan', $request->tgl_kunjungan)
-                        ->where('id', '!=', $id) // penting!
-                        ->where('status', '!=', 'selesai')
-                        ->exists();
+                // Cek apakah pasien sudah memiliki kunjungan aktif di tanggal yang sama
+                $cekAntrian = Kunjungan::where('pasien_id', $request->pasien_id)
+                    ->whereDate('tgl_kunjungan', $request->tgl_kunjungan)
+                    ->where('id', '!=', $id) // penting!
+                    ->where('status', '!=', 'selesai')
+                    ->exists();
 
-                    if ($cekAntrian) {
-                        return back()
-                            ->withErrors(['nik' => 'Pasien sudah memiliki kunjungan aktif pada tanggal ini.'])
-                            ->withInput();
-                    }
-                    // 2. Cek apakah dokter benar dari poli tsb
-                    $dokterValid = Dokter::where('id', $request->dokter_id)
-                        ->where('poli_id', $request->poli_id)
-                        ->exists();
+                if ($cekAntrian) {
+                    return back()
+                        ->withErrors(['nik' => 'Pasien sudah memiliki kunjungan aktif pada tanggal ini.'])
+                        ->withInput();
+                }
+                // 2. Cek apakah dokter benar dari poli tsb
+                $dokterValid = Dokter::where('id', $request->dokter_id)
+                    ->where('poli_id', $request->poli_id)
+                    ->exists();
 
-                    if (!$dokterValid) {
-                        return back()->withErrors([
-                            'dokter_id' => 'Dokter tidak sesuai dengan poli yang dipilih.',
-                        ])->withInput();
-                    }
+                if (!$dokterValid) {
+                    return back()->withErrors([
+                        'dokter_id' => 'Dokter tidak sesuai dengan poli yang dipilih.',
+                    ])->withInput();
+                }
 
                 $kunjungan->update([
-                    'pasien_id'     => $request->pasien_id,
-                    'poli_id'       => $request->poli_id,
-                    'dokter_id'     => $request->dokter_id,
+                    'pasien_id' => $request->pasien_id,
+                    'poli_id' => $request->poli_id,
+                    'dokter_id' => $request->dokter_id,
                     'tgl_kunjungan' => $request->tgl_kunjungan,
-                    'jam_awal'      => $request->jam_awal,
-                    'jam_akhir'     => $request->jam_akhir,
-                    'keluhan_awal'  => $request->keluhan_awal,
+                    'jam_awal' => $request->jam_awal,
+                    'jam_akhir' => $request->jam_akhir,
+                    'keluhan_awal' => $request->keluhan_awal,
                 ]);
 
 
@@ -351,7 +351,7 @@ class KunjunganController extends Controller
 
         if ($last) {
             // Ambil 8 digit terakhir dan ubah ke integer
-            $lastNumber = (int) $last->no_rm;
+            $lastNumber = (int) $last->no_antrian;
 
             // Tambah 1, lalu padding jadi 8 digit
             $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
@@ -367,16 +367,16 @@ class KunjunganController extends Controller
     {
         try {
 
-        $kunjungan = Kunjungan::findOrFail($id);
-        $kunjungan->status = $request->status;
-        $kunjungan->save();
+            $kunjungan = Kunjungan::findOrFail($id);
+            $kunjungan->status = $request->status;
+            $kunjungan->save();
 
             return back()->with([
                 'status' => 'success',
                 'message' => 'Status Berhasil diperbarui'
             ]);
 
-        // return back()->with('success', 'Status berhasil diperbarui!');
+            // return back()->with('success', 'Status berhasil diperbarui!');
 
         } catch (\Exception $e) {
             Log::error('Gagal Menambahkan Kunjungan Pasien', [
@@ -391,12 +391,12 @@ class KunjunganController extends Controller
         }
     }
 
-     public function listPasien()
+    public function listPasien()
     {
 
         try {
 
-            $pasien = Pasien::select('id','nama','jenis_kelamin','no_rm','tgl_lahir')->get();
+            $pasien = Pasien::select('id', 'nama', 'jenis_kelamin', 'no_rm', 'tgl_lahir')->get();
 
             $result = $pasien->map(function ($p) {
                 $tgl = Carbon::parse($p->tgl_lahir);
@@ -467,7 +467,8 @@ class KunjunganController extends Controller
 
 
 
-    public function prosesKunjungan(Request $request){
+    public function prosesKunjungan(Request $request)
+    {
         $rfid = strtoupper($request->query('rfid'));
         $pasien = Pasien::where('rfid', $rfid)->first();
 
@@ -494,7 +495,7 @@ class KunjunganController extends Controller
 
             if ($cekAntrian) {
                 return response()->json([
-                    'status'  => 'error',
+                    'status' => 'error',
                     'message' => 'Pasien sudah masuk antrian poli'
                 ], 409);
             }
@@ -502,7 +503,7 @@ class KunjunganController extends Controller
             // 3. Buat antrian baru
             $antrian = AntrianPoli::create([
                 'kunjungan_id' => $kunjungan->id,
-                'status'       => 'menunggu',
+                'status' => 'menunggu',
                 // 'waktu_masuk'  => now()
             ]);
 
