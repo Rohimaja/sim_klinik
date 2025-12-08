@@ -72,6 +72,9 @@
                                     Umur</th>
                                 <th
                                     class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                                    Tanggal Kunjungan</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                     Keluhan Awal</th>
                                 <th
                                     class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
@@ -94,12 +97,19 @@
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
                                         {{ $k->umur ?? '' }} Tahun
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                                        {{ $k->tgl_kunjungan ?? '' }}
+                                    <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
                                         {{ $k->keluhan_awal ?? '' }}
                                     <td class="px-6 py-4">
                                         @if ($k->status === 'menunggu')
                                             <span
                                                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800">
                                                 Menunggu Skrining
+                                            </span>
+                                        @elseif ($k['status'] === 'tidak hadir')
+                                            <span
+                                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 border border-red-200 dark:border-red-800">
+                                                Tidak Hadir
                                             </span>
                                         @elseif ($k['status'] === 'dipanggil')
                                             <span
@@ -115,11 +125,6 @@
                                             <span
                                                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 border border-red-200 dark:border-red-800">
                                                 Batal
-                                            </span>
-                                        @elseif ($k['status'] === 'tidak hadir')
-                                            <span
-                                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 border border-red-200 dark:border-red-800">
-                                                Tidak Hadir
                                             </span>
                                         @endif
                                     </td>
@@ -212,7 +217,8 @@
                                     id="nama"></span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Jenis Kelamin:</span>
+                                <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Jenis
+                                    Kelamin:</span>
                                 <span class="text-sm text-gray-900 dark:text-gray-100" id="jenis_kelamin"></span>
                             </div>
                             <div class="flex justify-between">

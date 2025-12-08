@@ -219,6 +219,28 @@
                                 </span>
                             </div>
 
+                            <!-- RFID -->
+                            <div>
+                                <label for="rfid"
+                                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    RFID <span class="text-red-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                        <i class="fa-solid fa-envelope"></i>
+                                    </span>
+                                    <input type="text" id="rfid" name="rfid" required
+                                        value="{{ old('rfid', $pasien->rfid ?? '') }}"
+                                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                                        placeholder="5365353">
+                                </div>
+                                <span class="text-red-600 text-sm" id="rfid_error">
+                                    @error('rfid')
+                                        {{ $message }}
+                                    @enderror
+                                </span>
+                            </div>
+
                         </div>
                     </div>
 

@@ -38,6 +38,7 @@ class StoreKunjungan extends FormRequest
             'email' => 'required|max:100',
             'alamat' => 'required|max:200',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // opsional: validasi foto
+            'rfid' => 'nullable|regex:/^[A-Za-z0-9\s]+$/',
             'poli_id' => 'required',
             'dokter_id' => 'nullable',
             'tgl_kunjungan' => 'required',
@@ -74,8 +75,9 @@ class StoreKunjungan extends FormRequest
             'no_telp.max' => 'Nomor Telepon maksimal 20 karakter',
             'no_telp.regex' => 'Nomor Telepon hanya boleh berisi angka',
 
+            'rfid.regex' =>'Kode RFID tidak boleh mengandung simbol',
+
             'email.required' => 'Email tidak boleh kosong',
-            // 'email.email' => 'Format email tidak valid',
             'email.max' => 'Email maksimal 100 karakter',
             'email.unique' => 'Email sudah digunakan',
 
@@ -92,8 +94,6 @@ class StoreKunjungan extends FormRequest
 
             'keluhan_awal.required' => 'Keluhan tidak boleh kosong',
             'keluhan_awal.max' => 'Keluhan maksimal 200 karakter',
-
-
 
         ];
     }

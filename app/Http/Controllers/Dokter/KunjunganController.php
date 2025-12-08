@@ -108,7 +108,7 @@ class KunjunganController extends Controller
     public function show(string $id)
     {
         try {
-            $antrian = AntrianPoli::with('kunjungan')->findOrFail($id);
+            $antrian = AntrianPoli::with('kunjungan.skrining','kunjungan.pasien.user')->findOrFail($id);
 
             // Hitung umur
             $tgl_lahir = Carbon::parse($antrian->kunjungan->pasien->tgl_lahir);
@@ -130,11 +130,17 @@ class KunjunganController extends Controller
                 'tgl_lahir' => $tgl_lahir_formatted,
                 'umur' => $umur,
                 'email' => optional($antrian->kunjungan->pasien->user)->email,
-                'keluhan' => $antrian->kunjungan->skrining->keluhan_utama,
-                'tensi' => $antrian->kunjungan->skrining->tensi,
-                'suhu' => $antrian->kunjungan->skrining->suhu,
-                'bb' => $antrian->kunjungan->skrining->berat_badan,
-                'tb' => $antrian->kunjungan->skrining->tinggi_badan,
+                        // Skrining aman meski skrining = null
+                'keluhan' => optional($antrian->kunjungan->skrining)->keluhan_utama,
+                'tensi' => optional($antrian->kunjungan->skrining)->tensi,
+                'suhu' => optional($antrian->kunjungan->skrining)->suhu,
+                'bb' => optional($antrian->kunjungan->skrining)->berat_badan,
+                'tb' => optional($antrian->kunjungan->skrining)->tinggi_badan,
+                // 'keluhan' => $antrian->kunjungan->skrining->keluhan_utama,
+                // 'tensi' => $antrian->kunjungan->skrining->tensi,
+                // 'suhu' => $antrian->kunjungan->skrining->suhu,
+                // 'bb' => $antrian->kunjungan->skrining->berat_badan,
+                // 'tb' => $antrian->kunjungan->skrining->tinggi_badan,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -263,5 +269,47 @@ class KunjunganController extends Controller
                 'message' => 'Terjadi kesalahan saat menambahkan data: '
             ]);
         }
+    }
+
+    public function getFilterKunjungan(Request $request)
+    {
+        $status = $request->query('filter-status');
+        $tgl = $request->query('filter-tanggal');
+
+        $query = AntrianPoli::query()->with('kunjungan.skrining','pemeriksaan');
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        if (!empty($tgl)) {
+            $query->whereHas('kunjungan', function ($q) use ($tgl) {
+                $q->whereDate('tgl_kunjungan', $tgl);
+            });
+        }
+
+        $antrian = $query->get();
+
+        $antrian = $antrian->map(function ($item) {
+            $tgl_lahir = Carbon::parse($item->kunjungan->pasien->tgl_lahir);
+            $item->umur = $tgl_lahir->age;
+            return $item;
+        });
+
+        return response()->json($antrian);
+
+            // return response()->json([
+            //     'id' => $kunjungan->id,
+            //     'nama' => $kunjungan->pasien->nama,
+            //     'nik' => $kunjungan->pasien->nik,
+            //     'no_rm' => $kunjungan->pasien->no_rm,
+            //     'status' => $kunjungan->status,
+            //     'tgl_kunjungan' => $kunjungan->tgl_kunjungan,
+            //     'jenis_kelamin' => $kunjungan->pasien->jenis_kelamin,
+            //     'tgl_lahir' => $tgl_lahir_formatted,
+            //     'umur' => $umur,
+            //     'email' => optional($kunjungan->pasien->user)->email,
+            //     'keluhan_awal' => $kunjungan->keluhan_awal,
+            // ]);
     }
 }

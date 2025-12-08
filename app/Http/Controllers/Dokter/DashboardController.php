@@ -16,6 +16,18 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        $today = Carbon::today();
+
+        // Ambil pasien hari ini + hitung umur
+        $pasienDone = AntrianPoli::with('kunjungan.skrining','pemeriksaan')
+            ->whereHas('kunjungan', function ($query){
+                $query->whereDate('tgl_kunjungan', Carbon::today());
+            })->where('status','dipanggil')->get()
+            ->map(function ($item) {
+                $item->umur = Carbon::parse($item->kunjungan->pasien->tgl_lahir)->age;
+                return $item;
+            });
+
         $data = [
             'title' => 'Dashboard',
             'waiting' => AntrianPoli::with('kunjungan')->whereHas('kunjungan', function ($query){
@@ -31,28 +43,31 @@ class DashboardController extends Controller
                 $query->whereDate('tgl_kunjungan', Carbon::today());
             })->get(),
             // 'pasienToday' => AntrianPoli::with('pasien','poli')->whereDate('tgl_kunjungan', Carbon::today())->get(),
-            'pasienDone' => Kunjungan::with('pasien','skrining')->whereDate('tgl_kunjungan', Carbon::today())->where('status', '=','selesai')->limit('10')->get(),
+            'pasienDone' => $pasienDone,
+            // 'pasienDone' => AntrianPoli::with('kunjungan.skrining','pemeriksaan')->whereHas('kunjungan', function ($query){
+            //     $query->whereDate('tgl_kunjungan', Carbon::today());
+            // })->where('status','dipanggil')->get(),
 
         ];
 
         $data['pasienToday'] = $data['pasienToday']->map(function ($item) {
             // $item di sini adalah model AntrianPoli
             // Pasien diakses melalui AntrianPoli -> Kunjungan -> Pasien
-            
+
             // Pastikan relasi tidak null
             if ($item->kunjungan && $item->kunjungan->pasien) {
                 // Ambil tanggal lahir dan parse menggunakan Carbon
                 $tgl_lahir = Carbon::parse($item->kunjungan->pasien->tgl_lahir);
-                
+
                 // Tambahkan properti 'umur' ke objek AntrianPoli
-                $item->umur = $tgl_lahir->age; 
+                $item->umur = $tgl_lahir->age;
             } else {
                 $item->umur = 'N/A'; // Handle kasus jika relasi tidak ditemukan
             }
-            
+
             return $item;
         });
-        
+
         return view('dokter.index',$data);
     }
 

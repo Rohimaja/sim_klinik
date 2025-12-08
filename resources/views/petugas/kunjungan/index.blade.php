@@ -282,12 +282,12 @@
                                         @elseif ($k['status'] === 'dipanggil')
                                             <span
                                                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
-                                                Sedang Periksa
+                                                Sedang Skrining
                                             </span>
                                         @elseif ($k['status'] === 'selesai')
                                             <span
                                                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 border border-green-200 dark:border-green-800">
-                                                Selesai Diperiksa
+                                                Selesai Skrining
                                             </span>
                                         @elseif ($k['status'] === 'dibatalkan')
                                             <span
@@ -319,6 +319,22 @@
                                                             rounded-lg shadow-lg dark:shadow-xl z-50
                                                             opacity-0 invisible group-hover:opacity-100 group-hover:visible
                                                             transition-all duration-200">
+
+                                                    <!-- Tidak hadir -->
+                                                    <form
+                                                        action="{{ route('petugas.kunjungan.updateStatus', $k->id) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        <input type="hidden" name="status" value="tidak hadir">
+                                                        <button type="submit"
+                                                            class="block w-full text-left px-4 py-2
+                                                                    text-gray-700 dark:text-gray-300
+                                                                    hover:bg-gray-100 dark:hover:bg-gray-700
+                                                                    transition-colors duration-150
+                                                                    first:rounded-t-md">
+                                                            Tidak Hadir
+                                                        </button>
+                                                    </form>
 
                                                     <!-- PANGGIL -->
                                                     <form

@@ -59,6 +59,7 @@ class KunjunganController extends Controller
             'nama' => ucwords(trim($request->nama)),
             'tempat_lahir' => ucwords(trim($request->tempat_lahir)),
             'nik' => trim($request->nik),
+            'rfid' => trim($request->rfid),
             'no_bpjs' => trim($request->no_bpjs),
             'keluhan_awal' => trim($request->keluhan_awal),
         ]);
@@ -93,6 +94,7 @@ class KunjunganController extends Controller
                         'tgl_lahir' => $request->tgl_lahir,
                         'no_telp' => $request->no_telp,
                         'alamat' => $request->alamat,
+                        'rfid' => $request->rfid,
                         'status' => 1,
                     ];
 
@@ -125,7 +127,7 @@ class KunjunganController extends Controller
                     'jam_awal' => $request->jam_awal,
                     'jam_akhir' => $request->jam_akhir,
                     'keluhan_awal' => $request->keluhan_awal,
-                    'status' => 'menunggu',
+                    'status' => 'tidak hadir',
                 ]);
 
                 // 2. Cek apakah dokter benar dari poli tsb

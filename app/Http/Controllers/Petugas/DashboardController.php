@@ -26,7 +26,9 @@ class DashboardController extends Controller
             'pasienBaru' => Pasien::whereMonth('created_at', $currentMonth)
                                         ->whereYear('created_at', $currentYear)
                                         ->count(),
-            'pasien' => Pasien::count(),
+            // 'aktif' => Pasien::count(),
+            'menunggu' => Kunjungan::with('pasien')->whereDate('tgl_kunjungan', Carbon::today())->where('status', 'menunggu')->count(),
+            'aktif' => Kunjungan::with('pasien')->whereDate('tgl_kunjungan', Carbon::today())->where('status', '!=', 'tidak hadir')->count(),
             'done' => Kunjungan::with('pasien')->whereDate('tgl_kunjungan', Carbon::today())->where('status', 'selesai')->count(),
             'today' => Kunjungan::with('pasien','skrining')->whereDate('tgl_kunjungan', Carbon::today())->count(),
             'pasienToday' => Kunjungan::with('pasien','poli')->whereDate('tgl_kunjungan', Carbon::today())->get(),

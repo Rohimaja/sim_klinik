@@ -18,7 +18,6 @@
                     </div>
                     <div class="text-right">
                         <div class="text-3xl font-bold" id="clock"></div>
-                        <div class="text-sm text-blue-100 mt-1">Jam Kerja: 07:00 - 15:00</div>
                     </div>
                 </div>
             </div>
@@ -120,7 +119,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            Pasien Menunggu Skrining
+                            Pasien Menunggu Skrining Hari Ini
                         </h3>
                     </div>
 
@@ -155,7 +154,7 @@
                                         <td class="py-3 px-4 text-gray-800 dark:text-gray-200">
                                             {{ $pt->pasien->nama ?? '-' }}</td>
                                         <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">
-                                            {{ $pt->pasien->tgl_lahir ?? '-' }}</td>
+                                            {{ $pt->umur ?? '-' }} Tahun</td>
                                         <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">
                                             {{ $pt->pasien->jenis_kelamin === 'L' ? 'Laki-laki' : ($pt->pasien->jenis_kelamin === 'P' ? 'Perempuan' : '-') }}
                                         </td>
@@ -164,6 +163,11 @@
                                                 <span
                                                     class="text-xs px-3 py-1 rounded-full font-medium bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-800 inline-block">
                                                     Menunggu
+                                                </span>
+                                            @elseif ($pt->status == 'tidak hadir')
+                                                <span
+                                                    class="text-xs px-3 py-1 rounded-full font-medium bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-800 inline-block">
+                                                    Tidak Hadir
                                                 </span>
                                             @elseif ($pt->status == 'dipanggil')
                                                 <span
@@ -186,10 +190,6 @@
                                 </tbody>
                             @endforeach
                         </table>
-                    </div>
-                    <div
-                        class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400">
-                        Menampilkan 5 dari 12 pasien yang menunggu skrining
                     </div>
                 </div>
 

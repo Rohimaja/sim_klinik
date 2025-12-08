@@ -19,7 +19,6 @@
                     </div>
                     <div class="text-right">
                         <div class="text-3xl font-bold" id="clock"></div>
-                        <div class="text-sm text-blue-100 mt-1">Praktik: 08:00 - 16:00</div>
                     </div>
                 </div>
             </div>
@@ -123,10 +122,10 @@
                                 </svg>
                                 Daftar Pasien Hari Ini
                             </h3>
-                            <button onclick="confirmCallNextPatient()"
+                            {{-- <button onclick="confirmCallNextPatient()"
                                 class="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                                 Panggil Pasien Berikutnya
-                            </button>
+                            </button> --}}
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full">
@@ -145,11 +144,9 @@
                                             class="text-left py-3 px-4 text-sm font-semibold text-gray-600 dark:text-gray-400">
                                             Keluhan</th>
                                         <th
-                                            class="text-left py-3 px-4 text-sm font-semibold text-gray-600 dark:text-gray-400">
+                                            class="text-center py-3 px-4 text-sm font-semibold text-gray-600 dark:text-gray-400">
                                             Status</th>
-                                        <th
-                                            class="text-left py-3 px-4 text-sm font-semibold text-gray-600 dark:text-gray-400">
-                                            Aksi</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -164,7 +161,7 @@
                                             <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">
                                                 {{ $pt->umur ?? '-' }} Th</td>
                                             <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">
-                                                {{ $pt->kunjungan->skrining->keluhan_utama ?? '-' }}
+                                                {{ $pt->kunjungan->skrining->keluhan_utama ?? ($pt->kunjungan->keluhan_awal ?? '-') }}
                                             </td>
                                             <td class="py-3 px-4 text-center">
                                                 @if ($pt->status == 'menunggu')
@@ -175,12 +172,12 @@
                                                 @elseif ($pt->status == 'dipanggil')
                                                     <span
                                                         class="text-xs px-3 py-1 rounded-full font-medium bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800 inline-block">
-                                                        Sedang Skrining
+                                                        Sedang Diperiksa
                                                     </span>
                                                 @elseif ($pt->status == 'selesai')
                                                     <span
                                                         class="text-xs px-3 py-1 rounded-full font-medium bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-800 inline-block">
-                                                        Selesai Skrining
+                                                        Selesai Diperiksa
                                                     </span>
                                                 @elseif ($pt->status == 'dibatalkan')
                                                     <span
@@ -188,10 +185,6 @@
                                                         Dibatalkan
                                                     </span>
                                                 @endif
-                                            </td>
-                                            <td class="py-3 px-4">
-                                                <button
-                                                    class="text-blue-600 hover:text-blue-700 text-sm font-medium">Periksa</button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -214,24 +207,30 @@
                                 </svg>
                                 Sedang Diperiksa
                             </h3>
-                            <div
-                                class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
-                                <div class="flex items-center justify-between mb-3">
-                                    <span class="text-2xl font-bold text-blue-600 dark:text-blue-400">A001</span>
-                                    <span
-                                        class="text-xs px-2 py-1 rounded-full font-medium bg-blue-600 text-white">Aktif</span>
+                            @foreach ($pasienDone as $pd)
+                                <div
+                                    class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span
+                                            class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ $pd->kunjungan->pasien->no_rm ?? '-' }}</span>
+                                    </div>
+                                    <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2">
+                                        {{ $pd->kunjungan->pasien->nama ?? '-' }}</h4>
+                                    <div class="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                                        <p>👤 {{ $pd->umur }} Tahun,
+                                            {{ $pd->kunjungan->pasien->jenis_kelamin === 'L' ? 'Laki-laki' : ($pd->kunjungan->pasien->jenis_kelamin === 'P' ? 'Perempuan' : '-') }}
+                                        </p>
+                                        <p>💊 Keluhan:
+                                            {{ $pd->kunjungan->skrining->keluhan_utama ?? ($pd->kunjungan->keluhan_awal ?? '-') }}
+                                        </p>
+                                        {{-- <p>⏱️ Mulai: 10:30</p> --}}
+                                    </div>
+                                    <button onclick="showPatientDetail()"
+                                        class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                        Lihat Detail Pasien
+                                    </button>
                                 </div>
-                                <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2">Ahmad Fauzi</h4>
-                                <div class="space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                                    <p>👤 32 Tahun, Laki-laki</p>
-                                    <p>💊 Keluhan: Demam, Batuk</p>
-                                    <p>⏱️ Mulai: 10:30</p>
-                                </div>
-                                <button onclick="showPatientDetail()"
-                                    class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                                    Lihat Detail Pasien
-                                </button>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>

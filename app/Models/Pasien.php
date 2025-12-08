@@ -15,6 +15,7 @@ class Pasien extends Model
     protected $fillable = [
         'user_id',
         'nama',
+        'rfid',
         'nik',
         'no_rm',
         'no_bpjs',

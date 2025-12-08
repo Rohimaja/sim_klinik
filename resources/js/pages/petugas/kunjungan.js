@@ -46,6 +46,11 @@ window.loadKunjunganDetail = function (id) {
                     .html("Selesai")
                     .removeClass("bg-yellow-100 text-yellow-800")
                     .addClass("bg-green-100 text-green-800");
+            } else if (res.status === "tidak hadir") {
+                $("#status")
+                    .html("Tidak Hadir")
+                    .removeClass("bg-yellow-100 text-yellow-800")
+                    .addClass("bg-red-100 text-red-800");
             } else {
                 $("#status")
                     .html("Di Batalkan")
