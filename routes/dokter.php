@@ -14,5 +14,6 @@ Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->name('dokter.')->g
     Route::post('/kunjungan', [KunjunganController::class, 'store'])->name('kunjungan.store');
     Route::put('/kunjungan/{kunjungan}', [KunjunganController::class, 'update'])->name('kunjungan.update');
     Route::post('kunjungan/{id}/update-status', [KunjunganController::class, 'updateStatus'])->name('kunjungan.panggil');
+    Route::get('/getFilterKunjungan', [KunjunganController::class, 'getFilterKunjungan']);
     // Route::resource('kunjungan', KunjunganController::class);
 });

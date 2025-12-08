@@ -1,12 +1,230 @@
-// $(document).ready(function () {
-//     table = $("#data-pasien").DataTable({
-//         searching: true,
-//         paging: true,
-//         info: true,
-//         scrollX: true,
-//         autoWidth: false,
-//     });
-// });
+const csrfToken = document
+    .querySelector('meta[name="csrf-token"]')
+    .getAttribute("content");
+
+$(document).ready(function () {
+    // ========================================
+    // INIT DATATABLE
+    // ========================================
+    const table = $("#data-kunjungan").DataTable({
+        pageLength: 5,
+        lengthMenu: [5, 10, 25, 50, 100],
+        dom: '<"flex justify-between items-center mb-3 text-sm"l><"overflow-x-auto"t><"flex flex-col items-center mt-4 space-y-2"ip>',
+        language: {
+            lengthMenu: "Tampilkan _MENU_ data per halaman",
+            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+            paginate: {
+                first: "«",
+                last: "»",
+                next: "›",
+                previous: "‹",
+            },
+            infoEmpty: "Tidak ada data",
+            emptyTable: "Belum ada kunjungan pasien",
+        },
+    });
+
+    // ========================================
+    // MANUAL SEARCH
+    // ========================================
+    $("#tableSearch").on("keyup", function () {
+        table.search(this.value).draw();
+    });
+
+    // ========================================
+    // SET DEFAULT TANGGAL = HARI INI
+    // ========================================
+    const today = new Date().toLocaleDateString("en-CA");
+    $("#filter-tanggal").val(today);
+
+    // ========================================
+    // EVENT FILTER TANGGAL & STATUS
+    // ========================================
+    $("#filter-status, #filter-tanggal").on("change", applyFilters);
+
+    // ========================================
+    // MAIN FILTER FUNCTION
+    // ========================================
+    function applyFilters() {
+        const status = $("#filter-status").val();
+        const tgl = $("#filter-tanggal").val();
+
+        fetch(
+            `/dokter/getFilterKunjungan?filter-status=${status}&filter-tanggal=${tgl}`
+        )
+            .then((response) => response.json())
+            .then((data) => updateTable(data))
+            .catch((error) => console.error("Error fetching data:", error));
+    }
+
+    function generateRow(item, index) {
+        return `
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+            <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
+                ${index + 1}
+            </td>
+
+            <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                ${item.kunjungan.pasien?.no_rm ?? ""}
+            </td>
+
+            <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                ${item.kunjungan.pasien?.nama ?? ""}
+            </td>
+
+            <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                ${item.umur} Tahun
+            </td>
+
+            <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                ${item.kunjungan.tgl_kunjungan ?? ""}
+            </td>
+
+            <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                ${
+                    item.kunjungan?.skrining?.keluhan_utama ??
+                    item.kunjungan.keluhan_awal ??
+                    "-"
+                }
+            </td>
+
+            <td class="px-6 py-4">
+                ${generateStatusBadge(item.status)}
+            </td>
+
+            <td class="px-6 py-4 text-center">
+                ${generateActionButtons(item)}
+            </td>
+        </tr>
+    `;
+    }
+
+    function updateTable(data) {
+        let html = "";
+        // Jika data kosong
+        if (!data || data.length === 0) {
+            html = `
+            <tr>
+                <td colspan="8" class="px-6 py-6 text-center text-gray-600 dark:text-gray-300">
+                    Tidak ada kunjungan ditemukan
+                </td>
+            </tr>
+        `;
+            $("#data-kunjungan tbody").html(html);
+            return; // Jangan lanjutkan render baris
+        }
+
+        data.forEach((item, index) => {
+            html += generateRow(item, index);
+        });
+
+        $("#data-kunjungan tbody").html(html);
+    }
+
+    // ========================================
+    // UPDATE DATATABLE
+    // ========================================
+    // function updateTable(data) {
+    //     table.clear();
+
+    //     data.forEach((item, index) => {
+    //         table.row.add([
+    //             `<div>${index + 1}</div>`,
+    //             item.kunjungan.pasien?.no_rm ?? "",
+    //             item.kunjungan.pasien?.nama ?? "",
+    //             `${item.umur} Tahun`,
+    //             item.kunjungan.tgl_kunjungan ?? "",
+    //             item.kunjungan.keluhan_awal ?? "",
+    //             generateStatusBadge(item.status),
+    //             generateActionButtons(item),
+    //         ]);
+    //     });
+
+    //     table.draw();
+    // }
+
+    // ========================================
+    // GENERATE STATUS BADGE
+    // ========================================
+    function generateStatusBadge(status) {
+        const badges = {
+            menunggu: `
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+                text-xs font-semibold bg-yellow-100 dark:bg-yellow-900/30
+                text-yellow-800 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800">
+                    Menunggu Skrining
+                </span>`,
+
+            dipanggil: `
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+                text-xs font-semibold bg-blue-100 dark:bg-blue-900/30
+                text-blue-800 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
+                    Sedang Periksa
+                </span>`,
+
+            selesai: `
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+                text-xs font-semibold bg-green-100 dark:bg-green-900/30
+                text-green-800 dark:text-green-400 border border-green-200 dark:border-green-800">
+                    Selesai
+                </span>`,
+
+            dibatalkan: `
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+                text-xs font-semibold bg-red-100 dark:bg-red-900/30
+                text-red-800 dark:text-red-400 border-red-200 dark:border-red-800">
+                    Batal
+                </span>`,
+        };
+
+        return badges[status] ?? "";
+    }
+
+    // ========================================
+    // GENERATE ACTION BUTTONS
+    // ========================================
+    function generateActionButtons(item) {
+        let html = `
+            <div class="flex items-center justify-center gap-2">
+                <button
+                    @click="viewModal = true; $nextTick(() => loadKunjunganDetail(${item.id}))"
+                    class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700
+                           text-white rounded-lg transition-colors text-xs font-medium">
+                    <i class="fa-solid fa-eye mr-1"></i> Detail
+                </button>
+        `;
+
+        // Sudah skrining → Edit
+        if (item.pemeriksaan) {
+            html += `
+                <a href="/dokter/kunjungan/${item.pemeriksaan.id}/edit"
+                    class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg
+                           transition-colors text-xs font-medium">
+                    <i class="fa-solid fa-pen-to-square mr-1"></i> Edit Pemeriksaan
+                </a>`;
+        }
+        // Belum → Panggil
+        else {
+            html += `
+                <form action="/dokter/kunjungan/${item.id}/update-status" method="POST">
+                    <input type="hidden" name="_token" value="${csrfToken}">
+                    <button type="submit"
+                        class="px-3 py-1.5 bg-purple-500 hover:bg-purple-600 text-white
+                               rounded-lg transition-colors text-xs font-medium">
+                        <i class="fa-solid fa-file-medical mr-1"></i> Panggil
+                    </button>
+                </form>`;
+        }
+
+        html += `</div>`;
+        return html;
+    }
+
+    // ========================================
+    // LOAD DATA AWAL (default hari ini)
+    // ========================================
+    applyFilters();
+});
 
 window.loadKunjunganDetail = function (id) {
     $.ajax({

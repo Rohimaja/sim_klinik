@@ -17,7 +17,6 @@
                     </div>
                     <div class="text-right">
                         <div class="text-3xl font-bold" id="clock"></div>
-                        <div class="text-sm text-blue-100 mt-1">Jam Kerja: 08:00 - 16:00</div>
                     </div>
                 </div>
             </div>
@@ -39,7 +38,7 @@
                                 class="text-xs font-semibold text-green-600 bg-green-100 dark:bg-green-900 dark:text-green-300 px-2 py-1 rounded">+12%</span>
                         </div>
                         <h4 class="text-gray-600 dark:text-gray-400 text-sm mb-1">Pasien Hari Ini</h4>
-                        <p class="text-3xl font-bold text-gray-800 dark:text-gray-100">{{ $pasien ?? '-' }}</p>
+                        <p class="text-3xl font-bold text-gray-800 dark:text-gray-100">{{ $today ?? '-' }}</p>
                     </div>
                 </div>
 
@@ -55,11 +54,11 @@
                                 </svg>
                             </div>
                             <span
-                                class="text-xs font-semibold text-orange-600 bg-orange-100 dark:bg-orange-900 dark:text-orange-300 px-2 py-1 rounded">3
+                                class="text-xs font-semibold text-orange-600 bg-orange-100 dark:bg-orange-900 dark:text-orange-300 px-2 py-1 rounded">{{ $menunggu ?? '-' }}
                                 menunggu</span>
                         </div>
                         <h4 class="text-gray-600 dark:text-gray-400 text-sm mb-1">Antrian Aktif</h4>
-                        <p class="text-3xl font-bold text-gray-800 dark:text-gray-100">8</p>
+                        <p class="text-3xl font-bold text-gray-800 dark:text-gray-100">{{ $aktif ?? '-' }}</p>
                     </div>
                 </div>
 
@@ -159,6 +158,11 @@
                                                         class="text-xs px-3 py-1 rounded-full font-medium bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-800 inline-block">
                                                         Menunggu
                                                     </span>
+                                                @elseif ($pt->status == 'tidak hadir')
+                                                    <span
+                                                        class="text-xs px-3 py-1 rounded-full font-medium bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-800 inline-block">
+                                                        Tidak Hadir
+                                                    </span>
                                                 @elseif ($pt->status == 'dipanggil')
                                                     <span
                                                         class="text-xs px-3 py-1 rounded-full font-medium bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800 inline-block">
@@ -176,7 +180,9 @@
                                                     </span>
                                                 @endif
                                             </td>
-                                            <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">09:30</td>
+                                            <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">
+                                                {{ substr($pt->jam_awal, 0, 5) . ' - ' . substr($pt->jam_akhir, 0, 5) }}
+                                            </td>
                                         </tr>
 
                                     </tbody>

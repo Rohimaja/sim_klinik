@@ -15,16 +15,41 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        $today = Carbon::today();
+
+        // Ambil pasien hari ini + hitung umur
+        $pasienToday = Kunjungan::with('pasien','skrining')
+            ->whereDate('tgl_kunjungan', $today)
+            ->get()
+            ->map(function ($item) {
+                $item->umur = Carbon::parse($item->pasien->tgl_lahir)->age;
+                return $item;
+            });
+
+        // Ambil skrining (dipanggil hari ini)
+        $skrining = $pasienToday->where('status', 'dipanggil');
+
+        // Kirim ke view
         $data = [
             'title' => 'Dashboard',
-            'before' => Kunjungan::with('pasien')->whereDate('tgl_kunjungan', Carbon::today())->where('status', 'menunggu')->count(),
-            'do' => Kunjungan::with('pasien')->whereDate('tgl_kunjungan', Carbon::today())->where('status', 'dipanggil')->count(),
-            'pasien' => Pasien::count(),
-            'done' => Kunjungan::with('pasien')->whereDate('tgl_kunjungan', Carbon::today())->where('status', 'selesai')->count(),
-            'pasienToday' => Kunjungan::with('pasien','skrining')->whereDate('tgl_kunjungan', Carbon::today())->get(),
-            'skrining' => Kunjungan::with('pasien','skrining')->whereDate('tgl_kunjungan', Carbon::today())->where('status', '=','dipanggil')->get(),
+            'before' => Kunjungan::whereDate('tgl_kunjungan', $today)
+                            ->whereIn('status', ['menunggu', 'tidak hadir'])
+                            ->count(),
 
+            'do' => Kunjungan::whereDate('tgl_kunjungan', $today)
+                            ->where('status', 'dipanggil')
+                            ->count(),
+
+            'pasien' => Pasien::count(),
+
+            'done' => Kunjungan::whereDate('tgl_kunjungan', $today)
+                            ->where('status', 'selesai')
+                            ->count(),
+
+            'pasienToday' => $pasienToday,
+            'skrining' => $skrining,
         ];
+
         $title = 'Dashboard';
         return view('perawat.index',$data);
     }

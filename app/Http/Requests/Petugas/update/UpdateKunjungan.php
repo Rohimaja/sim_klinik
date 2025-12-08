@@ -38,6 +38,7 @@ class UpdateKunjungan extends FormRequest
             'email' => ['required','email','max:100',Rule::unique('users', 'email')->ignore($id),],
             'alamat' => 'required|max:200',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // opsional: validasi foto
+            'rfid' => ['nullable','regex:/^[A-Za-z0-9\s]+$/',Rule::unique('pasien','rfid')->ignore($id)],
             'poli_id' => 'required',
             'dokter_id' => 'nullable',
             'tgl_kunjungan' => 'required',
@@ -75,6 +76,9 @@ class UpdateKunjungan extends FormRequest
             'no_telp.required' => 'Nomor Telepon wajib diisi',
             'no_telp.max' => 'Nomor Telepon maksimal 20 karakter',
             'no_telp.regex' => 'Nomor Telepon hanya boleh berisi angka',
+
+            'rfid.regex' => 'Kode RFID tidak boleh mengandung simbol',
+            'rfid.unique' => 'Kode RFID sudah terdaftar',
 
             'email.required' => 'Email tidak boleh kosong',
             // 'email.email' => 'Format email tidak valid',

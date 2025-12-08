@@ -22,7 +22,7 @@ class KunjunganController extends Controller
     public function index()
     {
         $title = "Tambah Kunjungan Pasien";
-        $kunjungan = Kunjungan::with('pasien','skrining')->get();
+        $kunjungan = Kunjungan::with('pasien','skrining')->orderByDesc('tgl_kunjungan')->get();
         $kunjungan = $kunjungan->map(function ($item) {
             $tgl_lahir = Carbon::parse($item->pasien->tgl_lahir);
             $item->umur = $tgl_lahir->age;

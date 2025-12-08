@@ -37,7 +37,7 @@
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 <i class="fa-solid fa-filter mr-1"></i> Status
                             </label>
-                            <select name="status" id="status"
+                            <select name="status" id="filter-status"
                                 class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                                 <option value="">Semua Status</option>
                                 <option value="menunggu">Menunggu</option>
@@ -51,7 +51,7 @@
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 <i class="fa-solid fa-calendar mr-1"></i> Tanggal
                             </label>
-                            <input type="date" name="tgl_kunjungan" id="tgl_kunjungan" value="{{ date('Y-m-d') }}"
+                            <input type="date" name="tgl_kunjungan" id="filter-tanggal" value="{{ date('Y-m-d') }}"
                                 class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                         </div>
 
@@ -60,7 +60,7 @@
 
                 <!-- Table -->
                 <div class="overflow-x-auto px-4 py-4">
-                    <table class="w-full" id="dataTable">
+                    <table class="w-full" id="data-kunjungan">
                         <thead class="bg-gray-100 dark:bg-gray-700/50">
                             <tr>
                                 <th
@@ -75,6 +75,9 @@
                                 <th
                                     class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                     Umur</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                                    Tanggal Kunjungan</th>
                                 <th
                                     class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                     Keluhan</th>
@@ -100,7 +103,10 @@
                                     <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">{{ $a->umur }}
                                         tahun</td>
                                     <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
-                                        {{ $a->kunjungan->keluhan_awal ?? '' }}
+                                        {{ $a->kunjungan->tgl_kunjungan ?? '' }}
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
+                                        {{ $a->kunjungan->skrining->keluhan_utama ?? ($a->kunjungan->keluhan_awal ?? '-') }}
                                     </td>
                                     <td class="px-6 py-4 text-center">
                                         @if ($a->status === 'menunggu')
